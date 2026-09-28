@@ -1,0 +1,23 @@
+
+# Environments
+venv/
+venv
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Logs
+*.log
+
+# C++ builds
+*.o
+*.so
+
+# Large archives
+ns-allinone-3.27.tar.bz2

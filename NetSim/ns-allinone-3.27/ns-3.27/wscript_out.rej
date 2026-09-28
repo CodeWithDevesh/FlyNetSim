@@ -1,0 +1,17 @@
+*** /dev/null
+--- /dev/null
+***************
+*** 745
+-             program.env.STLIB_MARKER = '-Wl,-all_load'
+--- 770,771 -----
++             #program.env.STLIB_MARKER = '-Wl,-all_load'
++             program.env.STLIB_MARKER = '-Wl,-all_load,-lczmq'
+***************
+*** 747,748
+-             program.env.STLIB_MARKER = '-Wl,-Bstatic,--whole-archive'
+-             program.env.SHLIB_MARKER = '-Wl,-Bdynamic,--no-whole-archive'
+--- 773,776 -----
++             #program.env.STLIB_MARKER = '-Wl,-Bstatic,--whole-archive'
++             #program.env.SHLIB_MARKER = '-Wl,-Bdynamic,--no-whole-archive'
++             program.env.STLIB_MARKER = '-Wl,-Bstatic,--whole-archive,-lczmq'
++             program.env.SHLIB_MARKER = '-Wl,-Bdynamic,--no-whole-archive, -lczmq'
