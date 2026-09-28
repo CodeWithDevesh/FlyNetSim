@@ -8,7 +8,7 @@ from pymavlink import mavutil # Needed for command message definitions
 
 
 class UAV:
-    def __init__(self, uavid, sitl_port, tel_socket, control_socket, verbose=False):
+    def __init__(self, uavid, sitl_port, tel_socket, control_socket, instance_count, verbose=False):
 
         self.telemetry_freq = 1
 
@@ -41,32 +41,40 @@ class UAV:
         self.tel_heading = None
         self.tel_timestamp = time.time()
 
-        # Setting up ZMQ related parameters
-        # self.zmq_tel_port = tel_port
-        # self.zmq_control_port = control_port
-        # self.zmq_tel_connection_str = "tcp://127.0.0.1:" + str(self.zmq_tel_port)
-        # self.zmq_control_connection_str = "tcp://127.0.0.1:" + str(self.zmq_control_port)
-        # self.zmq_tel_socket = self.create_zmq("PUB", self.zmq_tel_connection_str, "", verbose=self.verbose)
-        # self.zmq_control_socket = self.create_zmq("SUB", self.zmq_control_connection_str, verbose=self.verbose)
         self.zmq_tel_socket = tel_socket
         self.zmq_control_socket = control_socket
+
+        # SWARM P2P Sockets
+        self.uav_count = instance_count
+        self.swarm_state = {}
+        self.swarm_pub = self.create_zmq("PUB", "tcp://127.0.0.1:" + str(6000 + int(self.uav_id)), verbose=self.verbose)
+        self.swarm_sub = zmq.Context().socket(zmq.SUB)
+        for i in range(self.uav_count):
+            if i != int(self.uav_id):
+                self.swarm_sub.connect("tcp://127.0.0.1:" + str(6000 + i))
+        self.swarm_sub.setsockopt_string(zmq.SUBSCRIBE, "")
 
         # Connecting to the Vehicle
         self.sitl_port = sitl_port
         self.sitl_connection_str = "tcp:127.0.0.1:" + str(self.sitl_port)
-        self.vehicle = None
-        #self.vehicle = self.connect_sitl(self.sitl_connection_str, self.verbose)
-        #self.condition_yaw(90)
-
-
+        
+        # Thread for Swarm listener
+        thread_swarm = threading.Thread(target=self.swarm_listener)
+        thread_swarm.daemon = True
+        thread_swarm.start()
 
         # Thread for sending sensor (NOT IMPLEMENTED FOR NOW)
         thread_tel = threading.Thread(target=self.send_sensor_data)
         thread_tel.daemon = True
         thread_tel.start()
 
-        self.get_data(self.zmq_control_socket, verbose)
+        print(self.prefix + " Connecting to SITL vehicle...")
+        self.vehicle = self.connect_sitl(self.sitl_connection_str, self.verbose)
+        self.condition_yaw(90)
+        self.telemetry_add_attr(self.vehicle, self.verbose)
 
+        # Start the Brain
+        self.brain_loop()
 
         self.connection_close(self.verbose)
 
@@ -762,4 +770,75 @@ class UAV:
             print(self.prefix + " Closing connections")
         self.zmq_control_socket.close()
         self.zmq_tel_socket.close()
+        if hasattr(self, 'swarm_pub'):
+            self.swarm_pub.close()
+        if hasattr(self, 'swarm_sub'):
+            self.swarm_sub.close()
         self.disconnect_vehicle(verbose)
+
+    def swarm_listener(self):
+        while True:
+            try:
+                # Use non-blocking receive
+                data = self.swarm_sub.recv_string(flags=zmq.NOBLOCK)
+                if data:
+                    parts = data.split('|')
+                    if len(parts) >= 4:
+                        uid, lat, lon, alt = parts[:4]
+                        self.swarm_state[uid] = {'lat': float(lat), 'lon': float(lon), 'alt': float(alt)}
+                        if self.verbose:
+                            print(self.prefix + f" Swarm peer update: {uid} at ({lat}, {lon})")
+            except zmq.Again:
+                time.sleep(0.1)
+            except Exception as e:
+                print(self.prefix + f" Swarm listener error: {e}")
+                time.sleep(1)
+
+    def brain_loop(self):
+        print(self.prefix + " BRAIN: Initializing autonomous behavior...")
+        
+        # Wait for vehicle to initialize
+        while not self.vehicle.is_armable:
+            print(self.prefix + " BRAIN: Waiting for vehicle to initialise...")
+            time.sleep(1)
+            
+        print(self.prefix + " BRAIN: Arming vehicle...")
+        self.arm_disarm_throttle(self.vehicle, "ARM", self.verbose)
+        self.set_mode(self.vehicle, "GUIDED", self.verbose)
+        self.set_groundspeed(self.vehicle, self.groundspeed, self.verbose)
+        
+        print(self.prefix + f" BRAIN: Taking off to {self.set_initial_alt}m...")
+        self.takeoff(self.vehicle, self.set_initial_alt, self.verbose)
+        self.home_location = self.current_location
+        self.status = "TAKEOFF"
+        
+        print(self.prefix + " BRAIN: Takeoff complete. Entering main control loop.")
+        while True:
+            # 1. Publish our own state to the Swarm
+            if self.current_location is not None:
+                msg = f"{self.uav_id}|{self.current_location.lat}|{self.current_location.lon}|{self.current_location.alt}"
+                self.swarm_pub.send_string(msg)
+            
+            # 2. Check Swarm state for collision avoidance or coordination
+            peers_close = 0
+            for uid, state in self.swarm_state.items():
+                if self.current_location is not None:
+                    # Simple mock distance check (lat/lon to meters approximation)
+                    dlat = state['lat'] - self.current_location.lat
+                    dlon = state['lon'] - self.current_location.lon
+                    dist = math.sqrt(dlat**2 + dlon**2) * 1.113195e5
+                    if dist < 10.0:
+                        peers_close += 1
+            
+            if peers_close > 0:
+                print(self.prefix + f" BRAIN: {peers_close} peers too close! Holding position or moving away.")
+                # We could issue a move command here to separate them
+            else:
+                # 3. Default behavior: Fly a search pattern or just move forward slowly
+                print(self.prefix + " BRAIN: Sector clear. Continuing search sweep.")
+                if self.current_location is not None:
+                    # Move forward 5 meters
+                    loc = self.get_location_metres(self.current_location, 5, 0, self.current_location.alt)
+                    self.go_to(self.vehicle, loc, False)
+
+            time.sleep(2)

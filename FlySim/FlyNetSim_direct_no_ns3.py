@@ -25,7 +25,7 @@ def create_zmq(zmq_type, con_string, prefix="", verbose=False):
             print("[MAIN] [ZMQ] Subscriber connect started " + con_string)
         sock_new = context.socket(zmq.SUB)
         sock_new.connect(con_string)
-        sock_new.setsockopt(zmq.SUBSCRIBE, prefix)
+        sock_new.setsockopt_string(zmq.SUBSCRIBE, prefix)
         if verbose:
             print("[MAIN] [ZMQ] Subscriber connect complete " + con_string + " Prefix " + prefix)
     else:
@@ -118,9 +118,9 @@ if __name__ == "__main__":
         else:
             ver = False
         uav_thread = threading.Thread(target=uav.UAV, args=(format(i, "03d"), (5760 + i * 10),
-                                                            uav_zmq_tel_socket, uav_zmq_control_socket, ver))
+                                                            uav_zmq_tel_socket, uav_zmq_control_socket, args.instance, ver))
         uav_thread.setName("UAV_" + uav_id)
-        uav_thread.deamon = True
+        uav_thread.daemon = True
         uav_thread.start()
         uav_obj.append(uav_thread)
 
@@ -130,7 +130,13 @@ if __name__ == "__main__":
         ver = False
 
     #gcs.main(5501, 5500, args.instance, ver)  # NS3
-    gcs.main(5551, 5550, args.instance, ver)  # DIRECT
+    #gcs.main(5551, 5550, args.instance, ver)  # DIRECT
+    print("[MAIN] Swarm started autonomously. Press Ctrl+C to exit.")
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        pass
 
     print("[MAIN] Terminating the SITL instances")
     for p in proc_instance:
@@ -138,5 +144,3 @@ if __name__ == "__main__":
         os.kill(p.pid, 0)
         p.kill()
         os.killpg(os.getpgid(p.pid+1), signal.SIGTERM)
-
-

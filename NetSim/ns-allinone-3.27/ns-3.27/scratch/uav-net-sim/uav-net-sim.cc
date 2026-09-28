@@ -10,9 +10,9 @@
 #include <ctime>
 #include <czmq.h>
 #undef LOG_INFO
-#undef LOG_DEBUG
 #undef LOG_WARNING
 #undef LOG_ERR
+#undef LOG_DEBUG
 #include <libxml/parser.h>
 #include <libxml/xmlIO.h>
 #include <libxml/xinclude.h>
@@ -29,6 +29,7 @@
 #include "ns3/epc-helper.h"
 #include "ns3/lte-module.h"
 #include "ns3/point-to-point-module.h"
+#include "ns3/olsr-helper.h"
 #include "myApps.h"
 #include "myInput.h"
 
@@ -468,7 +469,9 @@ int main (int argc, char *argv[])
 
 
   /*********** Install IP stack on all WiFi Station nodes *********/ 
+  OlsrHelper olsr;
   InternetStackHelper internetUav;
+  internetUav.SetRoutingHelper (olsr);
   internetUav.Install (uavNode);
   internetUav.Install (congNode);
 
@@ -615,21 +618,14 @@ int main (int argc, char *argv[])
   sprintf(ssidString, "AP_1");
   ssid = Ssid (ssidString);
 
-  wifiMac.SetType ("ns3::ApWifiMac",
-                   "Ssid", SsidValue (ssid));
+  wifiMac.SetType ("ns3::AdhocWifiMac");
   devicesWifiAp.Add(wifi.Install (wifiPhy, wifiMac, nodesWifiAp.Get (0)));
 
   for (uint32_t i = 0; i < uavNode.GetN(); ++i){
-    wifiMac.SetType ("ns3::StaWifiMac",
-                   "Ssid", SsidValue (ssid),
-                   "ActiveProbing", BooleanValue (false));
     devicesWifiSta.Add (wifi.Install (wifiPhy, wifiMac, NodeContainer (uavNode.Get (i)))); //for all UAVs
   }
 
   for (uint32_t k = 0; k < congNode.GetN(); ++k){
-    wifiMac.SetType ("ns3::StaWifiMac",
-                   "Ssid", SsidValue (ssid),
-                   "ActiveProbing", BooleanValue (false));
     devicesWifiCong.Add (wifi.Install (wifiPhy, wifiMac, NodeContainer (congNode.Get (k))));
   }
 
