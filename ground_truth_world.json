@@ -1,0 +1,4276 @@
+{
+  "arena_width": 5000.0,
+  "arena_height": 5000.0,
+  "grid_cols": 5,
+  "grid_rows": 5,
+  "base_station": [
+    250.0,
+    250.0
+  ],
+  "total_sectors": 25,
+  "total_victims": 259,
+  "sectors": [
+    {
+      "sector_id": 0,
+      "bounds": [
+        0.0,
+        1000.0,
+        0.0,
+        1000.0
+      ],
+      "center": [
+        500.0,
+        500.0
+      ],
+      "image_file": "05363.png",
+      "victim_count": 1
+    },
+    {
+      "sector_id": 1,
+      "bounds": [
+        1000.0,
+        2000.0,
+        0.0,
+        1000.0
+      ],
+      "center": [
+        1500.0,
+        500.0
+      ],
+      "image_file": "06043.png",
+      "victim_count": 4
+    },
+    {
+      "sector_id": 2,
+      "bounds": [
+        2000.0,
+        3000.0,
+        0.0,
+        1000.0
+      ],
+      "center": [
+        2500.0,
+        500.0
+      ],
+      "image_file": "05581.png",
+      "victim_count": 21
+    },
+    {
+      "sector_id": 3,
+      "bounds": [
+        3000.0,
+        4000.0,
+        0.0,
+        1000.0
+      ],
+      "center": [
+        3500.0,
+        500.0
+      ],
+      "image_file": "06067.png",
+      "victim_count": 2
+    },
+    {
+      "sector_id": 4,
+      "bounds": [
+        4000.0,
+        5000.0,
+        0.0,
+        1000.0
+      ],
+      "center": [
+        4500.0,
+        500.0
+      ],
+      "image_file": "05632.png",
+      "victim_count": 67
+    },
+    {
+      "sector_id": 5,
+      "bounds": [
+        0.0,
+        1000.0,
+        1000.0,
+        2000.0
+      ],
+      "center": [
+        500.0,
+        1500.0
+      ],
+      "image_file": "05697.png",
+      "victim_count": 1
+    },
+    {
+      "sector_id": 6,
+      "bounds": [
+        1000.0,
+        2000.0,
+        1000.0,
+        2000.0
+      ],
+      "center": [
+        1500.0,
+        1500.0
+      ],
+      "image_file": "04967.png",
+      "victim_count": 17
+    },
+    {
+      "sector_id": 7,
+      "bounds": [
+        2000.0,
+        3000.0,
+        1000.0,
+        2000.0
+      ],
+      "center": [
+        2500.0,
+        1500.0
+      ],
+      "image_file": "04912.png",
+      "victim_count": 9
+    },
+    {
+      "sector_id": 8,
+      "bounds": [
+        3000.0,
+        4000.0,
+        1000.0,
+        2000.0
+      ],
+      "center": [
+        3500.0,
+        1500.0
+      ],
+      "image_file": "05355.png",
+      "victim_count": 3
+    },
+    {
+      "sector_id": 9,
+      "bounds": [
+        4000.0,
+        5000.0,
+        1000.0,
+        2000.0
+      ],
+      "center": [
+        4500.0,
+        1500.0
+      ],
+      "image_file": "05246.png",
+      "victim_count": 3
+    },
+    {
+      "sector_id": 10,
+      "bounds": [
+        0.0,
+        1000.0,
+        2000.0,
+        3000.0
+      ],
+      "center": [
+        500.0,
+        2500.0
+      ],
+      "image_file": "05775.png",
+      "victim_count": 8
+    },
+    {
+      "sector_id": 11,
+      "bounds": [
+        1000.0,
+        2000.0,
+        2000.0,
+        3000.0
+      ],
+      "center": [
+        1500.0,
+        2500.0
+      ],
+      "image_file": "05921.png",
+      "victim_count": 3
+    },
+    {
+      "sector_id": 12,
+      "bounds": [
+        2000.0,
+        3000.0,
+        2000.0,
+        3000.0
+      ],
+      "center": [
+        2500.0,
+        2500.0
+      ],
+      "image_file": "05734.png",
+      "victim_count": 8
+    },
+    {
+      "sector_id": 13,
+      "bounds": [
+        3000.0,
+        4000.0,
+        2000.0,
+        3000.0
+      ],
+      "center": [
+        3500.0,
+        2500.0
+      ],
+      "image_file": "05426.png",
+      "victim_count": 14
+    },
+    {
+      "sector_id": 14,
+      "bounds": [
+        4000.0,
+        5000.0,
+        2000.0,
+        3000.0
+      ],
+      "center": [
+        4500.0,
+        2500.0
+      ],
+      "image_file": "05862.png",
+      "victim_count": 4
+    },
+    {
+      "sector_id": 15,
+      "bounds": [
+        0.0,
+        1000.0,
+        3000.0,
+        4000.0
+      ],
+      "center": [
+        500.0,
+        3500.0
+      ],
+      "image_file": "05909.png",
+      "victim_count": 7
+    },
+    {
+      "sector_id": 16,
+      "bounds": [
+        1000.0,
+        2000.0,
+        3000.0,
+        4000.0
+      ],
+      "center": [
+        1500.0,
+        3500.0
+      ],
+      "image_file": "05248.png",
+      "victim_count": 11
+    },
+    {
+      "sector_id": 17,
+      "bounds": [
+        2000.0,
+        3000.0,
+        3000.0,
+        4000.0
+      ],
+      "center": [
+        2500.0,
+        3500.0
+      ],
+      "image_file": "05737.png",
+      "victim_count": 1
+    },
+    {
+      "sector_id": 18,
+      "bounds": [
+        3000.0,
+        4000.0,
+        3000.0,
+        4000.0
+      ],
+      "center": [
+        3500.0,
+        3500.0
+      ],
+      "image_file": "05131.png",
+      "victim_count": 7
+    },
+    {
+      "sector_id": 19,
+      "bounds": [
+        4000.0,
+        5000.0,
+        3000.0,
+        4000.0
+      ],
+      "center": [
+        4500.0,
+        3500.0
+      ],
+      "image_file": "04917.png",
+      "victim_count": 7
+    },
+    {
+      "sector_id": 20,
+      "bounds": [
+        0.0,
+        1000.0,
+        4000.0,
+        5000.0
+      ],
+      "center": [
+        500.0,
+        4500.0
+      ],
+      "image_file": "05875.png",
+      "victim_count": 16
+    },
+    {
+      "sector_id": 21,
+      "bounds": [
+        1000.0,
+        2000.0,
+        4000.0,
+        5000.0
+      ],
+      "center": [
+        1500.0,
+        4500.0
+      ],
+      "image_file": "04987.png",
+      "victim_count": 15
+    },
+    {
+      "sector_id": 22,
+      "bounds": [
+        2000.0,
+        3000.0,
+        4000.0,
+        5000.0
+      ],
+      "center": [
+        2500.0,
+        4500.0
+      ],
+      "image_file": "05204.png",
+      "victim_count": 18
+    },
+    {
+      "sector_id": 23,
+      "bounds": [
+        3000.0,
+        4000.0,
+        4000.0,
+        5000.0
+      ],
+      "center": [
+        3500.0,
+        4500.0
+      ],
+      "image_file": "05711.png",
+      "victim_count": 8
+    },
+    {
+      "sector_id": 24,
+      "bounds": [
+        4000.0,
+        5000.0,
+        4000.0,
+        5000.0
+      ],
+      "center": [
+        4500.0,
+        4500.0
+      ],
+      "image_file": "06028.png",
+      "victim_count": 4
+    }
+  ],
+  "victims": [
+    {
+      "target_id": "GT_S00_00",
+      "sector_id": 0,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 109.38,
+      "world_y": 231.45,
+      "norm_bbox": [
+        0.109375,
+        0.231445,
+        0.01875,
+        0.037109
+      ],
+      "image_file": "05363.png"
+    },
+    {
+      "target_id": "GT_S01_00",
+      "sector_id": 1,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1910.16,
+      "world_y": 872.07,
+      "norm_bbox": [
+        0.910156,
+        0.87207,
+        0.017188,
+        0.025391
+      ],
+      "image_file": "06043.png"
+    },
+    {
+      "target_id": "GT_S01_01",
+      "sector_id": 1,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1291.41,
+      "world_y": 907.23,
+      "norm_bbox": [
+        0.291406,
+        0.907227,
+        0.023438,
+        0.029297
+      ],
+      "image_file": "06043.png"
+    },
+    {
+      "target_id": "GT_S01_02",
+      "sector_id": 1,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1113.28,
+      "world_y": 218.75,
+      "norm_bbox": [
+        0.113281,
+        0.21875,
+        0.014063,
+        0.03125
+      ],
+      "image_file": "06043.png"
+    },
+    {
+      "target_id": "GT_S01_03",
+      "sector_id": 1,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1326.56,
+      "world_y": 346.68,
+      "norm_bbox": [
+        0.326563,
+        0.34668,
+        0.009375,
+        0.025391
+      ],
+      "image_file": "06043.png"
+    },
+    {
+      "target_id": "GT_S02_00",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2164.06,
+      "world_y": 874.02,
+      "norm_bbox": [
+        0.164062,
+        0.874023,
+        0.01875,
+        0.037109
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_01",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2211.72,
+      "world_y": 860.35,
+      "norm_bbox": [
+        0.211719,
+        0.860352,
+        0.023438,
+        0.025391
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_02",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2641.41,
+      "world_y": 966.8,
+      "norm_bbox": [
+        0.641406,
+        0.966797,
+        0.017188,
+        0.027344
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_03",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2653.91,
+      "world_y": 943.36,
+      "norm_bbox": [
+        0.653906,
+        0.943359,
+        0.014063,
+        0.023438
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_04",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2671.88,
+      "world_y": 939.45,
+      "norm_bbox": [
+        0.671875,
+        0.939453,
+        0.015625,
+        0.023438
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_05",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2756.25,
+      "world_y": 809.57,
+      "norm_bbox": [
+        0.75625,
+        0.80957,
+        0.015625,
+        0.017578
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_06",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2760.94,
+      "world_y": 722.66,
+      "norm_bbox": [
+        0.760938,
+        0.722656,
+        0.01875,
+        0.03125
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_07",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2809.38,
+      "world_y": 647.46,
+      "norm_bbox": [
+        0.809375,
+        0.647461,
+        0.015625,
+        0.025391
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_08",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2779.69,
+      "world_y": 577.15,
+      "norm_bbox": [
+        0.779688,
+        0.577148,
+        0.021875,
+        0.033203
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_09",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2803.12,
+      "world_y": 536.13,
+      "norm_bbox": [
+        0.803125,
+        0.536133,
+        0.0125,
+        0.025391
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_10",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2808.59,
+      "world_y": 495.12,
+      "norm_bbox": [
+        0.808594,
+        0.495117,
+        0.020313,
+        0.025391
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_11",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2822.66,
+      "world_y": 450.19,
+      "norm_bbox": [
+        0.822656,
+        0.450195,
+        0.010938,
+        0.021484
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_12",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2867.97,
+      "world_y": 441.41,
+      "norm_bbox": [
+        0.867969,
+        0.441406,
+        0.014063,
+        0.027344
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_13",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2826.56,
+      "world_y": 525.39,
+      "norm_bbox": [
+        0.826563,
+        0.525391,
+        0.021875,
+        0.03125
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_14",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2907.81,
+      "world_y": 317.38,
+      "norm_bbox": [
+        0.907813,
+        0.317383,
+        0.0125,
+        0.021484
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_15",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2887.5,
+      "world_y": 275.39,
+      "norm_bbox": [
+        0.8875,
+        0.275391,
+        0.0125,
+        0.023438
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_16",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2886.72,
+      "world_y": 250.0,
+      "norm_bbox": [
+        0.886719,
+        0.25,
+        0.017188,
+        0.023438
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_17",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2900.78,
+      "world_y": 247.07,
+      "norm_bbox": [
+        0.900781,
+        0.24707,
+        0.010938,
+        0.025391
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_18",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2875.0,
+      "world_y": 212.89,
+      "norm_bbox": [
+        0.875,
+        0.212891,
+        0.0125,
+        0.023438
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_19",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2959.38,
+      "world_y": 150.39,
+      "norm_bbox": [
+        0.959375,
+        0.150391,
+        0.009375,
+        0.023438
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S02_20",
+      "sector_id": 2,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2975.78,
+      "world_y": 116.21,
+      "norm_bbox": [
+        0.975781,
+        0.116211,
+        0.014063,
+        0.021484
+      ],
+      "image_file": "05581.png"
+    },
+    {
+      "target_id": "GT_S03_00",
+      "sector_id": 3,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3342.19,
+      "world_y": 545.9,
+      "norm_bbox": [
+        0.342188,
+        0.545898,
+        0.009375,
+        0.029297
+      ],
+      "image_file": "06067.png"
+    },
+    {
+      "target_id": "GT_S03_01",
+      "sector_id": 3,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3350.0,
+      "world_y": 574.22,
+      "norm_bbox": [
+        0.35,
+        0.574219,
+        0.009375,
+        0.023438
+      ],
+      "image_file": "06067.png"
+    },
+    {
+      "target_id": "GT_S04_00",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4303.91,
+      "world_y": 550.78,
+      "norm_bbox": [
+        0.303906,
+        0.550781,
+        0.010938,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_01",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4275.0,
+      "world_y": 580.08,
+      "norm_bbox": [
+        0.275,
+        0.580078,
+        0.0125,
+        0.03125
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_02",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4267.97,
+      "world_y": 619.14,
+      "norm_bbox": [
+        0.267969,
+        0.619141,
+        0.010938,
+        0.023438
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_03",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4261.72,
+      "world_y": 627.93,
+      "norm_bbox": [
+        0.261719,
+        0.62793,
+        0.010938,
+        0.021484
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_04",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4344.53,
+      "world_y": 721.68,
+      "norm_bbox": [
+        0.344531,
+        0.72168,
+        0.014063,
+        0.017578
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_05",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4372.66,
+      "world_y": 707.03,
+      "norm_bbox": [
+        0.372656,
+        0.707031,
+        0.014063,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_06",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4386.72,
+      "world_y": 713.87,
+      "norm_bbox": [
+        0.386719,
+        0.713867,
+        0.014063,
+        0.029297
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_07",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4531.25,
+      "world_y": 586.91,
+      "norm_bbox": [
+        0.53125,
+        0.586914,
+        0.015625,
+        0.033203
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_08",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4529.69,
+      "world_y": 512.7,
+      "norm_bbox": [
+        0.529687,
+        0.512695,
+        0.0125,
+        0.029297
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_09",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4514.06,
+      "world_y": 509.77,
+      "norm_bbox": [
+        0.514062,
+        0.509766,
+        0.015625,
+        0.019531
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_10",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4511.72,
+      "world_y": 495.12,
+      "norm_bbox": [
+        0.511719,
+        0.495117,
+        0.017188,
+        0.017578
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_11",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4580.47,
+      "world_y": 454.1,
+      "norm_bbox": [
+        0.580469,
+        0.454102,
+        0.010938,
+        0.033203
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_12",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4592.19,
+      "world_y": 492.19,
+      "norm_bbox": [
+        0.592187,
+        0.492188,
+        0.0125,
+        0.03125
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_13",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4591.41,
+      "world_y": 630.86,
+      "norm_bbox": [
+        0.591406,
+        0.630859,
+        0.010938,
+        0.03125
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_14",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4721.09,
+      "world_y": 602.54,
+      "norm_bbox": [
+        0.721094,
+        0.602539,
+        0.014063,
+        0.025391
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_15",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4724.22,
+      "world_y": 641.6,
+      "norm_bbox": [
+        0.724219,
+        0.641602,
+        0.014063,
+        0.029297
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_16",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4717.97,
+      "world_y": 497.07,
+      "norm_bbox": [
+        0.717969,
+        0.49707,
+        0.014063,
+        0.029297
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_17",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4711.72,
+      "world_y": 463.87,
+      "norm_bbox": [
+        0.711719,
+        0.463867,
+        0.010938,
+        0.029297
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_18",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4582.81,
+      "world_y": 371.09,
+      "norm_bbox": [
+        0.582813,
+        0.371094,
+        0.0125,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_19",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4589.84,
+      "world_y": 341.8,
+      "norm_bbox": [
+        0.589844,
+        0.341797,
+        0.010938,
+        0.03125
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_20",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4687.5,
+      "world_y": 384.77,
+      "norm_bbox": [
+        0.6875,
+        0.384766,
+        0.009375,
+        0.023438
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_21",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4689.06,
+      "world_y": 344.73,
+      "norm_bbox": [
+        0.689063,
+        0.344727,
+        0.009375,
+        0.025391
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_22",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4595.31,
+      "world_y": 250.0,
+      "norm_bbox": [
+        0.595313,
+        0.25,
+        0.015625,
+        0.023438
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_23",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4577.34,
+      "world_y": 223.63,
+      "norm_bbox": [
+        0.577344,
+        0.223633,
+        0.010938,
+        0.029297
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_24",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4666.41,
+      "world_y": 263.67,
+      "norm_bbox": [
+        0.666406,
+        0.263672,
+        0.010938,
+        0.023438
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_25",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4695.31,
+      "world_y": 235.35,
+      "norm_bbox": [
+        0.695312,
+        0.235352,
+        0.01875,
+        0.029297
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_26",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4750.0,
+      "world_y": 221.68,
+      "norm_bbox": [
+        0.75,
+        0.22168,
+        0.015625,
+        0.029297
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_27",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4515.62,
+      "world_y": 216.8,
+      "norm_bbox": [
+        0.515625,
+        0.216797,
+        0.015625,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_28",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4517.97,
+      "world_y": 286.13,
+      "norm_bbox": [
+        0.517969,
+        0.286133,
+        0.014063,
+        0.052734
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_29",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4476.56,
+      "world_y": 271.48,
+      "norm_bbox": [
+        0.476562,
+        0.271484,
+        0.01875,
+        0.03125
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_30",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4482.03,
+      "world_y": 242.19,
+      "norm_bbox": [
+        0.482031,
+        0.242188,
+        0.010938,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_31",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4514.06,
+      "world_y": 146.48,
+      "norm_bbox": [
+        0.514062,
+        0.146484,
+        0.0125,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_32",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4568.75,
+      "world_y": 130.86,
+      "norm_bbox": [
+        0.56875,
+        0.130859,
+        0.009375,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_33",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4659.38,
+      "world_y": 138.67,
+      "norm_bbox": [
+        0.659375,
+        0.138672,
+        0.0125,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_34",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4690.62,
+      "world_y": 143.55,
+      "norm_bbox": [
+        0.690625,
+        0.143555,
+        0.0125,
+        0.029297
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_35",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4649.22,
+      "world_y": 56.64,
+      "norm_bbox": [
+        0.649219,
+        0.056641,
+        0.010938,
+        0.03125
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_36",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4665.62,
+      "world_y": 32.23,
+      "norm_bbox": [
+        0.665625,
+        0.032227,
+        0.009375,
+        0.025391
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_37",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4585.16,
+      "world_y": 157.23,
+      "norm_bbox": [
+        0.585156,
+        0.157227,
+        0.007812,
+        0.025391
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_38",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4510.16,
+      "world_y": 39.06,
+      "norm_bbox": [
+        0.510156,
+        0.039062,
+        0.014063,
+        0.066406
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_39",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4377.34,
+      "world_y": 17.58,
+      "norm_bbox": [
+        0.377344,
+        0.017578,
+        0.010938,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_40",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4360.16,
+      "world_y": 55.66,
+      "norm_bbox": [
+        0.360156,
+        0.055664,
+        0.010938,
+        0.021484
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_41",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4370.31,
+      "world_y": 67.38,
+      "norm_bbox": [
+        0.370313,
+        0.067383,
+        0.009375,
+        0.025391
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_42",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4377.34,
+      "world_y": 53.71,
+      "norm_bbox": [
+        0.377344,
+        0.053711,
+        0.010938,
+        0.021484
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_43",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4291.41,
+      "world_y": 39.06,
+      "norm_bbox": [
+        0.291406,
+        0.039062,
+        0.007812,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_44",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4313.28,
+      "world_y": 132.81,
+      "norm_bbox": [
+        0.313281,
+        0.132812,
+        0.017188,
+        0.039062
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_45",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4309.38,
+      "world_y": 157.23,
+      "norm_bbox": [
+        0.309375,
+        0.157227,
+        0.009375,
+        0.025391
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_46",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4325.0,
+      "world_y": 160.16,
+      "norm_bbox": [
+        0.325,
+        0.160156,
+        0.0125,
+        0.03125
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_47",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4325.78,
+      "world_y": 121.09,
+      "norm_bbox": [
+        0.325781,
+        0.121094,
+        0.010938,
+        0.035156
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_48",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4341.41,
+      "world_y": 157.23,
+      "norm_bbox": [
+        0.341406,
+        0.157227,
+        0.010938,
+        0.025391
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_49",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4364.06,
+      "world_y": 167.97,
+      "norm_bbox": [
+        0.364063,
+        0.167969,
+        0.015625,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_50",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4368.75,
+      "world_y": 134.77,
+      "norm_bbox": [
+        0.36875,
+        0.134766,
+        0.0125,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_51",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4313.28,
+      "world_y": 197.27,
+      "norm_bbox": [
+        0.313281,
+        0.197266,
+        0.010938,
+        0.023438
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_52",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4328.12,
+      "world_y": 202.15,
+      "norm_bbox": [
+        0.328125,
+        0.202148,
+        0.009375,
+        0.021484
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_53",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4340.62,
+      "world_y": 215.82,
+      "norm_bbox": [
+        0.340625,
+        0.21582,
+        0.015625,
+        0.025391
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_54",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4350.0,
+      "world_y": 247.07,
+      "norm_bbox": [
+        0.35,
+        0.24707,
+        0.0125,
+        0.025391
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_55",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4367.19,
+      "world_y": 250.0,
+      "norm_bbox": [
+        0.367188,
+        0.25,
+        0.009375,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_56",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4374.22,
+      "world_y": 233.4,
+      "norm_bbox": [
+        0.374219,
+        0.233398,
+        0.010938,
+        0.025391
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_57",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4394.53,
+      "world_y": 237.3,
+      "norm_bbox": [
+        0.394531,
+        0.237305,
+        0.007812,
+        0.029297
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_58",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4386.72,
+      "world_y": 264.65,
+      "norm_bbox": [
+        0.386719,
+        0.264648,
+        0.007812,
+        0.025391
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_59",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4366.41,
+      "world_y": 306.64,
+      "norm_bbox": [
+        0.366406,
+        0.306641,
+        0.010938,
+        0.03125
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_60",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4278.91,
+      "world_y": 372.07,
+      "norm_bbox": [
+        0.278906,
+        0.37207,
+        0.014063,
+        0.037109
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_61",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4294.53,
+      "world_y": 365.23,
+      "norm_bbox": [
+        0.294531,
+        0.365234,
+        0.014063,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_62",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4307.03,
+      "world_y": 451.17,
+      "norm_bbox": [
+        0.307031,
+        0.451172,
+        0.010938,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_63",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4317.19,
+      "world_y": 439.45,
+      "norm_bbox": [
+        0.317188,
+        0.439453,
+        0.009375,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_64",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4349.22,
+      "world_y": 418.94,
+      "norm_bbox": [
+        0.349219,
+        0.418945,
+        0.010938,
+        0.025391
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_65",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4361.72,
+      "world_y": 390.62,
+      "norm_bbox": [
+        0.361719,
+        0.390625,
+        0.010938,
+        0.027344
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S04_66",
+      "sector_id": 4,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4300.0,
+      "world_y": 478.52,
+      "norm_bbox": [
+        0.3,
+        0.478516,
+        0.0125,
+        0.023438
+      ],
+      "image_file": "05632.png"
+    },
+    {
+      "target_id": "GT_S05_00",
+      "sector_id": 5,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 567.97,
+      "world_y": 1146.48,
+      "norm_bbox": [
+        0.567969,
+        0.146484,
+        0.017188,
+        0.035156
+      ],
+      "image_file": "05697.png"
+    },
+    {
+      "target_id": "GT_S06_00",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1242.97,
+      "world_y": 1381.84,
+      "norm_bbox": [
+        0.242969,
+        0.381836,
+        0.020313,
+        0.052734
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_01",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1539.06,
+      "world_y": 1937.5,
+      "norm_bbox": [
+        0.539062,
+        0.9375,
+        0.025,
+        0.046875
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_02",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1450.78,
+      "world_y": 1922.85,
+      "norm_bbox": [
+        0.450781,
+        0.922852,
+        0.035938,
+        0.029297
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_03",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1314.84,
+      "world_y": 1630.86,
+      "norm_bbox": [
+        0.314844,
+        0.630859,
+        0.026563,
+        0.039062
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_04",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1301.56,
+      "world_y": 1646.48,
+      "norm_bbox": [
+        0.301563,
+        0.646484,
+        0.015625,
+        0.027344
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_05",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1378.91,
+      "world_y": 1556.64,
+      "norm_bbox": [
+        0.378906,
+        0.556641,
+        0.017188,
+        0.042969
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_06",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1533.59,
+      "world_y": 1715.82,
+      "norm_bbox": [
+        0.533594,
+        0.71582,
+        0.023438,
+        0.044922
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_07",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1713.28,
+      "world_y": 1619.14,
+      "norm_bbox": [
+        0.713281,
+        0.619141,
+        0.014063,
+        0.039062
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_08",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1734.38,
+      "world_y": 1608.4,
+      "norm_bbox": [
+        0.734375,
+        0.608398,
+        0.0125,
+        0.044922
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_09",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1697.66,
+      "world_y": 1790.04,
+      "norm_bbox": [
+        0.697656,
+        0.790039,
+        0.026563,
+        0.033203
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_10",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1710.16,
+      "world_y": 1745.12,
+      "norm_bbox": [
+        0.710156,
+        0.745117,
+        0.023438,
+        0.033203
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_11",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1899.22,
+      "world_y": 1442.38,
+      "norm_bbox": [
+        0.899219,
+        0.442383,
+        0.017188,
+        0.029297
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_12",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1926.56,
+      "world_y": 1416.99,
+      "norm_bbox": [
+        0.926563,
+        0.416992,
+        0.021875,
+        0.033203
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_13",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1987.5,
+      "world_y": 1052.73,
+      "norm_bbox": [
+        0.9875,
+        0.052734,
+        0.0125,
+        0.039062
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_14",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1972.66,
+      "world_y": 1028.32,
+      "norm_bbox": [
+        0.972656,
+        0.02832,
+        0.010938,
+        0.029297
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_15",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1906.25,
+      "world_y": 1013.67,
+      "norm_bbox": [
+        0.90625,
+        0.013672,
+        0.028125,
+        0.023438
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S06_16",
+      "sector_id": 6,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1858.59,
+      "world_y": 1013.67,
+      "norm_bbox": [
+        0.858594,
+        0.013672,
+        0.029688,
+        0.023438
+      ],
+      "image_file": "04967.png"
+    },
+    {
+      "target_id": "GT_S07_00",
+      "sector_id": 7,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2439.06,
+      "world_y": 1108.4,
+      "norm_bbox": [
+        0.439063,
+        0.108398,
+        0.0125,
+        0.025391
+      ],
+      "image_file": "04912.png"
+    },
+    {
+      "target_id": "GT_S07_01",
+      "sector_id": 7,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2358.59,
+      "world_y": 1189.45,
+      "norm_bbox": [
+        0.358594,
+        0.189453,
+        0.010938,
+        0.027344
+      ],
+      "image_file": "04912.png"
+    },
+    {
+      "target_id": "GT_S07_02",
+      "sector_id": 7,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2405.47,
+      "world_y": 1612.3,
+      "norm_bbox": [
+        0.405469,
+        0.612305,
+        0.010938,
+        0.025391
+      ],
+      "image_file": "04912.png"
+    },
+    {
+      "target_id": "GT_S07_03",
+      "sector_id": 7,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2441.41,
+      "world_y": 1563.48,
+      "norm_bbox": [
+        0.441406,
+        0.563477,
+        0.010938,
+        0.044922
+      ],
+      "image_file": "04912.png"
+    },
+    {
+      "target_id": "GT_S07_04",
+      "sector_id": 7,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2481.25,
+      "world_y": 1566.41,
+      "norm_bbox": [
+        0.48125,
+        0.566406,
+        0.015625,
+        0.03125
+      ],
+      "image_file": "04912.png"
+    },
+    {
+      "target_id": "GT_S07_05",
+      "sector_id": 7,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2466.41,
+      "world_y": 1558.59,
+      "norm_bbox": [
+        0.466406,
+        0.558594,
+        0.014063,
+        0.023438
+      ],
+      "image_file": "04912.png"
+    },
+    {
+      "target_id": "GT_S07_06",
+      "sector_id": 7,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2437.5,
+      "world_y": 1362.31,
+      "norm_bbox": [
+        0.4375,
+        0.362305,
+        0.009375,
+        0.021484
+      ],
+      "image_file": "04912.png"
+    },
+    {
+      "target_id": "GT_S07_07",
+      "sector_id": 7,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2432.03,
+      "world_y": 1339.84,
+      "norm_bbox": [
+        0.432031,
+        0.339844,
+        0.010938,
+        0.023438
+      ],
+      "image_file": "04912.png"
+    },
+    {
+      "target_id": "GT_S07_08",
+      "sector_id": 7,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2454.69,
+      "world_y": 1950.2,
+      "norm_bbox": [
+        0.454688,
+        0.950195,
+        0.015625,
+        0.037109
+      ],
+      "image_file": "04912.png"
+    },
+    {
+      "target_id": "GT_S08_00",
+      "sector_id": 8,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3359.38,
+      "world_y": 1626.95,
+      "norm_bbox": [
+        0.359375,
+        0.626953,
+        0.021875,
+        0.039062
+      ],
+      "image_file": "05355.png"
+    },
+    {
+      "target_id": "GT_S08_01",
+      "sector_id": 8,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3289.84,
+      "world_y": 1821.29,
+      "norm_bbox": [
+        0.289844,
+        0.821289,
+        0.020313,
+        0.037109
+      ],
+      "image_file": "05355.png"
+    },
+    {
+      "target_id": "GT_S08_02",
+      "sector_id": 8,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3245.31,
+      "world_y": 1639.65,
+      "norm_bbox": [
+        0.245313,
+        0.639648,
+        0.015625,
+        0.021484
+      ],
+      "image_file": "05355.png"
+    },
+    {
+      "target_id": "GT_S09_00",
+      "sector_id": 9,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4075.0,
+      "world_y": 1734.38,
+      "norm_bbox": [
+        0.075,
+        0.734375,
+        0.015625,
+        0.027344
+      ],
+      "image_file": "05246.png"
+    },
+    {
+      "target_id": "GT_S09_01",
+      "sector_id": 9,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4425.78,
+      "world_y": 1749.02,
+      "norm_bbox": [
+        0.425781,
+        0.749023,
+        0.014063,
+        0.025391
+      ],
+      "image_file": "05246.png"
+    },
+    {
+      "target_id": "GT_S09_02",
+      "sector_id": 9,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4478.12,
+      "world_y": 1788.09,
+      "norm_bbox": [
+        0.478125,
+        0.788086,
+        0.01875,
+        0.025391
+      ],
+      "image_file": "05246.png"
+    },
+    {
+      "target_id": "GT_S10_00",
+      "sector_id": 10,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 672.66,
+      "world_y": 2768.55,
+      "norm_bbox": [
+        0.672656,
+        0.768555,
+        0.010938,
+        0.033203
+      ],
+      "image_file": "05775.png"
+    },
+    {
+      "target_id": "GT_S10_01",
+      "sector_id": 10,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 636.72,
+      "world_y": 2797.85,
+      "norm_bbox": [
+        0.636719,
+        0.797852,
+        0.014063,
+        0.029297
+      ],
+      "image_file": "05775.png"
+    },
+    {
+      "target_id": "GT_S10_02",
+      "sector_id": 10,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 648.44,
+      "world_y": 2842.77,
+      "norm_bbox": [
+        0.648438,
+        0.842773,
+        0.0125,
+        0.029297
+      ],
+      "image_file": "05775.png"
+    },
+    {
+      "target_id": "GT_S10_03",
+      "sector_id": 10,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 661.72,
+      "world_y": 2808.59,
+      "norm_bbox": [
+        0.661719,
+        0.808594,
+        0.014063,
+        0.027344
+      ],
+      "image_file": "05775.png"
+    },
+    {
+      "target_id": "GT_S10_04",
+      "sector_id": 10,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 683.59,
+      "world_y": 2804.69,
+      "norm_bbox": [
+        0.683594,
+        0.804688,
+        0.017188,
+        0.03125
+      ],
+      "image_file": "05775.png"
+    },
+    {
+      "target_id": "GT_S10_05",
+      "sector_id": 10,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 706.25,
+      "world_y": 2770.51,
+      "norm_bbox": [
+        0.70625,
+        0.770508,
+        0.01875,
+        0.033203
+      ],
+      "image_file": "05775.png"
+    },
+    {
+      "target_id": "GT_S10_06",
+      "sector_id": 10,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 714.84,
+      "world_y": 2804.69,
+      "norm_bbox": [
+        0.714844,
+        0.804688,
+        0.017188,
+        0.03125
+      ],
+      "image_file": "05775.png"
+    },
+    {
+      "target_id": "GT_S10_07",
+      "sector_id": 10,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 716.41,
+      "world_y": 2873.05,
+      "norm_bbox": [
+        0.716406,
+        0.873047,
+        0.020313,
+        0.03125
+      ],
+      "image_file": "05775.png"
+    },
+    {
+      "target_id": "GT_S11_00",
+      "sector_id": 11,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1298.44,
+      "world_y": 2522.46,
+      "norm_bbox": [
+        0.298438,
+        0.522461,
+        0.01875,
+        0.033203
+      ],
+      "image_file": "05921.png"
+    },
+    {
+      "target_id": "GT_S11_01",
+      "sector_id": 11,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1850.0,
+      "world_y": 2814.45,
+      "norm_bbox": [
+        0.85,
+        0.814453,
+        0.025,
+        0.027344
+      ],
+      "image_file": "05921.png"
+    },
+    {
+      "target_id": "GT_S11_02",
+      "sector_id": 11,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1935.16,
+      "world_y": 2783.2,
+      "norm_bbox": [
+        0.935156,
+        0.783203,
+        0.017188,
+        0.019531
+      ],
+      "image_file": "05921.png"
+    },
+    {
+      "target_id": "GT_S12_00",
+      "sector_id": 12,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2365.62,
+      "world_y": 2143.55,
+      "norm_bbox": [
+        0.365625,
+        0.143555,
+        0.015625,
+        0.037109
+      ],
+      "image_file": "05734.png"
+    },
+    {
+      "target_id": "GT_S12_01",
+      "sector_id": 12,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2355.47,
+      "world_y": 2312.5,
+      "norm_bbox": [
+        0.355469,
+        0.3125,
+        0.020313,
+        0.035156
+      ],
+      "image_file": "05734.png"
+    },
+    {
+      "target_id": "GT_S12_02",
+      "sector_id": 12,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2057.81,
+      "world_y": 2173.83,
+      "norm_bbox": [
+        0.057813,
+        0.173828,
+        0.015625,
+        0.027344
+      ],
+      "image_file": "05734.png"
+    },
+    {
+      "target_id": "GT_S12_03",
+      "sector_id": 12,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2212.5,
+      "world_y": 2559.57,
+      "norm_bbox": [
+        0.2125,
+        0.55957,
+        0.025,
+        0.021484
+      ],
+      "image_file": "05734.png"
+    },
+    {
+      "target_id": "GT_S12_04",
+      "sector_id": 12,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2242.19,
+      "world_y": 2602.54,
+      "norm_bbox": [
+        0.242188,
+        0.602539,
+        0.01875,
+        0.025391
+      ],
+      "image_file": "05734.png"
+    },
+    {
+      "target_id": "GT_S12_05",
+      "sector_id": 12,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2286.72,
+      "world_y": 2781.25,
+      "norm_bbox": [
+        0.286719,
+        0.78125,
+        0.023438,
+        0.03125
+      ],
+      "image_file": "05734.png"
+    },
+    {
+      "target_id": "GT_S12_06",
+      "sector_id": 12,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2333.59,
+      "world_y": 2927.73,
+      "norm_bbox": [
+        0.333594,
+        0.927734,
+        0.020313,
+        0.023438
+      ],
+      "image_file": "05734.png"
+    },
+    {
+      "target_id": "GT_S12_07",
+      "sector_id": 12,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2596.09,
+      "world_y": 2012.69,
+      "norm_bbox": [
+        0.596094,
+        0.012695,
+        0.017188,
+        0.021484
+      ],
+      "image_file": "05734.png"
+    },
+    {
+      "target_id": "GT_S13_00",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3164.84,
+      "world_y": 2355.47,
+      "norm_bbox": [
+        0.164844,
+        0.355469,
+        0.010938,
+        0.023438
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S13_01",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3215.62,
+      "world_y": 2363.28,
+      "norm_bbox": [
+        0.215625,
+        0.363281,
+        0.009375,
+        0.019531
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S13_02",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3226.56,
+      "world_y": 2339.84,
+      "norm_bbox": [
+        0.226562,
+        0.339844,
+        0.01875,
+        0.027344
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S13_03",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3200.78,
+      "world_y": 2288.09,
+      "norm_bbox": [
+        0.200781,
+        0.288086,
+        0.010938,
+        0.025391
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S13_04",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3287.5,
+      "world_y": 2295.9,
+      "norm_bbox": [
+        0.2875,
+        0.295898,
+        0.0125,
+        0.025391
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S13_05",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3308.59,
+      "world_y": 2280.27,
+      "norm_bbox": [
+        0.308594,
+        0.280273,
+        0.010938,
+        0.017578
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S13_06",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3344.53,
+      "world_y": 2341.8,
+      "norm_bbox": [
+        0.344531,
+        0.341797,
+        0.010938,
+        0.019531
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S13_07",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3473.44,
+      "world_y": 2408.2,
+      "norm_bbox": [
+        0.473438,
+        0.408203,
+        0.01875,
+        0.03125
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S13_08",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3495.31,
+      "world_y": 2422.85,
+      "norm_bbox": [
+        0.495313,
+        0.422852,
+        0.01875,
+        0.021484
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S13_09",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3492.19,
+      "world_y": 2266.6,
+      "norm_bbox": [
+        0.492188,
+        0.266602,
+        0.009375,
+        0.025391
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S13_10",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3492.97,
+      "world_y": 2294.92,
+      "norm_bbox": [
+        0.492969,
+        0.294922,
+        0.014063,
+        0.023438
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S13_11",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3510.94,
+      "world_y": 2463.87,
+      "norm_bbox": [
+        0.510938,
+        0.463867,
+        0.0125,
+        0.021484
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S13_12",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3811.72,
+      "world_y": 2557.62,
+      "norm_bbox": [
+        0.811719,
+        0.557617,
+        0.014063,
+        0.021484
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S13_13",
+      "sector_id": 13,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3955.47,
+      "world_y": 2485.35,
+      "norm_bbox": [
+        0.955469,
+        0.485352,
+        0.014063,
+        0.021484
+      ],
+      "image_file": "05426.png"
+    },
+    {
+      "target_id": "GT_S14_00",
+      "sector_id": 14,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4821.88,
+      "world_y": 2662.11,
+      "norm_bbox": [
+        0.821875,
+        0.662109,
+        0.015625,
+        0.023438
+      ],
+      "image_file": "05862.png"
+    },
+    {
+      "target_id": "GT_S14_01",
+      "sector_id": 14,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4544.53,
+      "world_y": 2899.41,
+      "norm_bbox": [
+        0.544531,
+        0.899414,
+        0.039062,
+        0.029297
+      ],
+      "image_file": "05862.png"
+    },
+    {
+      "target_id": "GT_S14_02",
+      "sector_id": 14,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4667.97,
+      "world_y": 2959.96,
+      "norm_bbox": [
+        0.667969,
+        0.959961,
+        0.029688,
+        0.033203
+      ],
+      "image_file": "05862.png"
+    },
+    {
+      "target_id": "GT_S14_03",
+      "sector_id": 14,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4416.41,
+      "world_y": 2480.47,
+      "norm_bbox": [
+        0.416406,
+        0.480469,
+        0.032813,
+        0.035156
+      ],
+      "image_file": "05862.png"
+    },
+    {
+      "target_id": "GT_S15_00",
+      "sector_id": 15,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 649.22,
+      "world_y": 3611.33,
+      "norm_bbox": [
+        0.649219,
+        0.611328,
+        0.014063,
+        0.023438
+      ],
+      "image_file": "05909.png"
+    },
+    {
+      "target_id": "GT_S15_01",
+      "sector_id": 15,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 870.31,
+      "world_y": 3631.84,
+      "norm_bbox": [
+        0.870313,
+        0.631836,
+        0.0125,
+        0.021484
+      ],
+      "image_file": "05909.png"
+    },
+    {
+      "target_id": "GT_S15_02",
+      "sector_id": 15,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 104.69,
+      "world_y": 3370.12,
+      "norm_bbox": [
+        0.104688,
+        0.370117,
+        0.015625,
+        0.037109
+      ],
+      "image_file": "05909.png"
+    },
+    {
+      "target_id": "GT_S15_03",
+      "sector_id": 15,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 121.09,
+      "world_y": 3375.0,
+      "norm_bbox": [
+        0.121094,
+        0.375,
+        0.017188,
+        0.035156
+      ],
+      "image_file": "05909.png"
+    },
+    {
+      "target_id": "GT_S15_04",
+      "sector_id": 15,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 176.56,
+      "world_y": 3150.39,
+      "norm_bbox": [
+        0.176563,
+        0.150391,
+        0.015625,
+        0.03125
+      ],
+      "image_file": "05909.png"
+    },
+    {
+      "target_id": "GT_S15_05",
+      "sector_id": 15,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 187.5,
+      "world_y": 3149.41,
+      "norm_bbox": [
+        0.1875,
+        0.149414,
+        0.015625,
+        0.025391
+      ],
+      "image_file": "05909.png"
+    },
+    {
+      "target_id": "GT_S15_06",
+      "sector_id": 15,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 277.34,
+      "world_y": 3241.21,
+      "norm_bbox": [
+        0.277344,
+        0.241211,
+        0.014063,
+        0.029297
+      ],
+      "image_file": "05909.png"
+    },
+    {
+      "target_id": "GT_S16_00",
+      "sector_id": 16,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1240.62,
+      "world_y": 3245.12,
+      "norm_bbox": [
+        0.240625,
+        0.245117,
+        0.0125,
+        0.029297
+      ],
+      "image_file": "05248.png"
+    },
+    {
+      "target_id": "GT_S16_01",
+      "sector_id": 16,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1253.91,
+      "world_y": 3240.23,
+      "norm_bbox": [
+        0.253906,
+        0.240234,
+        0.014063,
+        0.03125
+      ],
+      "image_file": "05248.png"
+    },
+    {
+      "target_id": "GT_S16_02",
+      "sector_id": 16,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1307.03,
+      "world_y": 3419.92,
+      "norm_bbox": [
+        0.307031,
+        0.419922,
+        0.014063,
+        0.027344
+      ],
+      "image_file": "05248.png"
+    },
+    {
+      "target_id": "GT_S16_03",
+      "sector_id": 16,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1328.12,
+      "world_y": 3422.85,
+      "norm_bbox": [
+        0.328125,
+        0.422852,
+        0.0125,
+        0.029297
+      ],
+      "image_file": "05248.png"
+    },
+    {
+      "target_id": "GT_S16_04",
+      "sector_id": 16,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1419.53,
+      "world_y": 3591.8,
+      "norm_bbox": [
+        0.419531,
+        0.591797,
+        0.014063,
+        0.023438
+      ],
+      "image_file": "05248.png"
+    },
+    {
+      "target_id": "GT_S16_05",
+      "sector_id": 16,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1551.56,
+      "world_y": 3634.77,
+      "norm_bbox": [
+        0.551563,
+        0.634766,
+        0.015625,
+        0.027344
+      ],
+      "image_file": "05248.png"
+    },
+    {
+      "target_id": "GT_S16_06",
+      "sector_id": 16,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1591.41,
+      "world_y": 3709.96,
+      "norm_bbox": [
+        0.591406,
+        0.709961,
+        0.014063,
+        0.025391
+      ],
+      "image_file": "05248.png"
+    },
+    {
+      "target_id": "GT_S16_07",
+      "sector_id": 16,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1155.47,
+      "world_y": 3041.02,
+      "norm_bbox": [
+        0.155469,
+        0.041016,
+        0.014063,
+        0.03125
+      ],
+      "image_file": "05248.png"
+    },
+    {
+      "target_id": "GT_S16_08",
+      "sector_id": 16,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1238.28,
+      "world_y": 3106.45,
+      "norm_bbox": [
+        0.238281,
+        0.106445,
+        0.014063,
+        0.025391
+      ],
+      "image_file": "05248.png"
+    },
+    {
+      "target_id": "GT_S16_09",
+      "sector_id": 16,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1235.94,
+      "world_y": 3150.39,
+      "norm_bbox": [
+        0.235938,
+        0.150391,
+        0.015625,
+        0.03125
+      ],
+      "image_file": "05248.png"
+    },
+    {
+      "target_id": "GT_S16_10",
+      "sector_id": 16,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1258.59,
+      "world_y": 3161.13,
+      "norm_bbox": [
+        0.258594,
+        0.161133,
+        0.026563,
+        0.029297
+      ],
+      "image_file": "05248.png"
+    },
+    {
+      "target_id": "GT_S17_00",
+      "sector_id": 17,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2965.62,
+      "world_y": 3512.7,
+      "norm_bbox": [
+        0.965625,
+        0.512695,
+        0.021875,
+        0.044922
+      ],
+      "image_file": "05737.png"
+    },
+    {
+      "target_id": "GT_S18_00",
+      "sector_id": 18,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3632.81,
+      "world_y": 3156.25,
+      "norm_bbox": [
+        0.632812,
+        0.15625,
+        0.015625,
+        0.035156
+      ],
+      "image_file": "05131.png"
+    },
+    {
+      "target_id": "GT_S18_01",
+      "sector_id": 18,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3673.44,
+      "world_y": 3304.69,
+      "norm_bbox": [
+        0.673438,
+        0.304688,
+        0.0125,
+        0.027344
+      ],
+      "image_file": "05131.png"
+    },
+    {
+      "target_id": "GT_S18_03",
+      "sector_id": 18,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3650.78,
+      "world_y": 3793.95,
+      "norm_bbox": [
+        0.650781,
+        0.793945,
+        0.014063,
+        0.033203
+      ],
+      "image_file": "05131.png"
+    },
+    {
+      "target_id": "GT_S18_04",
+      "sector_id": 18,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3596.09,
+      "world_y": 3860.35,
+      "norm_bbox": [
+        0.596094,
+        0.860352,
+        0.014063,
+        0.025391
+      ],
+      "image_file": "05131.png"
+    },
+    {
+      "target_id": "GT_S18_05",
+      "sector_id": 18,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3605.47,
+      "world_y": 3804.69,
+      "norm_bbox": [
+        0.605469,
+        0.804688,
+        0.010938,
+        0.027344
+      ],
+      "image_file": "05131.png"
+    },
+    {
+      "target_id": "GT_S18_06",
+      "sector_id": 18,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3528.91,
+      "world_y": 3861.33,
+      "norm_bbox": [
+        0.528906,
+        0.861328,
+        0.017188,
+        0.039062
+      ],
+      "image_file": "05131.png"
+    },
+    {
+      "target_id": "GT_S18_07",
+      "sector_id": 18,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3903.12,
+      "world_y": 3846.68,
+      "norm_bbox": [
+        0.903125,
+        0.84668,
+        0.015625,
+        0.037109
+      ],
+      "image_file": "05131.png"
+    },
+    {
+      "target_id": "GT_S19_00",
+      "sector_id": 19,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4525.78,
+      "world_y": 3623.05,
+      "norm_bbox": [
+        0.525781,
+        0.623047,
+        0.010938,
+        0.019531
+      ],
+      "image_file": "04917.png"
+    },
+    {
+      "target_id": "GT_S19_01",
+      "sector_id": 19,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4404.69,
+      "world_y": 3625.98,
+      "norm_bbox": [
+        0.404688,
+        0.625977,
+        0.015625,
+        0.025391
+      ],
+      "image_file": "04917.png"
+    },
+    {
+      "target_id": "GT_S19_02",
+      "sector_id": 19,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4445.31,
+      "world_y": 3546.88,
+      "norm_bbox": [
+        0.445312,
+        0.546875,
+        0.0125,
+        0.027344
+      ],
+      "image_file": "04917.png"
+    },
+    {
+      "target_id": "GT_S19_03",
+      "sector_id": 19,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4814.84,
+      "world_y": 3424.8,
+      "norm_bbox": [
+        0.814844,
+        0.424805,
+        0.020313,
+        0.029297
+      ],
+      "image_file": "04917.png"
+    },
+    {
+      "target_id": "GT_S19_04",
+      "sector_id": 19,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4404.69,
+      "world_y": 3419.92,
+      "norm_bbox": [
+        0.404688,
+        0.419922,
+        0.015625,
+        0.03125
+      ],
+      "image_file": "04917.png"
+    },
+    {
+      "target_id": "GT_S19_05",
+      "sector_id": 19,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4404.69,
+      "world_y": 3050.78,
+      "norm_bbox": [
+        0.404688,
+        0.050781,
+        0.009375,
+        0.019531
+      ],
+      "image_file": "04917.png"
+    },
+    {
+      "target_id": "GT_S19_06",
+      "sector_id": 19,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4411.72,
+      "world_y": 3041.02,
+      "norm_bbox": [
+        0.411719,
+        0.041016,
+        0.007812,
+        0.023438
+      ],
+      "image_file": "04917.png"
+    },
+    {
+      "target_id": "GT_S20_00",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 597.66,
+      "world_y": 4928.71,
+      "norm_bbox": [
+        0.597656,
+        0.928711,
+        0.020313,
+        0.025391
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_01",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 679.69,
+      "world_y": 4863.28,
+      "norm_bbox": [
+        0.679688,
+        0.863281,
+        0.021875,
+        0.023438
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_02",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 471.09,
+      "world_y": 4453.12,
+      "norm_bbox": [
+        0.471094,
+        0.453125,
+        0.010938,
+        0.023438
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_03",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 499.22,
+      "world_y": 4430.66,
+      "norm_bbox": [
+        0.499219,
+        0.430664,
+        0.017188,
+        0.017578
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_04",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 563.28,
+      "world_y": 4329.1,
+      "norm_bbox": [
+        0.563281,
+        0.329102,
+        0.010938,
+        0.021484
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_05",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 548.44,
+      "world_y": 4078.12,
+      "norm_bbox": [
+        0.548438,
+        0.078125,
+        0.0125,
+        0.027344
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_06",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 688.28,
+      "world_y": 4150.39,
+      "norm_bbox": [
+        0.688281,
+        0.150391,
+        0.014063,
+        0.027344
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_07",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 789.84,
+      "world_y": 4094.73,
+      "norm_bbox": [
+        0.789844,
+        0.094727,
+        0.014063,
+        0.025391
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_08",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 825.78,
+      "world_y": 4028.32,
+      "norm_bbox": [
+        0.825781,
+        0.02832,
+        0.017188,
+        0.029297
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_09",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 883.59,
+      "world_y": 4412.11,
+      "norm_bbox": [
+        0.883594,
+        0.412109,
+        0.014063,
+        0.023438
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_10",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 979.69,
+      "world_y": 4215.82,
+      "norm_bbox": [
+        0.979688,
+        0.21582,
+        0.0125,
+        0.021484
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_11",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 978.12,
+      "world_y": 4256.84,
+      "norm_bbox": [
+        0.978125,
+        0.256836,
+        0.015625,
+        0.025391
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_12",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 989.06,
+      "world_y": 4268.56,
+      "norm_bbox": [
+        0.989063,
+        0.268555,
+        0.0125,
+        0.021484
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_13",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 867.97,
+      "world_y": 4610.35,
+      "norm_bbox": [
+        0.867969,
+        0.610352,
+        0.014063,
+        0.033203
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_14",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 520.31,
+      "world_y": 4950.19,
+      "norm_bbox": [
+        0.520313,
+        0.950195,
+        0.01875,
+        0.021484
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S20_15",
+      "sector_id": 20,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 953.12,
+      "world_y": 4087.89,
+      "norm_bbox": [
+        0.953125,
+        0.087891,
+        0.0125,
+        0.019531
+      ],
+      "image_file": "05875.png"
+    },
+    {
+      "target_id": "GT_S21_00",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1845.31,
+      "world_y": 4374.02,
+      "norm_bbox": [
+        0.845313,
+        0.374023,
+        0.025,
+        0.041016
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_01",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1962.5,
+      "world_y": 4307.62,
+      "norm_bbox": [
+        0.9625,
+        0.307617,
+        0.03125,
+        0.033203
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_02",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1982.03,
+      "world_y": 4281.25,
+      "norm_bbox": [
+        0.982031,
+        0.28125,
+        0.026563,
+        0.027344
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_03",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1719.53,
+      "world_y": 4514.65,
+      "norm_bbox": [
+        0.719531,
+        0.514648,
+        0.032813,
+        0.041016
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_04",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1498.44,
+      "world_y": 4458.01,
+      "norm_bbox": [
+        0.498438,
+        0.458008,
+        0.021875,
+        0.052734
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_05",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1534.38,
+      "world_y": 4450.19,
+      "norm_bbox": [
+        0.534375,
+        0.450195,
+        0.03125,
+        0.048828
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_06",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1486.72,
+      "world_y": 4361.33,
+      "norm_bbox": [
+        0.486719,
+        0.361328,
+        0.035938,
+        0.035156
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_07",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1600.78,
+      "world_y": 4414.06,
+      "norm_bbox": [
+        0.600781,
+        0.414062,
+        0.017188,
+        0.035156
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_08",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1459.38,
+      "world_y": 4311.52,
+      "norm_bbox": [
+        0.459375,
+        0.311523,
+        0.025,
+        0.037109
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_09",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1529.69,
+      "world_y": 4166.02,
+      "norm_bbox": [
+        0.529687,
+        0.166016,
+        0.028125,
+        0.046875
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_10",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1552.34,
+      "world_y": 4298.83,
+      "norm_bbox": [
+        0.552344,
+        0.298828,
+        0.014063,
+        0.03125
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_11",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1742.97,
+      "world_y": 4706.06,
+      "norm_bbox": [
+        0.742969,
+        0.706055,
+        0.017188,
+        0.033203
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_12",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1691.41,
+      "world_y": 4773.44,
+      "norm_bbox": [
+        0.691406,
+        0.773438,
+        0.014063,
+        0.050781
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_13",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1871.88,
+      "world_y": 4751.95,
+      "norm_bbox": [
+        0.871875,
+        0.751953,
+        0.021875,
+        0.035156
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S21_14",
+      "sector_id": 21,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 1921.09,
+      "world_y": 4887.69,
+      "norm_bbox": [
+        0.921094,
+        0.887695,
+        0.017188,
+        0.029297
+      ],
+      "image_file": "04987.png"
+    },
+    {
+      "target_id": "GT_S22_00",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2446.09,
+      "world_y": 4751.95,
+      "norm_bbox": [
+        0.446094,
+        0.751953,
+        0.014063,
+        0.023438
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_01",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2442.97,
+      "world_y": 4723.63,
+      "norm_bbox": [
+        0.442969,
+        0.723633,
+        0.010938,
+        0.025391
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_02",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2456.25,
+      "world_y": 4623.05,
+      "norm_bbox": [
+        0.45625,
+        0.623047,
+        0.015625,
+        0.027344
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_03",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2479.69,
+      "world_y": 4586.91,
+      "norm_bbox": [
+        0.479688,
+        0.586914,
+        0.015625,
+        0.025391
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_04",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2411.72,
+      "world_y": 4584.96,
+      "norm_bbox": [
+        0.411719,
+        0.584961,
+        0.010938,
+        0.025391
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_05",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2303.91,
+      "world_y": 4520.51,
+      "norm_bbox": [
+        0.303906,
+        0.520508,
+        0.020313,
+        0.029297
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_06",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2282.81,
+      "world_y": 4527.34,
+      "norm_bbox": [
+        0.282813,
+        0.527344,
+        0.0125,
+        0.03125
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_07",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2405.47,
+      "world_y": 4955.08,
+      "norm_bbox": [
+        0.405469,
+        0.955078,
+        0.014063,
+        0.023438
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_08",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2486.72,
+      "world_y": 4932.62,
+      "norm_bbox": [
+        0.486719,
+        0.932617,
+        0.014063,
+        0.041016
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_09",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2526.56,
+      "world_y": 4420.9,
+      "norm_bbox": [
+        0.526563,
+        0.420898,
+        0.0125,
+        0.029297
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_10",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2537.5,
+      "world_y": 4459.96,
+      "norm_bbox": [
+        0.5375,
+        0.459961,
+        0.009375,
+        0.029297
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_11",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2534.38,
+      "world_y": 4272.46,
+      "norm_bbox": [
+        0.534375,
+        0.272461,
+        0.0125,
+        0.025391
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_12",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2556.25,
+      "world_y": 4111.33,
+      "norm_bbox": [
+        0.55625,
+        0.111328,
+        0.01875,
+        0.035156
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_13",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2550.78,
+      "world_y": 4066.41,
+      "norm_bbox": [
+        0.550781,
+        0.066406,
+        0.017188,
+        0.027344
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_14",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2602.34,
+      "world_y": 4300.78,
+      "norm_bbox": [
+        0.602344,
+        0.300781,
+        0.014063,
+        0.023438
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_15",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2588.28,
+      "world_y": 4338.87,
+      "norm_bbox": [
+        0.588281,
+        0.338867,
+        0.010938,
+        0.021484
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_16",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2637.5,
+      "world_y": 4307.62,
+      "norm_bbox": [
+        0.6375,
+        0.307617,
+        0.015625,
+        0.025391
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S22_17",
+      "sector_id": 22,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 2306.25,
+      "world_y": 4553.71,
+      "norm_bbox": [
+        0.30625,
+        0.553711,
+        0.025,
+        0.021484
+      ],
+      "image_file": "05204.png"
+    },
+    {
+      "target_id": "GT_S23_00",
+      "sector_id": 23,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3435.94,
+      "world_y": 4091.8,
+      "norm_bbox": [
+        0.435938,
+        0.091797,
+        0.015625,
+        0.027344
+      ],
+      "image_file": "05711.png"
+    },
+    {
+      "target_id": "GT_S23_01",
+      "sector_id": 23,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3534.38,
+      "world_y": 4072.27,
+      "norm_bbox": [
+        0.534375,
+        0.072266,
+        0.015625,
+        0.03125
+      ],
+      "image_file": "05711.png"
+    },
+    {
+      "target_id": "GT_S23_02",
+      "sector_id": 23,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3553.12,
+      "world_y": 4199.22,
+      "norm_bbox": [
+        0.553125,
+        0.199219,
+        0.0125,
+        0.03125
+      ],
+      "image_file": "05711.png"
+    },
+    {
+      "target_id": "GT_S23_03",
+      "sector_id": 23,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3561.72,
+      "world_y": 4464.84,
+      "norm_bbox": [
+        0.561719,
+        0.464844,
+        0.017188,
+        0.035156
+      ],
+      "image_file": "05711.png"
+    },
+    {
+      "target_id": "GT_S23_04",
+      "sector_id": 23,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3565.62,
+      "world_y": 4531.25,
+      "norm_bbox": [
+        0.565625,
+        0.53125,
+        0.01875,
+        0.042969
+      ],
+      "image_file": "05711.png"
+    },
+    {
+      "target_id": "GT_S23_05",
+      "sector_id": 23,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3645.31,
+      "world_y": 4540.04,
+      "norm_bbox": [
+        0.645313,
+        0.540039,
+        0.0125,
+        0.025391
+      ],
+      "image_file": "05711.png"
+    },
+    {
+      "target_id": "GT_S23_06",
+      "sector_id": 23,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3674.22,
+      "world_y": 4591.8,
+      "norm_bbox": [
+        0.674219,
+        0.591797,
+        0.010938,
+        0.023438
+      ],
+      "image_file": "05711.png"
+    },
+    {
+      "target_id": "GT_S23_07",
+      "sector_id": 23,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3678.12,
+      "world_y": 4613.28,
+      "norm_bbox": [
+        0.678125,
+        0.613281,
+        0.015625,
+        0.023438
+      ],
+      "image_file": "05711.png"
+    },
+    {
+      "target_id": "GT_S24_00",
+      "sector_id": 24,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4985.16,
+      "world_y": 4103.52,
+      "norm_bbox": [
+        0.985156,
+        0.103516,
+        0.020313,
+        0.023438
+      ],
+      "image_file": "06028.png"
+    },
+    {
+      "target_id": "GT_S24_01",
+      "sector_id": 24,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4178.12,
+      "world_y": 4658.2,
+      "norm_bbox": [
+        0.178125,
+        0.658203,
+        0.0125,
+        0.03125
+      ],
+      "image_file": "06028.png"
+    },
+    {
+      "target_id": "GT_S24_02",
+      "sector_id": 24,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4207.81,
+      "world_y": 4681.64,
+      "norm_bbox": [
+        0.207813,
+        0.681641,
+        0.0125,
+        0.019531
+      ],
+      "image_file": "06028.png"
+    },
+    {
+      "target_id": "GT_S24_03",
+      "sector_id": 24,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 4142.19,
+      "world_y": 4150.39,
+      "norm_bbox": [
+        0.142187,
+        0.150391,
+        0.015625,
+        0.027344
+      ],
+      "image_file": "06028.png"
+    }
+  ]
+}

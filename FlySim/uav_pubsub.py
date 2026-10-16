@@ -5,7 +5,18 @@ import zmq
 import threading
 from dronekit import connect, VehicleMode, LocationGlobalRelative, LocationGlobal
 from pymavlink import mavutil # Needed for command message definitions
+import swarm_network
+import os
+import sys
+import glob
+import random
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+try:
+    from rgbt_detector import RGBTDetector
+    VISION_AVAILABLE = True
+except Exception:
+    VISION_AVAILABLE = False
 
 class UAV:
     def __init__(self, uavid, sitl_port, tel_socket, control_socket, instance_count, verbose=False):
@@ -58,6 +69,11 @@ class UAV:
         self.sitl_port = sitl_port
         self.sitl_connection_str = "tcp:127.0.0.1:" + str(self.sitl_port)
         
+        # Initialize Decentralized Application Layer & Physics Engine
+        self.physics_engine = swarm_network.RFPhysicsEngine(tx_power_dbm=30, frequency_ghz=5)
+        self.broker = swarm_network.EdgeBroker(self.uav_id, self.physics_engine)
+        self.obstacle_mask = True # Mocking a post-disaster cluttered environment
+
         # Thread for Swarm listener
         thread_swarm = threading.Thread(target=self.swarm_listener)
         thread_swarm.daemon = True
@@ -67,6 +83,21 @@ class UAV:
         thread_tel = threading.Thread(target=self.send_sensor_data)
         thread_tel.daemon = True
         thread_tel.start()
+
+        # Initialize Multispectral Vision Subsystem
+        self.detector = None
+        self.val_images = []
+        self.discovered_targets = []
+        if VISION_AVAILABLE:
+            weights_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "best.pt"))
+            if os.path.exists(weights_path):
+                try:
+                    self.detector = RGBTDetector(model_path=weights_path, conf_thresh=0.20, device="cpu")
+                except Exception as e:
+                    print(self.prefix + f" [VISION] Could not load detector: {e}")
+            val_dir = "/home/devesh/Downloads/YOLO_RGBT_4CH_Mini/images/val"
+            if os.path.exists(val_dir):
+                self.val_images = glob.glob(os.path.join(val_dir, "*.png"))
 
         print(self.prefix + " Connecting to SITL vehicle...")
         self.vehicle = self.connect_sitl(self.sitl_connection_str, self.verbose)
@@ -777,17 +808,31 @@ class UAV:
         self.disconnect_vehicle(verbose)
 
     def swarm_listener(self):
+        # Register mock subscriptions for DMLT routing (telemetry, map sync, target alerts)
+        for i in range(self.uav_count):
+            if i != int(self.uav_id):
+                self.broker.update_neighbor_subscription(format(i, "03d"), set(["telemetry", "map_sync", "target_alert"]))
+
         while True:
             try:
                 # Use non-blocking receive
                 data = self.swarm_sub.recv_string(flags=zmq.NOBLOCK)
                 if data:
                     parts = data.split('|')
-                    if len(parts) >= 4:
-                        uid, lat, lon, alt = parts[:4]
-                        self.swarm_state[uid] = {'lat': float(lat), 'lon': float(lon), 'alt': float(alt)}
-                        if self.verbose:
-                            print(self.prefix + f" Swarm peer update: {uid} at ({lat}, {lon})")
+                    if len(parts) >= 5:
+                        sender_id, targets, topic, msg_id, payload = parts[:5]
+                        
+                        # Only process if this UAV is in the successful targets list (simulating RF physical reception)
+                        if targets == "ALL" or self.uav_id in targets.split(","):
+                            if topic == "target_alert":
+                                self.discovered_targets.append({'from': sender_id, 'data': payload})
+                                print(self.prefix + f" 🚨 [SWARM ALERT] Peer {sender_id} located target: {payload}")
+                            else:
+                                lat, lon, alt = payload.split(",")
+                                self.swarm_state[sender_id] = {'lat': float(lat), 'lon': float(lon), 'alt': float(alt)}
+                            self.broker.received_messages.add(msg_id)
+                            if self.verbose:
+                                print(self.prefix + f" RCV {topic} from {sender_id} (QoS 1 Delivered)")
             except zmq.Again:
                 time.sleep(0.1)
             except Exception as e:
@@ -813,17 +858,31 @@ class UAV:
         self.status = "TAKEOFF"
         
         print(self.prefix + " BRAIN: Takeoff complete. Entering main control loop.")
+        msg_counter = 0
         while True:
-            # 1. Publish our own state to the Swarm
+            # 1. Publish our own state to the Swarm using EdgeBroker
             if self.current_location is not None:
-                msg = f"{self.uav_id}|{self.current_location.lat}|{self.current_location.lon}|{self.current_location.alt}"
-                self.swarm_pub.send_string(msg)
+                msg_id = f"MSG_{self.uav_id}_{msg_counter}"
+                msg_counter += 1
+                payload = f"{self.current_location.lat},{self.current_location.lon},{self.current_location.alt}"
+                my_loc = {'lat': self.current_location.lat, 'lon': self.current_location.lon}
+                
+                # Unrestricted local discovery beacon (Simulating MAC-layer broadcast)
+                self.swarm_pub.send_string(f"{self.uav_id}|ALL|discovery|HB_{msg_id}|{payload}")
+
+                # Broker evaluates physical PER and drops, returns list of successful hardware targets
+                successful_targets = self.broker.publish("telemetry", payload, msg_id, my_loc, self.swarm_state, self.obstacle_mask)
+                
+                if successful_targets:
+                    # Enforce the PER drops by only addressing successful targets
+                    target_str = ",".join([str(t) for t in successful_targets])
+                    zmq_msg = f"{self.uav_id}|{target_str}|telemetry|{msg_id}|{payload}"
+                    self.swarm_pub.send_string(zmq_msg)
             
             # 2. Check Swarm state for collision avoidance or coordination
             peers_close = 0
             for uid, state in self.swarm_state.items():
                 if self.current_location is not None:
-                    # Simple mock distance check (lat/lon to meters approximation)
                     dlat = state['lat'] - self.current_location.lat
                     dlon = state['lon'] - self.current_location.lon
                     dist = math.sqrt(dlat**2 + dlon**2) * 1.113195e5
@@ -831,14 +890,36 @@ class UAV:
                         peers_close += 1
             
             if peers_close > 0:
-                print(self.prefix + f" BRAIN: {peers_close} peers too close! Holding position or moving away.")
-                # We could issue a move command here to separate them
+                print(self.prefix + f" BRAIN: {peers_close} peers nearby. Continuing dispersal pattern.")
             else:
-                # 3. Default behavior: Fly a search pattern or just move forward slowly
-                print(self.prefix + " BRAIN: Sector clear. Continuing search sweep.")
-                if self.current_location is not None:
-                    # Move forward 5 meters
-                    loc = self.get_location_metres(self.current_location, 5, 0, self.current_location.alt)
-                    self.go_to(self.vehicle, loc, False)
+                print(self.prefix + " BRAIN: Sector clear. Continuing dispersal pattern.")
+                
+            # 3. Autonomous Multispectral Vision Scan & SAR Target Broadcast
+            if self.detector and self.detector.is_ready() and self.val_images and (random.random() < 0.4):
+                scan_img = random.choice(self.val_images)
+                try:
+                    detections, _ = self.detector.detect(scan_img)
+                    if detections:
+                        top = detections[0]
+                        print(self.prefix + f" 👁️ [VISION] Multispectral sensor detected {len(detections)} target(s)! Lead: {top['class_name']} ({top['conf']:.2f})")
+                        if self.current_location is not None:
+                            target_payload = f"{top['class_name']},{top['conf']:.2f},{self.current_location.lat:.6f},{self.current_location.lon:.6f}"
+                            t_msg_id = f"TGT_{self.uav_id}_{msg_counter}"
+                            tgt_targets = self.broker.publish("target_alert", target_payload, t_msg_id, my_loc, self.swarm_state, self.obstacle_mask)
+                            if tgt_targets:
+                                target_str = ",".join([str(t) for t in tgt_targets])
+                                self.swarm_pub.send_string(f"{self.uav_id}|{target_str}|target_alert|{t_msg_id}|{target_payload}")
+                except Exception as e:
+                    print(self.prefix + f" [VISION] Scan error: {e}")
+
+            if self.current_location is not None:
+                # Fly in different directions to test network partitioning
+                if int(self.uav_id) % 3 == 0:
+                    loc = self.get_location_metres(self.current_location, 20, 0, self.current_location.alt) # North
+                elif int(self.uav_id) % 3 == 1:
+                    loc = self.get_location_metres(self.current_location, 0, 20, self.current_location.alt) # East
+                else:
+                    loc = self.get_location_metres(self.current_location, -20, -20, self.current_location.alt) # South-West
+                self.go_to(self.vehicle, loc, False)
 
             time.sleep(2)

@@ -1,0 +1,7 @@
+# 4-Channel RGBT Human Detection Dataset Configuration
+path: /home/devesh/Downloads/YOLO_RGBT_4CH_Mini
+train: images/train
+val: images/val
+channels: 4
+names:
+  0: human

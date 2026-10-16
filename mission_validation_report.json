@@ -1,0 +1,934 @@
+{
+  "summary": {
+    "area_coverage_pct": 100.0,
+    "ttfd_sec": 1.0,
+    "ground_truth_targets_in_surveyed": 259,
+    "swarm_reported_targets": 1079,
+    "true_positives": 185,
+    "false_positives": 898,
+    "false_negatives": 74,
+    "precision": 0.1708,
+    "recall": 0.7143,
+    "f1_score": 0.2757,
+    "mean_localization_error_m": 2.6,
+    "rmse_localization_error_m": 3.64,
+    "pdr_pct": 6.38,
+    "swarm_consensus_pct": 88.9
+  },
+  "failed_uav_info": {
+    "uav_id": "4",
+    "crash_pos": [
+      756.0,
+      3500.0
+    ],
+    "time": 80.0,
+    "abandoned_sectors": [
+      16,
+      20
+    ]
+  },
+  "matches": [
+    {
+      "gt_id": "GT_S00_00",
+      "gt_pos": [
+        109.38,
+        231.45
+      ],
+      "rep_pos": [
+        110.94,
+        233.2
+      ],
+      "error_m": 2.34,
+      "conf": 0.38,
+      "detected_by": "6"
+    },
+    {
+      "gt_id": "GT_S01_00",
+      "gt_pos": [
+        1910.16,
+        872.07
+      ],
+      "rep_pos": [
+        1911.41,
+        870.9
+      ],
+      "error_m": 1.71,
+      "conf": 0.324,
+      "detected_by": "7"
+    },
+    {
+      "gt_id": "GT_S01_01",
+      "gt_pos": [
+        1291.41,
+        907.23
+      ],
+      "rep_pos": [
+        1291.72,
+        910.25
+      ],
+      "error_m": 3.04,
+      "conf": 0.33,
+      "detected_by": "7"
+    },
+    {
+      "gt_id": "GT_S01_02",
+      "gt_pos": [
+        1113.28,
+        218.75
+      ],
+      "rep_pos": [
+        1114.22,
+        219.53
+      ],
+      "error_m": 1.22,
+      "conf": 0.572,
+      "detected_by": "7"
+    },
+    {
+      "gt_id": "GT_S01_03",
+      "gt_pos": [
+        1326.56,
+        346.68
+      ],
+      "rep_pos": [
+        1327.73,
+        343.75
+      ],
+      "error_m": 3.15,
+      "conf": 0.276,
+      "detected_by": "7"
+    },
+    {
+      "gt_id": "GT_S02_01",
+      "gt_pos": [
+        2211.72,
+        860.35
+      ],
+      "rep_pos": [
+        2210.0,
+        859.77
+      ],
+      "error_m": 1.82,
+      "conf": 0.278,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S02_02",
+      "gt_pos": [
+        2641.41,
+        966.8
+      ],
+      "rep_pos": [
+        2640.16,
+        964.16
+      ],
+      "error_m": 2.92,
+      "conf": 0.543,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S02_03",
+      "gt_pos": [
+        2653.91,
+        943.36
+      ],
+      "rep_pos": [
+        2652.19,
+        943.46
+      ],
+      "error_m": 1.72,
+      "conf": 0.27,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S02_04",
+      "gt_pos": [
+        2671.88,
+        939.45
+      ],
+      "rep_pos": [
+        2672.11,
+        938.28
+      ],
+      "error_m": 1.19,
+      "conf": 0.485,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S02_05",
+      "gt_pos": [
+        2756.25,
+        809.57
+      ],
+      "rep_pos": [
+        2756.33,
+        809.77
+      ],
+      "error_m": 0.22,
+      "conf": 0.649,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S02_06",
+      "gt_pos": [
+        2760.94,
+        722.66
+      ],
+      "rep_pos": [
+        2761.17,
+        725.29
+      ],
+      "error_m": 2.64,
+      "conf": 0.611,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S02_07",
+      "gt_pos": [
+        2809.38,
+        647.46
+      ],
+      "rep_pos": [
+        2811.8,
+        647.66
+      ],
+      "error_m": 2.43,
+      "conf": 0.68,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S02_08",
+      "gt_pos": [
+        2779.69,
+        577.15
+      ],
+      "rep_pos": [
+        2781.8,
+        576.27
+      ],
+      "error_m": 2.29,
+      "conf": 0.633,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S02_09",
+      "gt_pos": [
+        2803.12,
+        536.13
+      ],
+      "rep_pos": [
+        2804.22,
+        534.28
+      ],
+      "error_m": 2.15,
+      "conf": 0.536,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S02_10",
+      "gt_pos": [
+        2808.59,
+        495.12
+      ],
+      "rep_pos": [
+        2810.16,
+        496.87
+      ],
+      "error_m": 2.35,
+      "conf": 0.53,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S02_11",
+      "gt_pos": [
+        2822.66,
+        450.19
+      ],
+      "rep_pos": [
+        2823.44,
+        450.68
+      ],
+      "error_m": 0.92,
+      "conf": 0.215,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S02_12",
+      "gt_pos": [
+        2867.97,
+        441.41
+      ],
+      "rep_pos": [
+        2868.52,
+        440.92
+      ],
+      "error_m": 0.74,
+      "conf": 0.395,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S02_13",
+      "gt_pos": [
+        2826.56,
+        525.39
+      ],
+      "rep_pos": [
+        2829.14,
+        525.78
+      ],
+      "error_m": 2.61,
+      "conf": 0.48,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S02_14",
+      "gt_pos": [
+        2907.81,
+        317.38
+      ],
+      "rep_pos": [
+        2909.06,
+        318.55
+      ],
+      "error_m": 1.71,
+      "conf": 0.362,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S03_00",
+      "gt_pos": [
+        3342.19,
+        545.9
+      ],
+      "rep_pos": [
+        3342.5,
+        546.68
+      ],
+      "error_m": 0.84,
+      "conf": 0.618,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S03_01",
+      "gt_pos": [
+        3350.0,
+        574.22
+      ],
+      "rep_pos": [
+        3351.88,
+        575.29
+      ],
+      "error_m": 2.16,
+      "conf": 0.32,
+      "detected_by": "8"
+    },
+    {
+      "gt_id": "GT_S04_00",
+      "gt_pos": [
+        4303.91,
+        550.78
+      ],
+      "rep_pos": [
+        4303.2,
+        552.64
+      ],
+      "error_m": 1.99,
+      "conf": 0.399,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_01",
+      "gt_pos": [
+        4275.0,
+        580.08
+      ],
+      "rep_pos": [
+        4273.28,
+        583.2
+      ],
+      "error_m": 3.56,
+      "conf": 0.234,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_04",
+      "gt_pos": [
+        4344.53,
+        721.68
+      ],
+      "rep_pos": [
+        4343.2,
+        720.02
+      ],
+      "error_m": 2.13,
+      "conf": 0.476,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_05",
+      "gt_pos": [
+        4372.66,
+        707.03
+      ],
+      "rep_pos": [
+        4371.72,
+        706.05
+      ],
+      "error_m": 1.36,
+      "conf": 0.283,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_06",
+      "gt_pos": [
+        4386.72,
+        713.87
+      ],
+      "rep_pos": [
+        4387.11,
+        712.6
+      ],
+      "error_m": 1.33,
+      "conf": 0.398,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_07",
+      "gt_pos": [
+        4531.25,
+        586.91
+      ],
+      "rep_pos": [
+        4525.47,
+        589.06
+      ],
+      "error_m": 6.17,
+      "conf": 0.247,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_08",
+      "gt_pos": [
+        4529.69,
+        512.7
+      ],
+      "rep_pos": [
+        4530.39,
+        514.55
+      ],
+      "error_m": 1.98,
+      "conf": 0.504,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_09",
+      "gt_pos": [
+        4514.06,
+        509.77
+      ],
+      "rep_pos": [
+        4530.39,
+        514.55
+      ],
+      "error_m": 17.02,
+      "conf": 0.504,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_11",
+      "gt_pos": [
+        4580.47,
+        454.1
+      ],
+      "rep_pos": [
+        4578.59,
+        453.81
+      ],
+      "error_m": 1.9,
+      "conf": 0.252,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_12",
+      "gt_pos": [
+        4592.19,
+        492.19
+      ],
+      "rep_pos": [
+        4589.53,
+        496.39
+      ],
+      "error_m": 4.97,
+      "conf": 0.233,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_14",
+      "gt_pos": [
+        4721.09,
+        602.54
+      ],
+      "rep_pos": [
+        4721.41,
+        605.18
+      ],
+      "error_m": 2.66,
+      "conf": 0.455,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_15",
+      "gt_pos": [
+        4724.22,
+        641.6
+      ],
+      "rep_pos": [
+        4724.38,
+        642.68
+      ],
+      "error_m": 1.09,
+      "conf": 0.393,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_20",
+      "gt_pos": [
+        4687.5,
+        384.77
+      ],
+      "rep_pos": [
+        4679.53,
+        387.6
+      ],
+      "error_m": 8.46,
+      "conf": 0.354,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_27",
+      "gt_pos": [
+        4515.62,
+        216.8
+      ],
+      "rep_pos": [
+        4516.17,
+        217.87
+      ],
+      "error_m": 1.2,
+      "conf": 0.483,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_28",
+      "gt_pos": [
+        4517.97,
+        286.13
+      ],
+      "rep_pos": [
+        4517.73,
+        284.86
+      ],
+      "error_m": 1.29,
+      "conf": 0.4,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_29",
+      "gt_pos": [
+        4476.56,
+        271.48
+      ],
+      "rep_pos": [
+        4477.58,
+        271.09
+      ],
+      "error_m": 1.09,
+      "conf": 0.267,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_30",
+      "gt_pos": [
+        4482.03,
+        242.19
+      ],
+      "rep_pos": [
+        4482.42,
+        243.65
+      ],
+      "error_m": 1.51,
+      "conf": 0.269,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_31",
+      "gt_pos": [
+        4514.06,
+        146.48
+      ],
+      "rep_pos": [
+        4514.53,
+        148.93
+      ],
+      "error_m": 2.49,
+      "conf": 0.518,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_38",
+      "gt_pos": [
+        4510.16,
+        39.06
+      ],
+      "rep_pos": [
+        4509.92,
+        40.43
+      ],
+      "error_m": 1.39,
+      "conf": 0.276,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_39",
+      "gt_pos": [
+        4377.34,
+        17.58
+      ],
+      "rep_pos": [
+        4376.95,
+        20.02
+      ],
+      "error_m": 2.47,
+      "conf": 0.528,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_40",
+      "gt_pos": [
+        4360.16,
+        55.66
+      ],
+      "rep_pos": [
+        4360.31,
+        56.74
+      ],
+      "error_m": 1.09,
+      "conf": 0.534,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_41",
+      "gt_pos": [
+        4370.31,
+        67.38
+      ],
+      "rep_pos": [
+        4360.31,
+        56.74
+      ],
+      "error_m": 14.6,
+      "conf": 0.534,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_42",
+      "gt_pos": [
+        4377.34,
+        53.71
+      ],
+      "rep_pos": [
+        4378.2,
+        54.39
+      ],
+      "error_m": 1.1,
+      "conf": 0.246,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_43",
+      "gt_pos": [
+        4291.41,
+        39.06
+      ],
+      "rep_pos": [
+        4296.8,
+        38.48
+      ],
+      "error_m": 5.42,
+      "conf": 0.217,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_44",
+      "gt_pos": [
+        4313.28,
+        132.81
+      ],
+      "rep_pos": [
+        4312.03,
+        130.66
+      ],
+      "error_m": 2.49,
+      "conf": 0.323,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_45",
+      "gt_pos": [
+        4309.38,
+        157.23
+      ],
+      "rep_pos": [
+        4309.53,
+        161.23
+      ],
+      "error_m": 4.0,
+      "conf": 0.342,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_46",
+      "gt_pos": [
+        4325.0,
+        160.16
+      ],
+      "rep_pos": [
+        4324.38,
+        163.09
+      ],
+      "error_m": 2.99,
+      "conf": 0.595,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_47",
+      "gt_pos": [
+        4325.78,
+        121.09
+      ],
+      "rep_pos": [
+        4326.17,
+        120.12
+      ],
+      "error_m": 1.05,
+      "conf": 0.265,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_48",
+      "gt_pos": [
+        4341.41,
+        157.23
+      ],
+      "rep_pos": [
+        4341.41,
+        158.98
+      ],
+      "error_m": 1.75,
+      "conf": 0.592,
+      "detected_by": "9"
+    }
+  ],
+  "false_alarms": [
+    {
+      "target_key": "TGT_0_679.5_387.6",
+      "class_name": "human",
+      "conf": 0.354,
+      "world_x": 679.53,
+      "world_y": 387.6,
+      "sector_id": 0,
+      "detected_by": "6",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_0_123.0_492.7",
+      "class_name": "human",
+      "conf": 0.232,
+      "world_x": 123.05,
+      "world_y": 492.68,
+      "sector_id": 0,
+      "detected_by": "6",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_1_1348.0_271.4",
+      "class_name": "human",
+      "conf": 0.302,
+      "world_x": 1348.05,
+      "world_y": 271.39,
+      "sector_id": 1,
+      "detected_by": "7",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_1_1112.7_958.8",
+      "class_name": "human",
+      "conf": 0.274,
+      "world_x": 1112.73,
+      "world_y": 958.79,
+      "sector_id": 1,
+      "detected_by": "7",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_1_1066.9_836.4",
+      "class_name": "human",
+      "conf": 0.205,
+      "world_x": 1066.88,
+      "world_y": 836.43,
+      "sector_id": 1,
+      "detected_by": "7",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_0_114.2_219.5",
+      "class_name": "human",
+      "conf": 0.572,
+      "world_x": 114.22,
+      "world_y": 219.53,
+      "sector_id": 0,
+      "detected_by": "6",
+      "time": 16.0
+    },
+    {
+      "target_key": "TGT_0_291.7_910.2",
+      "class_name": "human",
+      "conf": 0.33,
+      "world_x": 291.72,
+      "world_y": 910.25,
+      "sector_id": 0,
+      "detected_by": "6",
+      "time": 16.0
+    },
+    {
+      "target_key": "TGT_0_911.4_870.9",
+      "class_name": "human",
+      "conf": 0.324,
+      "world_x": 911.41,
+      "world_y": 870.9,
+      "sector_id": 0,
+      "detected_by": "6",
+      "time": 16.0
+    },
+    {
+      "target_key": "TGT_0_348.1_271.4",
+      "class_name": "human",
+      "conf": 0.302,
+      "world_x": 348.05,
+      "world_y": 271.39,
+      "sector_id": 0,
+      "detected_by": "6",
+      "time": 16.0
+    },
+    {
+      "target_key": "TGT_0_327.7_343.8",
+      "class_name": "human",
+      "conf": 0.276,
+      "world_x": 327.73,
+      "world_y": 343.75,
+      "sector_id": 0,
+      "detected_by": "6",
+      "time": 16.0
+    },
+    {
+      "target_key": "TGT_0_112.7_958.8",
+      "class_name": "human",
+      "conf": 0.274,
+      "world_x": 112.73,
+      "world_y": 958.79,
+      "sector_id": 0,
+      "detected_by": "6",
+      "time": 16.0
+    },
+    {
+      "target_key": "TGT_0_66.9_836.4",
+      "class_name": "human",
+      "conf": 0.205,
+      "world_x": 66.87,
+      "world_y": 836.43,
+      "sector_id": 0,
+      "detected_by": "6",
+      "time": 16.0
+    },
+    {
+      "target_key": "TGT_5_114.2_1219.5",
+      "class_name": "human",
+      "conf": 0.572,
+      "world_x": 114.22,
+      "world_y": 1219.53,
+      "sector_id": 5,
+      "detected_by": "6",
+      "time": 26.0
+    },
+    {
+      "target_key": "TGT_5_291.7_1910.2",
+      "class_name": "human",
+      "conf": 0.33,
+      "world_x": 291.72,
+      "world_y": 1910.25,
+      "sector_id": 5,
+      "detected_by": "6",
+      "time": 26.0
+    },
+    {
+      "target_key": "TGT_5_911.4_1870.9",
+      "class_name": "human",
+      "conf": 0.324,
+      "world_x": 911.41,
+      "world_y": 1870.9,
+      "sector_id": 5,
+      "detected_by": "6",
+      "time": 26.0
+    },
+    {
+      "target_key": "TGT_5_348.1_1271.4",
+      "class_name": "human",
+      "conf": 0.302,
+      "world_x": 348.05,
+      "world_y": 1271.39,
+      "sector_id": 5,
+      "detected_by": "6",
+      "time": 26.0
+    },
+    {
+      "target_key": "TGT_5_327.7_1343.8",
+      "class_name": "human",
+      "conf": 0.276,
+      "world_x": 327.73,
+      "world_y": 1343.75,
+      "sector_id": 5,
+      "detected_by": "6",
+      "time": 26.0
+    },
+    {
+      "target_key": "TGT_5_112.7_1958.8",
+      "class_name": "human",
+      "conf": 0.274,
+      "world_x": 112.73,
+      "world_y": 1958.79,
+      "sector_id": 5,
+      "detected_by": "6",
+      "time": 26.0
+    },
+    {
+      "target_key": "TGT_5_66.9_1836.4",
+      "class_name": "human",
+      "conf": 0.205,
+      "world_x": 66.87,
+      "world_y": 1836.43,
+      "sector_id": 5,
+      "detected_by": "6",
+      "time": 26.0
+    },
+    {
+      "target_key": "TGT_5_737.0_1859.7",
+      "class_name": "human",
+      "conf": 0.293,
+      "world_x": 736.95,
+      "world_y": 1859.67,
+      "sector_id": 5,
+      "detected_by": "6",
+      "time": 27.0
+    }
+  ]
+}
