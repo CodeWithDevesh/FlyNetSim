@@ -36,22 +36,21 @@ python demo.py
 * Open your browser and navigate to: **http://localhost:7860**
 * If accessing remotely, forward the port or set `share=True` in `demo.py`.
 
-### Multi-Tab Dashboard Features:
-* **Tab 1: 🛰️ Live Multispectral Camera & AI Vision**:
-  * *Sensor Display Modes*: 3-panel panoramic view (**Visible RGB | Thermal LWIR Heatmap | Fused AI Output**).
-  * *Confidence Slider*: Real-time threshold adjustments ($\tau_{\text{conf}} \in [0.05, 0.90]$).
-  * *Scan Next Sector*: Randomly tests 4-channel frames against the trained YOLOv8n-P2 model.
-* **Tab 2: 🗺️ Post-Mission Spatial Map & Victim Matches**:
-  * *KPI Banner*: Live summary cards for Area Coverage (%), Mission Recall (%), Mean Localization Error (m), Network PDR (%), and TTFD.
-  * *2D Spatial Validation Map*: High-resolution rendering showing sectors, UAV flight tracks, true targets, detections, and missed victims.
-  * *Interactive Proximity Match Table*: Filterable table comparing true coordinates vs detected coordinates and error distances in meters.
-* **Tab 3: 📡 FANET RF Mesh & Propagation Dynamics**:
-  * *Network KPI Cards*: Packets sent, delivered, PDR %, and swarm consensus spread %.
-  * *RF Physics Curves*: Mission exploration progress over time alongside distance vs SNR/PER waterfall curves.
-  * *P2P Dissemination Table*: Interactive table displaying the recent 100 packet transmissions, SNR, and delivery status.
-* **Tab 4: 🔬 Mission Simulator & Parameter Sweep**:
-  * Form to trigger a new swarm simulation directly from the web browser (sliders for swarm size, arena size, confidence threshold, and mission duration).
-  * Click *"Launch Swarm Mission"* to automatically re-simulate, re-validate against ground truth, and refresh all KPI cards and plots in real time.
+### Dashboard Layout & Features:
+* **Tab 1: Mission Map**:
+  * *KPI Banner*: Plain-language metric cards for Area Covered (%), Targets Found, Location Error (m), Detection Rate (%), Delivered (%), and Swarm Sync (%).
+  * *Search Area Map*: High-resolution rendering showing sector boundaries, Base Station launch corridors, drone flight trajectories, crash markers, and detected vs. missed targets.
+  * *Located Targets Table*: Filterable table detailing actual coordinates, detected coordinates, localization error in meters, and detecting drone ID.
+* **Tab 2: Camera Feed**:
+  * *Onboard Multispectral Camera*: Real-time inspection of 4-channel imagery.
+  * *Channel View Options*: Toggle between Composite (Color & Thermal overlay), Visible RGB, or Thermal Infrared (Inferno colormap).
+  * *Detection Threshold*: Interactive confidence slider ($\tau \in [0.05, 0.80]$).
+* **Tab 3: Network Status**:
+  * *Signal and Delivery Analysis*: Dual-panel visualization showing mission progression over time and communication SNR / packet delivery over distance.
+  * *Transmission Activity Log*: Detailed table tracking recent inter-UAV broadcasts, signal-to-noise ratio (SNR in dB), distance, and delivery status (Delivered vs. Buffered).
+* **Tab 4: Run Mission**:
+  * *Mission Parameters (Left)*: Sliders for swarm size (2 to 12 UAVs), arena size (400 to 5000 m), mission duration, detection threshold, and mid-mission drone failure injection.
+  * *Live Mission Tracking (Right)*: Real-time top-down radar visualization streaming drone positions, flight trails radiating from Base Station, dynamic sector reassignment on failure, and located target markers as the simulation executes.
 
 ---
 

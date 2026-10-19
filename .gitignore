@@ -6,18 +6,30 @@ env/
 ENV/
 env.bak/
 venv.bak/
+FlySim/venv/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+*.so
+
+# Caches & IDEs
+.pytest_cache/
+.ipynb_checkpoints/
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
 
 # Logs
 *.log
 
-# C++ builds
+# C++ builds & objects
 *.o
-*.so
+build/
 
 # Large archives
 ns-allinone-3.27.tar.bz2
+

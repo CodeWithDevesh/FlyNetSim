@@ -30,7 +30,7 @@ def run_validation(world_json="ground_truth_world.json",
                    match_distance_thresh=None):
 
     print("\n" + "=" * 65)
-    print("🔬 RUNNING FINAL SWARM MISSION VALIDATION AGAINST GROUND TRUTH")
+    print("RUNNING FINAL SWARM MISSION VALIDATION AGAINST GROUND TRUTH")
     print("=" * 65)
 
     if not os.path.exists(world_json) or not os.path.exists(swarm_json):
@@ -52,7 +52,7 @@ def run_validation(world_json="ground_truth_world.json",
     if match_distance_thresh is None:
         sec_w = arena_w / world_gt.get("grid_cols", 5)
         match_distance_thresh = max(18.0, round(0.05 * sec_w, 1))
-    print(f"🎯 Spatial Association Matching Threshold: {match_distance_thresh}m")
+    print(f"Spatial Association Matching Threshold: {match_distance_thresh}m")
 
     # Sectors scanned by the swarm
     surveyed_sectors = set()
@@ -126,32 +126,32 @@ def run_validation(world_json="ground_truth_world.json",
 
     # --- 3. PRINT TERMINAL VALIDATION REPORT ---
     print("\n" + "=" * 65)
-    print("📈 SWARM SAR MISSION VALIDATION REPORT")
+    print("SWARM SAR MISSION VALIDATION REPORT")
     print("=" * 65)
-    print(f"🌍 Arena Survey Coverage:           {coverage_pct}% ({len(surveyed_sectors)}/{world_gt['total_sectors']} sectors)")
-    print(f"⏱️  Time to First Detection (TTFD):  {swarm_out.get('ttfd_sec', 'N/A')} seconds")
-    print(f"🎯 Total Ground Truth Targets:      {len(gt_in_surveyed)} (in surveyed area)")
-    print(f"👁️  Swarm Reported Detections:       {len(reported_targets)}")
-    print(f"   ├─ True Positives (TP):          {tp}")
-    print(f"   ├─ False Positives (FP):         {fp} (false alarms)")
-    print(f"   └─ False Negatives (FN):         {fn} (missed victims)")
-    print(f"📊 Perception Metrics:")
-    print(f"   ├─ Precision:                    {precision * 100:.2f}%")
-    print(f"   ├─ Recall:                       {recall * 100:.2f}%")
-    print(f"   ├─ F1-Score:                     {f1:.4f}")
-    print(f"   ├─ Mean Localization Error:      {mean_loc_error} meters")
-    print(f"   └─ RMSE Localization Error:      {rmse_loc_error} meters")
-    print(f"📡 Communication & RF Mesh Metrics:")
-    print(f"   ├─ Packets Sent / Delivered:     {sent} / {delivered}")
-    print(f"   ├─ Packet Delivery Ratio (PDR):  {pdr}%")
-    print(f"   └─ Swarm Consensus Spread:       {avg_consensus_pct}%")
+    print(f"Arena Survey Coverage:              {coverage_pct}% ({len(surveyed_sectors)}/{world_gt['total_sectors']} sectors)")
+    print(f"Time to First Detection (TTFD):     {swarm_out.get('ttfd_sec', 'N/A')} seconds")
+    print(f"Total Ground Truth Targets:         {len(gt_in_surveyed)} (in surveyed area)")
+    print(f"Swarm Reported Detections:          {len(reported_targets)}")
+    print(f"   - True Positives (TP):           {tp}")
+    print(f"   - False Positives (FP):          {fp} (false alarms)")
+    print(f"   - False Negatives (FN):          {fn} (missed targets)")
+    print(f"Perception Metrics:")
+    print(f"   - Precision:                     {precision * 100:.2f}%")
+    print(f"   - Recall:                        {recall * 100:.2f}%")
+    print(f"   - F1-Score:                      {f1:.4f}")
+    print(f"   - Mean Localization Error:       {mean_loc_error} meters")
+    print(f"   - RMSE Localization Error:       {rmse_loc_error} meters")
+    print(f"Communication & RF Mesh Metrics:")
+    print(f"   - Packets Sent / Delivered:      {sent} / {delivered}")
+    print(f"   - Packet Delivery Ratio (PDR):   {pdr}%")
+    print(f"   - Swarm Consensus Spread:        {avg_consensus_pct}%")
     print("=" * 65)
 
     # Print failure info if present
     failed_uav_info = swarm_out.get("failed_uav_info")
     if failed_uav_info:
-        print(f"💥 UAV In-Flight Failure:         UAV {failed_uav_info['uav_id']} crashed at T={failed_uav_info['time']}s at ({failed_uav_info['crash_pos'][0]:.1f}m, {failed_uav_info['crash_pos'][1]:.1f}m)")
-        print(f"   └─ Reallocated Sectors:       {failed_uav_info.get('abandoned_sectors', [])}")
+        print(f"UAV In-Flight Failure:            UAV {failed_uav_info['uav_id']} stopped at T={failed_uav_info['time']}s at ({failed_uav_info['crash_pos'][0]:.1f}m, {failed_uav_info['crash_pos'][1]:.1f}m)")
+        print(f"   - Reallocated Sectors:         {failed_uav_info.get('abandoned_sectors', [])}")
 
     # --- 4. GENERATE PUBLICATION FIGURES ---
     _plot_spatial_validation_map(world_gt, drones, tp_matches, fn_missed, fp_false_alarms, arena_w, arena_h, failed_uav_info)
@@ -184,8 +184,8 @@ def run_validation(world_json="ground_truth_world.json",
     with open(report_path, "w") as f:
         json.dump(report, f, indent=2)
 
-    print(f"✅ Detailed validation report saved to: {report_path}")
-    print("✅ Publication figures generated:")
+    print(f"Validation report saved to: {report_path}")
+    print("Publication figures generated:")
     print("   1. sar_mission_spatial_validation.png")
     print("   2. sar_network_and_mission_performance.png\n")
 

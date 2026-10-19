@@ -8,6 +8,9 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 import gradio as gr
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 from rgbt_detector import RGBTDetector
 from sar_world import SARWorld
@@ -188,13 +191,98 @@ def run_vision_inference(view_mode, conf_thresh):
         return None, f"Processing error: {str(e)}"
 
 
+def render_live_tracking_frame(snap):
+    sim_time = snap["sim_time"]
+    drones = snap["drones"]
+    base_station = snap["base_station"]
+    arena_size = snap["arena_size"]
+    targets = snap.get("targets", [])
+    failed_info = snap.get("failed_uav_info")
+
+    fig, ax = plt.subplots(figsize=(4.6, 4.6), dpi=80, facecolor='#18181b')
+    ax.set_facecolor('#18181b')
+
+    # Grid sectors
+    grid_dim = 5
+    step = arena_size / grid_dim
+    for i in range(grid_dim + 1):
+        ax.axvline(i * step, color='#27272a', linestyle='--', linewidth=0.6)
+        ax.axhline(i * step, color='#27272a', linestyle='--', linewidth=0.6)
+
+    # Base Station
+    bx, by = base_station
+    ax.plot(bx, by, marker='s', markersize=7, color='#3b82f6')
+    ax.text(bx + arena_size * 0.015, by + arena_size * 0.015, 'Base', color='#93c5fd', fontsize=8, fontweight='bold')
+
+    # Targets found so far
+    for t in targets:
+        ax.plot(t['world_x'], t['world_y'], marker='o', markersize=5, color='#eab308')
+
+    # Drones & trajectories
+    colors = ['#10b981', '#06b6d4', '#6366f1', '#ec4899', '#f97316', '#14b8a6', '#8b5cf6', '#e11d48', '#84cc16', '#38bdf8', '#facc15', '#a855f7']
+    for d in drones:
+        col = colors[int(d.uav_id) % len(colors)]
+        if not d.is_alive:
+            cx, cy = d.crash_pos if d.crash_pos else (d.x, d.y)
+            ax.plot(cx, cy, marker='x', markersize=8, color='#ef4444', mew=2)
+            ax.text(cx + arena_size * 0.015, cy + arena_size * 0.015, f'U{d.uav_id} (Stopped)', color='#f87171', fontsize=7)
+        else:
+            tail = d.trajectory_history[-15:]
+            if len(tail) > 1:
+                tx, ty = zip(*tail)
+                ax.plot(tx, ty, color=col, alpha=0.35, linewidth=1.2)
+            ax.plot(d.x, d.y, marker='o', markersize=5, color=col)
+            ax.text(d.x + arena_size * 0.012, d.y + arena_size * 0.012, f'U{d.uav_id}', color='#f4f4f5', fontsize=7)
+
+    ax.set_xlim(-arena_size * 0.02, arena_size * 1.02)
+    ax.set_ylim(-arena_size * 0.02, arena_size * 1.02)
+    ax.set_xlabel('X (m)', color='#a1a1aa', fontsize=8)
+    ax.set_ylabel('Y (m)', color='#a1a1aa', fontsize=8)
+    ax.tick_params(colors='#71717a', labelsize=7)
+    for spine in ax.spines.values():
+        spine.set_color('#27272a')
+
+    ax.set_title(f'Live Tracking (T = {sim_time:.0f}s)', color='#f4f4f5', fontsize=9, pad=6)
+    fig.tight_layout()
+
+    fig.canvas.draw()
+    rgba = np.asarray(fig.canvas.buffer_rgba())
+    rgb = rgba[:, :, :3].copy()
+    plt.close(fig)
+    return rgb
+
+
 def run_live_simulation(num_drones, arena_size, conf_thresh, duration, fail_drone="None", fail_time=80.0):
     try:
         fail_id = int(fail_drone) if fail_drone and fail_drone != "None" else None
         sim = SwarmSimulation(num_drones=int(num_drones), arena_size=float(arena_size),
                               grid_dim=5, model_path="best.pt", conf_thresh=float(conf_thresh),
                               seed=42, fail_drone_id=fail_id, fail_time=float(fail_time))
-        sim.run(max_sim_seconds=int(duration), dt=1.0)
+
+        total_sec = int(duration)
+        yield_step = max(5, int(total_sec / 30))
+
+        for snap in sim.run_streaming(max_sim_seconds=total_sec, dt=1.0, yield_interval=yield_step):
+            frame_img = render_live_tracking_frame(snap)
+            t_curr = snap["sim_time"]
+            act_d = snap["active_drones"]
+            cov = snap["coverage_pct"]
+            tgts = snap["targets_count"]
+            status_line = f"Simulating mission: T = {t_curr:.0f}s / {total_sec}s | Active: {act_d}/{num_drones} | Coverage: {cov}% | Targets: {tgts}"
+            banner_html = f"""
+            <div style="background: #18181b; border: 1px solid #27272a; padding: 8px 12px; border-radius: 6px; font-size: 0.85em; color: #a1a1aa;">
+                Time: <strong style="color: #f4f4f5;">{t_curr:.0f}s</strong> / {total_sec}s &nbsp;|&nbsp;
+                Active: <strong style="color: #f4f4f5;">{act_d}</strong> / {num_drones} &nbsp;|&nbsp;
+                Coverage: <strong style="color: #f4f4f5;">{cov}%</strong> &nbsp;|&nbsp;
+                Targets: <strong style="color: #f4f4f5;">{tgts}</strong>
+            </div>
+            """
+            yield (
+                gr.skip(), gr.skip(), gr.skip(), gr.skip(), gr.skip(), gr.skip(), gr.skip(), gr.skip(),
+                status_line, banner_html, frame_img
+            )
+
+        # Mission completed -> run validation
         run_validation()
 
         kpi_html = load_validation_summary_html()
@@ -204,10 +292,23 @@ def run_live_simulation(num_drones, arena_size, conf_thresh, duration, fail_dron
         mtime = get_files_max_mtime()
         time_str = time.strftime('%H:%M:%S', time.localtime(mtime))
         sync_msg = f"Last updated: {time_str}"
-        status_msg = f"Mission complete: {num_drones} drones, {arena_size}m area, duration {duration}s."
-        return kpi_html, kpi_html, img_map, img_perf, df_matches, df_net, sync_msg, mtime, status_msg
+        final_status = f"Mission complete: {num_drones} drones, {arena_size}m area, duration {duration}s. Report generated."
+        final_banner = f"""
+        <div style="background: #18181b; border: 1px solid #27272a; padding: 8px 12px; border-radius: 6px; font-size: 0.85em; color: #10b981;">
+            Mission complete at {time_str}. Search patterns finished and validation report generated.
+        </div>
+        """
+        yield (
+            kpi_html, kpi_html, img_map, img_perf, df_matches, df_net, sync_msg, mtime,
+            final_status, final_banner, img_map
+        )
     except Exception as e:
-        return gr.skip(), gr.skip(), gr.skip(), gr.skip(), gr.skip(), gr.skip(), gr.skip(), 0.0, f"Error: {str(e)}"
+        err_msg = f"Error: {str(e)}"
+        err_banner = f"<div style='color: #ef4444; font-size: 0.85em;'>Error: {str(e)}</div>"
+        yield (
+            gr.skip(), gr.skip(), gr.skip(), gr.skip(), gr.skip(), gr.skip(), gr.skip(), 0.0,
+            err_msg, err_banner, gr.skip()
+        )
 
 
 # =====================================================================
@@ -309,24 +410,42 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="zinc", secondary_hue="zinc"), c
             # TAB 4: RUN SIMULATION
             # -------------------------------------------------------------
             with gr.TabItem("Run Mission"):
-                gr.Markdown("#### Mission Parameters")
                 with gr.Row():
-                    with gr.Column():
-                        sim_drones_input = gr.Slider(minimum=2, maximum=12, value=10, step=1, label="Number of Drones")
-                        sim_arena_input = gr.Slider(minimum=400, maximum=5000, value=5000, step=200, label="Search Area Size (meters)")
-                        sim_fail_drone = gr.Dropdown(choices=["None", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"], value="4", label="Simulate Drone Failure")
-                    with gr.Column():
-                        sim_conf_input = gr.Slider(minimum=0.05, maximum=0.70, value=0.20, step=0.05, label="Detection Threshold")
-                        sim_dur_input = gr.Slider(minimum=60, maximum=320, value=300, step=20, label="Mission Duration (seconds)")
-                        sim_fail_time = gr.Slider(minimum=10, maximum=200, value=80, step=5, label="Failure Time (seconds)")
+                    with gr.Column(scale=5):
+                        gr.Markdown("#### Mission Parameters")
+                        with gr.Row():
+                            with gr.Column():
+                                sim_drones_input = gr.Slider(minimum=2, maximum=12, value=10, step=1, label="Number of Drones")
+                                sim_arena_input = gr.Slider(minimum=400, maximum=5000, value=5000, step=200, label="Search Area Size (meters)")
+                                sim_fail_drone = gr.Dropdown(choices=["None", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"], value="4", label="Simulate Drone Failure")
+                            with gr.Column():
+                                sim_conf_input = gr.Slider(minimum=0.05, maximum=0.70, value=0.20, step=0.05, label="Detection Threshold")
+                                sim_dur_input = gr.Slider(minimum=60, maximum=320, value=300, step=20, label="Mission Duration (seconds)")
+                                sim_fail_time = gr.Slider(minimum=10, maximum=200, value=80, step=5, label="Failure Time (seconds)")
 
-                btn_run_sim = gr.Button("Start Simulation", variant="primary", size="lg")
-                sim_result_status = gr.Textbox(label="Status", interactive=False)
+                        btn_run_sim = gr.Button("Start Simulation", variant="primary", size="lg")
+                        sim_result_status = gr.Textbox(label="Status", interactive=False, placeholder="Click 'Start Simulation' to begin...")
+
+                    with gr.Column(scale=4):
+                        gr.Markdown("#### Live Mission Tracking")
+                        live_tracking_banner = gr.HTML(
+                            value="<div style='background: #18181b; border: 1px solid #27272a; padding: 8px 12px; border-radius: 6px; font-size: 0.85em; color: #71717a;'>Simulation idle. Click 'Start Simulation' to track live.</div>"
+                        )
+                        live_tracking_img = gr.Image(
+                            value="sar_mission_spatial_validation.png" if os.path.exists("sar_mission_spatial_validation.png") else None,
+                            elem_classes="output-box",
+                            height=380,
+                            show_label=False
+                        )
 
                 btn_run_sim.click(
                     fn=run_live_simulation,
                     inputs=[sim_drones_input, sim_arena_input, sim_conf_input, sim_dur_input, sim_fail_drone, sim_fail_time],
-                    outputs=[kpi_banner_1, kpi_banner_2, spatial_map_img, perf_curves_img, table_matches, table_network, sync_indicator, state_mtime, sim_result_status]
+                    outputs=[
+                        kpi_banner_1, kpi_banner_2, spatial_map_img, perf_curves_img,
+                        table_matches, table_network, sync_indicator, state_mtime,
+                        sim_result_status, live_tracking_banner, live_tracking_img
+                    ]
                 )
 
     # Auto-refresh and manual triggers
