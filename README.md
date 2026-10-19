@@ -120,16 +120,18 @@ FlyNetSim/
 ├── sar_world.py                        # In-memory spatial world & ground-truth generator
 ├── rgbt_detector.py                    # 4-channel early-fusion YOLOv8 inference wrapper
 │
-├── dataset_1cls_4ch.yaml               # YOLO dataset configuration (single-class 'human')
-├── yolov8n-p2-1cls-4ch.yaml            # 4-channel YOLOv8-P2 architecture definition
-├── prepare_1cls_dataset.py             # Dataset label remapping & filtering utility
-├── train_1cls.py                       # Training pipeline for 4-channel YOLOv8n-P2
-├── Train_YOLOv8_Drone_Swarm.ipynb      # Kaggle/Colab GPU training notebook
+├── training/                           # Multispectral YOLOv8 training pipeline
+│   ├── prepare_dataset.py              # Unified dataset converter & label remapper
+│   ├── train.py                        # Training execution script (CLI)
+│   ├── train_yolov8_rgbt.ipynb         # Full Kaggle/Colab GPU training notebook
+│   ├── yolov8n-p2-1cls-4ch.yaml        # 4-channel YOLOv8-P2 architecture definition
+│   ├── dataset_1cls_4ch.yaml           # Dataset configuration YAML
+│   └── README.md                       # Detailed training documentation
 │
 ├── tests/                              # Automated test suite
 │   ├── test_sar_system.py              # Unittest suite (World, Detector, Network, Sim)
 │   ├── README.md                       # Test documentation
-│   └── ...                             # Standalone validation scripts
+│   └── ...                             # Standalone verification scripts
 │
 ├── FlySim/                             # Flight simulation & networking components
 │   ├── swarm_network.py                # EdgeBroker, RF physics engine, QoS 1 buffers
@@ -248,21 +250,27 @@ Validation results from a representative wide-area mission sweep:
 
 ## Training & Dataset Pipeline
 
-To reproduce or adapt the 4-channel model:
+All dataset preparation and model training assets are organized in the [`training/`](training/) directory:
 
-1. **Convert VOC Images to 4-Channel RGBA PNGs**:
+1. **Unified Dataset Preparation**:
+   Merges Visible RGB and Thermal LWIR into 4-channel PNGs and converts annotations to 1-class `0: human`:
    ```bash
-   python convert_4channel.py
+   python training/prepare_dataset.py \
+     --src /home/devesh/Downloads/RGBTDronePerson \
+     --dst /home/devesh/Downloads/YOLO_RGBT_4CH
    ```
-2. **Filter & Remap Classes to Single Class (`0: human`)**:
+
+2. **Train YOLOv8n-P2 4-Channel Model**:
    ```bash
-   python prepare_1cls_dataset.py
+   python training/train.py \
+     --data training/dataset_1cls_4ch.yaml \
+     --model training/yolov8n-p2-1cls-4ch.yaml \
+     --epochs 40 \
+     --batch 32
    ```
-3. **Train Model with P2 Architecture**:
-   ```bash
-   python train_1cls.py
-   ```
-   *(Or train via [`Train_YOLOv8_Drone_Swarm.ipynb`](Train_YOLOv8_Drone_Swarm.ipynb) on GPU platforms).*
+
+3. **Cloud & Kaggle GPU Training**:
+   Open and execute [`training/train_yolov8_rgbt.ipynb`](training/train_yolov8_rgbt.ipynb) on Kaggle or Google Colab with dual-GPU acceleration. Download the resulting `best.pt` to the project root.
 
 ---
 

@@ -181,26 +181,26 @@ If you are running the full Software-In-The-Loop (SITL) autopilot simulation:
 
 ## 8. Dataset Preparation & Model Training Pipeline
 
-If you want to re-train or fine-tune the 4-channel YOLOv8 model:
+All training and dataset preparation utilities are consolidated in the [`training/`](file:///home/devesh/Projects/FlyNetSim/training) directory:
 
-### Step 8.1: Convert VOC Dataset to 4-Channel RGBA PNGs
-Merges Visible RGB JPGs and Thermal Infrared Grayscale JPGs into 4-channel PNGs:
+### Step 8.1: Unified Dataset Preparation
+Merges Visible RGB JPGs and Thermal Infrared Grayscale JPGs into 4-channel RGBA PNGs while remapping bounding boxes to unified class `0: human`:
 ```bash
-python convert_4channel.py
+python training/prepare_dataset.py \
+  --src /home/devesh/Downloads/RGBTDronePerson \
+  --dst /home/devesh/Downloads/YOLO_RGBT_4CH
 ```
 
-### Step 8.2: Filter & Remap Classes to Single Class (`0: human`)
-Strips `uncertain` labels and unifies `person`, `crowd`, and `rider` into class `0`:
-```bash
-python prepare_1cls_dataset.py
-```
-
-### Step 8.3: Train YOLOv8n-P2 4-Channel Model
+### Step 8.2: Train YOLOv8n-P2 4-Channel Model
 Trains the 29-layer P2 high-resolution architecture:
 ```bash
-python train_1cls.py
+python training/train.py \
+  --data training/dataset_1cls_4ch.yaml \
+  --model training/yolov8n-p2-1cls-4ch.yaml \
+  --epochs 40 \
+  --batch 32
 ```
-*(Or upload [`yolov8n-p2-1cls-4ch.yaml`](file:///home/devesh/Projects/FlyNetSim/yolov8n-p2-1cls-4ch.yaml) and [`dataset_1cls_4ch.yaml`](file:///home/devesh/Projects/FlyNetSim/dataset_1cls_4ch.yaml) to Kaggle / Google Colab for GPU training).*
+*(Or upload [`training/train_yolov8_rgbt.ipynb`](file:///home/devesh/Projects/FlyNetSim/training/train_yolov8_rgbt.ipynb) to Kaggle / Google Colab for GPU training).*
 
 ---
 
@@ -214,8 +214,8 @@ python train_1cls.py
 | [`validate_swarm_mission.py`](file:///home/devesh/Projects/FlyNetSim/validate_swarm_mission.py) | Ground-truth validator computing TP/FP/FN, precision, recall, RMSE, PDR, and rendering plots. |
 | [`rgbt_detector.py`](file:///home/devesh/Projects/FlyNetSim/rgbt_detector.py) | Modular 4-channel early-fusion YOLOv8 inference wrapper with multispectral rendering. |
 | [`best.pt`](file:///home/devesh/Projects/FlyNetSim/best.pt) | Trained 4-channel YOLOv8n-P2 model weights. |
-| [`yolov8n-p2-1cls-4ch.yaml`](file:///home/devesh/Projects/FlyNetSim/yolov8n-p2-1cls-4ch.yaml) | 4-channel YOLOv8-P2 model architecture specification (4 detection scales: P2, P3, P4, P5). |
-| [`dataset_1cls_4ch.yaml`](file:///home/devesh/Projects/FlyNetSim/dataset_1cls_4ch.yaml) | Dataset YAML pointing to images/train and images/val with class `0: human`. |
+| [`training/`](file:///home/devesh/Projects/FlyNetSim/training) | Dedicated directory containing dataset converter, training CLI, GPU notebook, and model configs. |
+| [`tests/`](file:///home/devesh/Projects/FlyNetSim/tests) | Automated unit and integration test suite (`test_sar_system.py`) and verification scripts. |
 | [`FlySim/swarm_network.py`](file:///home/devesh/Projects/FlyNetSim/FlySim/swarm_network.py) | Decentralized `EdgeBroker` with DMLT routing, QoS 1 Store-and-Forward queues, and `RFPhysicsEngine`. |
 | [`FlySim/uav_pubsub.py`](file:///home/devesh/Projects/FlyNetSim/FlySim/uav_pubsub.py) | ArduPilot SITL / DroneKit autonomous autopilot flight loop with vision and swarm communication. |
 | [`PAPER_METRICS_AND_EXPERIMENTS.md`](file:///home/devesh/Projects/FlyNetSim/PAPER_METRICS_AND_EXPERIMENTS.md) | Academic paper specification: mathematical formulas, variables, and publication figure blueprints. |
