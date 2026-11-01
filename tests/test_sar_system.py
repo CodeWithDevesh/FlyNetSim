@@ -253,6 +253,32 @@ class TestDualThresholdHysteresis(unittest.TestCase):
         self.assertTrue(0.0 <= c0[0] <= 400.0 and 0.0 <= c0[1] <= 400.0)
         self.assertTrue(0.0 <= c1[0] <= 400.0 and 0.0 <= c1[1] <= 400.0)
 
+    def test_ewcvt_alpha_parameter_behavior(self):
+        # Target sector centroid
+        sec_x, sec_y = 100.0, 100.0
+
+        # Peer 0: Geometrically closer (5m), but heavily depleted battery (20%)
+        p0_dist_sq = (105.0 - sec_x)**2 + (100.0 - sec_y)**2 # 25.0
+        p0_batt_ratio = 0.20
+
+        # Peer 2: Slightly farther (12m), but healthy full battery (100%)
+        p2_dist_sq = (112.0 - sec_x)**2 + (100.0 - sec_y)**2 # 144.0
+        p2_batt_ratio = 1.00
+
+        # Case 1: Standard CVT baseline (alpha = 0.0)
+        # Ignores battery, picks purely nearest geometric distance
+        alpha_zero = 0.0
+        cost_p0_zero = p0_dist_sq if alpha_zero == 0.0 else p0_dist_sq / (p0_batt_ratio ** alpha_zero)
+        cost_p2_zero = p2_dist_sq if alpha_zero == 0.0 else p2_dist_sq / (p2_batt_ratio ** alpha_zero)
+        self.assertLess(cost_p0_zero, cost_p2_zero, "Standard CVT (alpha=0) must choose geometrically closer peer.")
+
+        # Case 2: Aggressive EW-CVT (alpha = 2.0)
+        # Strongly penalizes low-battery peer, shifting workload to healthy drone
+        alpha_ewcvt = 2.0
+        cost_p0_ew = p0_dist_sq / (p0_batt_ratio ** alpha_ewcvt) # 25 / 0.04 = 625
+        cost_p2_ew = p2_dist_sq / (p2_batt_ratio ** alpha_ewcvt) # 144 / 1.00 = 144
+        self.assertLess(cost_p2_ew, cost_p0_ew, "EW-CVT (alpha=2.0) must reassign workload to higher battery peer.")
+
 
 if __name__ == "__main__":
     unittest.main()

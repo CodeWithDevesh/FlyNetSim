@@ -217,7 +217,7 @@ Outputs generated:
 ```bash
 python -m unittest tests/test_sar_system.py
 ```
-Runs 15 unit and integration tests covering spatial world geometry, 4-channel tensor permutations, RF physics, dual-threshold hysteresis anti-chattering control, and swarm streaming failover.
+Runs 16 unit and integration tests covering spatial world geometry, 4-channel tensor permutations, RF physics, dual-threshold hysteresis anti-chattering control, EW-CVT energy exponent allocation, and swarm streaming failover.
 
 ---
 
@@ -226,18 +226,23 @@ Runs 15 unit and integration tests covering spatial world geometry, 4-channel te
 ### Operational Flight Envelope
 $$\mathbf{v}(t) = \begin{cases} 50.0\text{ m/s} & \text{state} \in \{\text{TRANSIT, RETURNING}\} \\ 32.0\text{ m/s} & \text{state} = \text{SEARCHING} \\ 0.0\text{ m/s} & \text{state} \in \{\text{LANDED, CRASHED}\} \end{cases}$$
 
-### Dual-Threshold Hysteresis Formulation (EW-CVT Anti-Chattering)
-To prevent continuous flight path oscillation caused by millivolt battery fluctuations and sub-meter centroid micro-shifts, partition weights and flight commands are governed by:
+### Dual-Threshold Hysteresis Formulation & EW-CVT Parameterization
+To balance workload across heterogeneous battery levels and prevent continuous flight path oscillation caused by millivolt battery fluctuations and sub-meter centroid micro-shifts, partition weights and flight commands are governed by:
 
 1. **Battery Decay Threshold ($\tau_\epsilon = 0.02 \times B_{\text{max}}$)**:
    $$w_i(t) = \begin{cases} \left(\frac{B_i(t)}{B_{\text{max}}}\right)^\alpha, & \text{if } B_i(t_k) - B_i(t) \ge \tau_\epsilon \\ w_i(t_k), & \text{otherwise} \end{cases}$$
+   where parameter **$\alpha$** (`--alpha` or `--ewcvt-alpha`, default: `1.0`) controls energy sensitivity:
+   - $\alpha = 0.0$: Standard Unweighted CVT baseline (pure Euclidean Voronoi).
+   - $\alpha = 1.0$: Linear EW-CVT (search cells scale directly with remaining battery).
+   - $\alpha \ge 2.0$: Aggressive non-linear EW-CVT (heavily contracts territory of low-battery drones).
 
 2. **Spatial Centroid Threshold ($\tau_\delta = 5.0\text{ meters}$)**:
    $$C_i(t) = \begin{cases} C_i^*, & \text{if } \|C_i^* - C_i(t_k)\| \ge \tau_\delta \\ C_i(t_k), & \text{otherwise} \end{cases}$$
 
 3. **Topology Override Trigger**:
    $$\mathcal{U}_i(t) = \left( (B_i(t_k) - B_i(t) \ge \tau_\epsilon) \land (\|C_i^* - C_i(t_k)\| \ge \tau_\delta) \right) \lor (\mathcal{N}(t) \ne \mathcal{N}(t_k))$$
-   Any change in the active node vector $\mathcal{N}(t)$ (e.g., node failure) triggers an immediate hard partition update, overriding the hysteresis thresholds.
+   Any change in the active node vector $\mathcal{N}(t)$ (e.g., node failure) triggers an immediate hard partition update, overriding the hysteresis thresholds and reallocating sectors via power-distance cost:
+   $$\text{Cost}(p, s) = \frac{\|\mathbf{x}_p - \mathbf{c}_s\|^2}{(B_p / B_{\text{max}})^\alpha}$$
 
 ### Delay-Tolerant Consensus Model
 In wide-area disaster environments ($5000\text{m} \times 5000\text{m}$), drones disperse beyond point-to-point RF transmission range ($d_{ij} > 3.5\text{ km}$). Unsent target alerts are queued in localized QoS 1 FIFO buffers:

@@ -252,12 +252,13 @@ def render_live_tracking_frame(snap):
     return rgb
 
 
-def run_live_simulation(num_drones, arena_size, conf_thresh, duration, fail_drone="None", fail_time=80.0):
+def run_live_simulation(num_drones, arena_size, conf_thresh, duration, fail_drone="None", fail_time=80.0, ewcvt_alpha=1.0):
     try:
         fail_id = int(fail_drone) if fail_drone and fail_drone != "None" else None
         sim = SwarmSimulation(num_drones=int(num_drones), arena_size=float(arena_size),
                               grid_dim=5, model_path="best.pt", conf_thresh=float(conf_thresh),
-                              seed=42, fail_drone_id=fail_id, fail_time=float(fail_time))
+                              seed=42, fail_drone_id=fail_id, fail_time=float(fail_time),
+                              ewcvt_alpha=float(ewcvt_alpha))
 
         total_sec = int(duration)
         yield_step = max(5, int(total_sec / 30))
@@ -422,6 +423,7 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="zinc", secondary_hue="zinc"), c
                                 sim_conf_input = gr.Slider(minimum=0.05, maximum=0.70, value=0.20, step=0.05, label="Detection Threshold")
                                 sim_dur_input = gr.Slider(minimum=60, maximum=320, value=300, step=20, label="Mission Duration (seconds)")
                                 sim_fail_time = gr.Slider(minimum=10, maximum=200, value=80, step=5, label="Failure Time (seconds)")
+                                sim_alpha_input = gr.Slider(minimum=0.0, maximum=3.0, value=1.0, step=0.1, label="EW-CVT Energy Exponent (α)")
 
                         btn_run_sim = gr.Button("Start Simulation", variant="primary", size="lg")
                         sim_result_status = gr.Textbox(label="Status", interactive=False, placeholder="Click 'Start Simulation' to begin...")
@@ -440,7 +442,7 @@ with gr.Blocks(theme=gr.themes.Soft(primary_hue="zinc", secondary_hue="zinc"), c
 
                 btn_run_sim.click(
                     fn=run_live_simulation,
-                    inputs=[sim_drones_input, sim_arena_input, sim_conf_input, sim_dur_input, sim_fail_drone, sim_fail_time],
+                    inputs=[sim_drones_input, sim_arena_input, sim_conf_input, sim_dur_input, sim_fail_drone, sim_fail_time, sim_alpha_input],
                     outputs=[
                         kpi_banner_1, kpi_banner_2, spatial_map_img, perf_curves_img,
                         table_matches, table_network, sync_indicator, state_mtime,

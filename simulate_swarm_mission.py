@@ -30,7 +30,7 @@ from hysteresis_controller import DualThresholdHysteresisController
 
 
 class SimulatedUAV:
-    def __init__(self, uav_id, start_x, start_y, altitude, transit_speed, search_speed, assigned_sectors, physics_engine, initial_topology=None):
+    def __init__(self, uav_id, start_x, start_y, altitude, transit_speed, search_speed, assigned_sectors, physics_engine, initial_topology=None, ewcvt_alpha=1.0):
         self.uav_id = str(uav_id)
         self.home_x = float(start_x)
         self.home_y = float(start_y)
@@ -44,6 +44,7 @@ class SimulatedUAV:
         self.current_waypoint_idx = 0
         self.waypoints = []
         self.state = "TRANSIT"  # "TRANSIT", "SEARCHING", "RETURNING", "LANDED", "CRASHED"
+        self.ewcvt_alpha = float(ewcvt_alpha)
         
         # Battery state and Dual-Threshold Hysteresis Controller
         self.battery_max = 100.0  # nominal % or Wh
@@ -54,7 +55,7 @@ class SimulatedUAV:
             b_max=self.battery_max,
             tau_epsilon_ratio=0.02, # 2% discharge threshold
             tau_delta=5.0,          # 5m spatial centroid threshold
-            alpha=1.0,
+            alpha=self.ewcvt_alpha,
             initial_battery=self.battery,
             initial_topology=initial_topology
         )
@@ -143,7 +144,7 @@ class SwarmSimulation:
                  model_path="best.pt", conf_thresh=0.20,
                  sim_speed_multiplier=5.0, seed=42,
                  fail_drone_id=None, fail_time=None,
-                 base_x=None, base_y=None):
+                 base_x=None, base_y=None, ewcvt_alpha=1.0):
         
         random.seed(seed)
         self.arena_size = arena_size
@@ -151,6 +152,7 @@ class SwarmSimulation:
         self.num_drones = num_drones
         self.conf_thresh = conf_thresh
         self.sim_speed_multiplier = sim_speed_multiplier
+        self.ewcvt_alpha = float(ewcvt_alpha)
 
         # Unified Ground Control Station (GCS) / Base Station Staging Area (Default: South-West Corner at 5% of arena)
         bx = float(base_x) if base_x is not None else round(arena_size * 0.05, 1)
@@ -167,6 +169,8 @@ class SwarmSimulation:
         print(f"Swarm Size: {num_drones} UAVs | Arena: {arena_size}m x {arena_size}m ({grid_dim}x{grid_dim} sectors)")
         print(f"Base Station Launch Pad: X={self.base_station[0]}m, Y={self.base_station[1]}m")
         print(f"Detector Weights: {model_path} (Conf Threshold: {conf_thresh})")
+        mode_str = "Standard Unweighted CVT (alpha=0.0)" if self.ewcvt_alpha == 0.0 else f"Energy-Weighted CVT (alpha={self.ewcvt_alpha})"
+        print(f"Partitioning Metric: {mode_str}")
         if self.fail_drone_id is not None:
             print(f"Injected Failure: UAV {self.fail_drone_id} will fail at T={self.fail_time}s")
         print("=" * 65)
@@ -279,7 +283,7 @@ class SwarmSimulation:
             drone = SimulatedUAV(uav_id=uav_idx, start_x=start_x, start_y=start_y,
                                  altitude=25.0, transit_speed=transit_speed, search_speed=search_speed,
                                  assigned_sectors=assigned, physics_engine=self.physics_engine,
-                                 initial_topology=initial_topology)
+                                 initial_topology=initial_topology, ewcvt_alpha=self.ewcvt_alpha)
 
             # Order waypoints using greedy nearest-neighbor from the Base Station outward
             remaining = list(assigned)
@@ -329,12 +333,21 @@ class SwarmSimulation:
                 print(f"Crash location: ({dead_drone.crash_pos[0]:.1f}m, {dead_drone.crash_pos[1]:.1f}m)")
                 print(f"Reassigning remaining sectors: {abandoned}")
 
-                # Autonomous Swarm Failover: Reallocate abandoned sectors to nearest active peers
+                # Autonomous Swarm Failover: Reallocate abandoned sectors using EW-CVT power distance
                 active_peers = [d for d in self.drones if d.is_alive]
                 if abandoned and active_peers:
                     for s_id in abandoned:
                         sec_center = self.world.sectors[s_id]["center"]
-                        nearest_peer = min(active_peers, key=lambda p: math.hypot(p.x - sec_center[0], p.y - sec_center[1]))
+                        # In standard CVT (alpha=0), nearest peer is picked by Euclidean distance.
+                        # In EW-CVT (alpha > 0), nearest peer is picked by power distance weighted by remaining battery!
+                        def peer_allocation_cost(peer):
+                            dist_sq = (peer.x - sec_center[0])**2 + (peer.y - sec_center[1])**2
+                            if self.ewcvt_alpha == 0.0:
+                                return dist_sq
+                            weight = max(0.01, (peer.battery / peer.battery_max) ** self.ewcvt_alpha)
+                            return dist_sq / weight
+
+                        nearest_peer = min(active_peers, key=peer_allocation_cost)
                         nearest_peer.assigned_sectors.append(s_id)
                         # Insert new sector waypoint before the final return-to-base waypoint
                         if len(nearest_peer.waypoints) > 1:
@@ -345,7 +358,7 @@ class SwarmSimulation:
                         if nearest_peer.current_waypoint_idx >= len(nearest_peer.waypoints) - 1:
                             nearest_peer.current_waypoint_idx = max(0, len(nearest_peer.waypoints) - 2)
                             nearest_peer.state = "SEARCHING"
-                        print(f"Sector {s_id} reassigned to UAV {nearest_peer.uav_id}")
+                        print(f"Sector {s_id} reassigned to UAV {nearest_peer.uav_id} (Battery: {nearest_peer.battery:.1f}%)")
                 print("=" * 55 + "\n")
 
         # 1. Update UAV spatial positions with active network topology
@@ -569,6 +582,7 @@ class SwarmSimulation:
             "ttfd_sec": self.ttfd,
             "swarm_size": self.num_drones,
             "arena_size": self.arena_size,
+            "ewcvt_alpha": self.ewcvt_alpha,
             "base_station": self.base_station,
             "failed_uav_info": self.failed_uav_info,
             "network_stats": self.network_stats,
@@ -622,10 +636,12 @@ if __name__ == "__main__":
     parser.add_argument("--fail-time", type=float, default=45.0, help="Simulation time in seconds when drone failure occurs (default: 45.0)")
     parser.add_argument("--base-x", type=float, default=None, help="Base Station X coordinate in meters (default: 5 percent of arena)")
     parser.add_argument("--base-y", type=float, default=None, help="Base Station Y coordinate in meters (default: 5 percent of arena)")
+    parser.add_argument("--alpha", "--ewcvt-alpha", type=float, default=1.0, dest="ewcvt_alpha",
+                        help="EW-CVT energy weighting sensitivity exponent (default: 1.0, 0.0=Standard CVT)")
     args = parser.parse_args()
 
     sim = SwarmSimulation(num_drones=args.drones, arena_size=args.arena, grid_dim=args.grid,
                           model_path=args.model, conf_thresh=args.conf, seed=args.seed,
                           fail_drone_id=args.fail_drone, fail_time=args.fail_time,
-                          base_x=args.base_x, base_y=args.base_y)
+                          base_x=args.base_x, base_y=args.base_y, ewcvt_alpha=args.ewcvt_alpha)
     sim.run(max_sim_seconds=args.duration, dt=args.step)

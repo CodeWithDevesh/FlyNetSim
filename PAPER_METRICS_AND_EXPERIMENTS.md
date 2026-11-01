@@ -120,7 +120,10 @@ Rather than continuously updating generator weights $w_i(t)$, the system locks t
 $$w_i(t) = \begin{cases} \left( \frac{B_i(t)}{B_{\text{max}}} \right)^\alpha, & \text{if } B_i(t_k) - B_i(t) \ge \tau_\epsilon \\ w_i(t_k), & \text{otherwise} \end{cases}$$
 
 * **$\tau_\epsilon = 0.02 \times B_{\text{max}}$**: Discrete 2% discharge threshold. Eliminates millivolt sensor noise from perturbing Voronoi cell boundaries every millisecond.
-* **$\alpha$**: Non-linear battery weighting exponent (default $\alpha = 1.0$).
+* **$\alpha$ (EW-CVT Energy Weighting Sensitivity Exponent)**:
+  * **$\alpha = 0.0$ (Standard CVT Baseline)**: Degenerates into unweighted Centroidal Voronoi Tessellation based strictly on Euclidean distance. Workload allocation ignores battery variance across nodes.
+  * **$\alpha = 1.0$ (Linear EW-CVT)**: Search cell footprint scales linearly with residual battery capacity.
+  * **$\alpha > 1.0$ (Aggressive Non-Linear EW-CVT, e.g. $\alpha = 2.0$)**: Substantially penalizes low-battery UAVs, rapidly shedding remaining patrol sectors and transferring them to healthier peers with higher battery reserves.
 
 #### 2. Spatial Centroid Hysteresis (Kinetic Threshold $\tau_\delta$)
 Even after a battery weight update, adjacent boundary adjustments may shift the mass centroid target $C_i^*$ by only a few centimeters. Forcing the UAV to alter yaw and roll for micro-shifts is aerodynamically wasteful:

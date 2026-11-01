@@ -102,6 +102,7 @@ python simulate_swarm_mission.py --drones 3 --arena 400.0 --grid 5 --conf 0.20 -
 * `--conf`: Detection confidence threshold for alerts (default: `0.20`).
 * `--duration`: Total simulated mission time in seconds (default: `180`).
 * `--step`: Simulation time step size in seconds (default: `1.0`).
+* `--alpha` / `--ewcvt-alpha`: EW-CVT energy weighting sensitivity exponent (default: `1.0`, `0.0` = Standard CVT).
 * `--model`: Path to model weights (default: `best.pt`).
 
 ### Generated Logs & Data Files:
