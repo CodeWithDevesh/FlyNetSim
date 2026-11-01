@@ -157,6 +157,27 @@ The cumulative kinetic energy preserved across the swarm mission is tracked dire
 #### 5. Methodological Paper Justification Excerpt
 > *"To mitigate continuous boundary chattering and excessive flight path corrections inherent in dynamic Voronoi partitioning, a dual-threshold hysteresis loop was introduced. By establishing discrete energy decay ($\tau_{\epsilon}$) and spatial shift ($\tau_{\delta}$) thresholds, the proposed architecture guarantees that propulsion energy is expended on trajectory corrections only when the aerodynamic cost is strictly offset by coverage optimization gains, except during topology degradation events which trigger instantaneous hard-updates via the Data Link layer."*
 
+### 4.4 EW-CVT Output Metrics & Quantitative Energy Balance Evaluation
+
+To directly measure and report the operational effect of EW-CVT on swarm endurance and workload distribution, the simulation and validation pipeline computes the following explicit output metrics:
+
+1. **Jain's Energy Fairness Index ($\mathcal{J}_{\text{energy}}$)**:
+   Quantifies the equality of residual energy across all surviving UAV nodes at mission completion ($1.000$ represents perfect energy parity):
+   $$\mathcal{J}_{\text{energy}} = \frac{\left( \sum_{i=1}^n B_i(t_{\text{final}}) \right)^2}{n \sum_{i=1}^n B_i(t_{\text{final}})^2}$$
+   *Under standard CVT ($\alpha=0$), variance in transit distances and sector sizes causes $\mathcal{J}_{\text{energy}}$ to degrade. Under EW-CVT ($\alpha \ge 1.0$), $\mathcal{J}_{\text{energy}} \to 1.000$.*
+
+2. **Fleet Battery Spread Delta ($\Delta B_{\text{spread}}$)**:
+   Measures the peak divergence between the most exhausted UAV and the freshest UAV in the fleet:
+   $$\Delta B_{\text{spread}} = \max_{i} B_i(t_{\text{final}}) - \min_{i} B_i(t_{\text{final}})$$
+
+3. **Fleet Battery Standard Deviation ($\sigma_B$)**:
+   $$\sigma_B = \sqrt{ \frac{1}{n} \sum_{i=1}^n \left( B_i(t_{\text{final}}) - \bar{B} \right)^2 }$$
+
+4. **Bottleneck UAV Endurance Safety Margin ($M_{\text{safe}}$)**:
+   The critical operational bottleneck is the weakest drone ($\min_i B_i$). The safety margin quantifies remaining energy above the mandatory Return-To-Launch (RTL) reserve ($B_{\text{reserve}} = 15\%$):
+   $$M_{\text{safe}} = \min_{i} B_i(t_{\text{final}}) - 15.0\%$$
+   *EW-CVT prevents overloaded drones from breaching the RTL reserve barrier.*
+
 ---
 
 ## 5. Layer 4: Cross-Layer Coupled Metrics
