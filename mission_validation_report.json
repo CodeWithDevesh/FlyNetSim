@@ -1,839 +1,963 @@
 {
   "summary": {
-    "area_coverage_pct": 28.0,
+    "area_coverage_pct": 100.0,
     "ttfd_sec": 1.0,
-    "ground_truth_targets_in_surveyed": 44,
-    "swarm_reported_targets": 78,
-    "true_positives": 44,
-    "false_positives": 43,
-    "false_negatives": 0,
-    "precision": 0.5057,
-    "recall": 1.0,
-    "f1_score": 0.6717,
-    "mean_localization_error_m": 1.49,
-    "rmse_localization_error_m": 3.0,
-    "pdr_pct": 69.87,
-    "swarm_consensus_pct": 88.5
+    "ground_truth_targets_in_surveyed": 259,
+    "swarm_reported_targets": 516,
+    "true_positives": 184,
+    "false_positives": 337,
+    "false_negatives": 75,
+    "precision": 0.3532,
+    "recall": 0.7104,
+    "f1_score": 0.4718,
+    "mean_localization_error_m": 2.15,
+    "rmse_localization_error_m": 3.22,
+    "pdr_pct": 6.96,
+    "swarm_consensus_pct": 59.4,
+    "ewcvt_summary": {
+      "alpha": 1.0,
+      "mode": "Energy-Weighted CVT (alpha=1.0)",
+      "jains_energy_fairness_index": 0.9991,
+      "battery_spread_delta_pct": 8.41,
+      "battery_std_pct": 2.84,
+      "battery_variance_pct2": 8.04,
+      "min_remaining_battery_pct": 90.13,
+      "max_remaining_battery_pct": 98.54,
+      "mean_remaining_battery_pct": 93.63,
+      "fleet_endurance_safety_margin_pct": 75.13,
+      "active_uav_count": 9
+    },
+    "jains_energy_fairness_index": 0.9991,
+    "battery_spread_delta_pct": 8.41,
+    "min_remaining_battery_pct": 90.13
   },
-  "failed_uav_info": null,
+  "ewcvt_summary": {
+    "alpha": 1.0,
+    "mode": "Energy-Weighted CVT (alpha=1.0)",
+    "jains_energy_fairness_index": 0.9991,
+    "battery_spread_delta_pct": 8.41,
+    "battery_std_pct": 2.84,
+    "battery_variance_pct2": 8.04,
+    "min_remaining_battery_pct": 90.13,
+    "max_remaining_battery_pct": 98.54,
+    "mean_remaining_battery_pct": 93.63,
+    "fleet_endurance_safety_margin_pct": 75.13,
+    "active_uav_count": 9
+  },
+  "failed_uav_info": {
+    "uav_id": "2",
+    "crash_pos": [
+      1352.78,
+      1653.87
+    ],
+    "time": 75.0,
+    "abandoned_sectors": [
+      17,
+      23
+    ]
+  },
   "matches": [
     {
       "gt_id": "GT_S00_00",
       "gt_pos": [
-        8.75,
-        18.52
+        87.5,
+        185.16
       ],
       "rep_pos": [
-        8.88,
-        18.66
+        88.75,
+        186.56
       ],
-      "error_m": 0.19,
+      "error_m": 1.88,
       "conf": 0.38,
-      "detected_by": "0"
+      "detected_by": "6"
     },
     {
       "gt_id": "GT_S01_00",
       "gt_pos": [
-        152.81,
-        69.77
+        1528.12,
+        697.66
       ],
       "rep_pos": [
-        152.91,
-        69.67
+        1529.12,
+        696.72
       ],
-      "error_m": 0.14,
+      "error_m": 1.37,
       "conf": 0.324,
-      "detected_by": "0"
+      "detected_by": "7"
     },
     {
       "gt_id": "GT_S01_01",
       "gt_pos": [
-        103.31,
-        72.58
+        1033.12,
+        725.78
       ],
       "rep_pos": [
-        103.34,
-        72.82
+        1033.38,
+        728.2
       ],
-      "error_m": 0.24,
+      "error_m": 2.43,
       "conf": 0.33,
-      "detected_by": "0"
+      "detected_by": "7"
     },
     {
       "gt_id": "GT_S01_02",
       "gt_pos": [
-        89.06,
-        17.5
+        890.62,
+        175.0
       ],
       "rep_pos": [
-        89.14,
-        17.56
+        891.38,
+        175.62
       ],
-      "error_m": 0.1,
+      "error_m": 0.98,
       "conf": 0.572,
-      "detected_by": "0"
+      "detected_by": "7"
     },
     {
       "gt_id": "GT_S01_03",
       "gt_pos": [
-        106.13,
-        27.73
+        1061.25,
+        277.34
       ],
       "rep_pos": [
-        106.22,
-        27.5
+        1062.19,
+        275.0
       ],
-      "error_m": 0.25,
+      "error_m": 2.52,
       "conf": 0.276,
-      "detected_by": "0"
-    },
-    {
-      "gt_id": "GT_S02_00",
-      "gt_pos": [
-        173.12,
-        69.92
-      ],
-      "rep_pos": [
-        176.8,
-        68.78
-      ],
-      "error_m": 3.85,
-      "conf": 0.278,
-      "detected_by": "1"
+      "detected_by": "7"
     },
     {
       "gt_id": "GT_S02_01",
       "gt_pos": [
-        176.94,
-        68.83
+        1769.38,
+        688.28
       ],
       "rep_pos": [
-        176.8,
-        68.78
+        1768.0,
+        687.81
       ],
-      "error_m": 0.15,
+      "error_m": 1.46,
       "conf": 0.278,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_02",
       "gt_pos": [
-        211.31,
-        77.34
+        2113.12,
+        773.44
       ],
       "rep_pos": [
-        211.21,
-        77.13
+        2112.12,
+        771.33
       ],
-      "error_m": 0.23,
+      "error_m": 2.33,
       "conf": 0.543,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_03",
       "gt_pos": [
-        212.31,
-        75.47
+        2123.12,
+        754.69
       ],
       "rep_pos": [
-        212.18,
-        75.48
+        2121.75,
+        754.77
       ],
-      "error_m": 0.13,
+      "error_m": 1.37,
       "conf": 0.27,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_04",
       "gt_pos": [
-        213.75,
-        75.16
+        2137.5,
+        751.56
       ],
       "rep_pos": [
-        213.77,
-        75.06
+        2137.69,
+        750.62
       ],
-      "error_m": 0.1,
+      "error_m": 0.96,
       "conf": 0.485,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_05",
       "gt_pos": [
-        220.5,
-        64.77
+        2205.0,
+        647.66
       ],
       "rep_pos": [
-        220.51,
-        64.78
+        2205.06,
+        647.81
       ],
-      "error_m": 0.01,
+      "error_m": 0.16,
       "conf": 0.649,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_06",
       "gt_pos": [
-        220.88,
-        57.81
+        2208.75,
+        578.12
       ],
       "rep_pos": [
-        220.89,
-        58.02
+        2208.94,
+        580.23
       ],
-      "error_m": 0.21,
+      "error_m": 2.12,
       "conf": 0.611,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_07",
       "gt_pos": [
-        224.75,
-        51.8
+        2247.5,
+        517.97
       ],
       "rep_pos": [
-        224.94,
-        51.81
+        2249.44,
+        518.12
       ],
-      "error_m": 0.19,
+      "error_m": 1.95,
       "conf": 0.68,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_08",
       "gt_pos": [
-        222.38,
-        46.17
+        2223.75,
+        461.72
       ],
       "rep_pos": [
-        222.54,
-        46.1
+        2225.44,
+        461.02
       ],
-      "error_m": 0.17,
+      "error_m": 1.83,
       "conf": 0.633,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_09",
       "gt_pos": [
-        224.25,
-        42.89
+        2242.5,
+        428.91
       ],
       "rep_pos": [
-        224.34,
-        42.74
+        2243.38,
+        427.42
       ],
-      "error_m": 0.17,
+      "error_m": 1.73,
       "conf": 0.536,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_10",
       "gt_pos": [
-        224.69,
-        39.61
+        2246.88,
+        396.09
       ],
       "rep_pos": [
-        224.81,
-        39.75
+        2248.12,
+        397.5
       ],
-      "error_m": 0.18,
+      "error_m": 1.88,
       "conf": 0.53,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_11",
       "gt_pos": [
-        225.81,
-        36.02
+        2258.12,
+        360.16
       ],
       "rep_pos": [
-        225.88,
-        36.05
+        2258.75,
+        360.55
       ],
-      "error_m": 0.08,
+      "error_m": 0.74,
       "conf": 0.215,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_12",
       "gt_pos": [
-        229.44,
-        35.31
+        2294.38,
+        353.12
       ],
       "rep_pos": [
-        229.48,
-        35.27
+        2294.81,
+        352.73
       ],
-      "error_m": 0.06,
+      "error_m": 0.58,
       "conf": 0.395,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_13",
       "gt_pos": [
-        226.13,
-        42.03
+        2261.25,
+        420.31
       ],
       "rep_pos": [
-        226.33,
-        42.06
+        2263.31,
+        420.62
       ],
-      "error_m": 0.2,
+      "error_m": 2.08,
       "conf": 0.48,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_14",
       "gt_pos": [
-        232.63,
-        25.39
+        2326.25,
+        253.91
       ],
       "rep_pos": [
-        232.72,
-        25.48
+        2327.25,
+        254.84
       ],
-      "error_m": 0.13,
+      "error_m": 1.37,
       "conf": 0.362,
-      "detected_by": "1"
-    },
-    {
-      "gt_id": "GT_S02_15",
-      "gt_pos": [
-        231.0,
-        22.03
-      ],
-      "rep_pos": [
-        232.72,
-        25.48
-      ],
-      "error_m": 3.85,
-      "conf": 0.362,
-      "detected_by": "1"
-    },
-    {
-      "gt_id": "GT_S02_16",
-      "gt_pos": [
-        230.94,
-        20.0
-      ],
-      "rep_pos": [
-        232.72,
-        25.48
-      ],
-      "error_m": 5.76,
-      "conf": 0.362,
-      "detected_by": "1"
-    },
-    {
-      "gt_id": "GT_S02_17",
-      "gt_pos": [
-        232.06,
-        19.77
-      ],
-      "rep_pos": [
-        232.72,
-        25.48
-      ],
-      "error_m": 5.75,
-      "conf": 0.362,
-      "detected_by": "1"
-    },
-    {
-      "gt_id": "GT_S02_18",
-      "gt_pos": [
-        230.0,
-        17.03
-      ],
-      "rep_pos": [
-        232.72,
-        25.48
-      ],
-      "error_m": 8.88,
-      "conf": 0.362,
-      "detected_by": "1"
-    },
-    {
-      "gt_id": "GT_S02_19",
-      "gt_pos": [
-        236.75,
-        12.03
-      ],
-      "rep_pos": [
-        238.81,
-        10.59
-      ],
-      "error_m": 2.51,
-      "conf": 0.216,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S02_20",
       "gt_pos": [
-        238.06,
-        9.3
+        2380.62,
+        92.97
       ],
       "rep_pos": [
-        238.81,
-        10.59
+        2388.06,
+        105.94
       ],
-      "error_m": 1.49,
+      "error_m": 14.95,
       "conf": 0.216,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S03_00",
       "gt_pos": [
-        267.38,
-        43.67
+        2673.75,
+        436.72
       ],
       "rep_pos": [
-        267.4,
-        43.73
+        2674.0,
+        437.34
       ],
-      "error_m": 0.06,
+      "error_m": 0.67,
       "conf": 0.618,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
       "gt_id": "GT_S03_01",
       "gt_pos": [
-        268.0,
-        45.94
+        2680.0,
+        459.38
       ],
       "rep_pos": [
-        268.15,
-        46.02
+        2681.5,
+        460.23
       ],
-      "error_m": 0.17,
+      "error_m": 1.72,
       "conf": 0.32,
-      "detected_by": "1"
+      "detected_by": "8"
     },
     {
-      "gt_id": "GT_S05_00",
+      "gt_id": "GT_S04_00",
       "gt_pos": [
-        45.44,
-        91.72
+        3443.12,
+        440.62
       ],
       "rep_pos": [
-        45.53,
-        91.79
+        3442.56,
+        442.11
       ],
-      "error_m": 0.11,
-      "conf": 0.708,
-      "detected_by": "2"
+      "error_m": 1.59,
+      "conf": 0.399,
+      "detected_by": "9"
     },
     {
-      "gt_id": "GT_S10_00",
+      "gt_id": "GT_S04_01",
       "gt_pos": [
-        53.81,
-        221.48
+        3420.0,
+        464.06
       ],
       "rep_pos": [
-        56.51,
-        221.59
+        3418.62,
+        466.56
       ],
-      "error_m": 2.7,
-      "conf": 0.473,
-      "detected_by": "2"
+      "error_m": 2.86,
+      "conf": 0.234,
+      "detected_by": "9"
     },
     {
-      "gt_id": "GT_S10_01",
+      "gt_id": "GT_S04_04",
       "gt_pos": [
-        50.94,
-        223.83
+        3475.62,
+        577.34
       ],
       "rep_pos": [
-        53.04,
-        224.63
+        3474.56,
+        576.02
       ],
-      "error_m": 2.25,
-      "conf": 0.509,
-      "detected_by": "2"
-    },
-    {
-      "gt_id": "GT_S10_02",
-      "gt_pos": [
-        51.88,
-        227.42
-      ],
-      "rep_pos": [
-        52.05,
-        227.3
-      ],
-      "error_m": 0.21,
-      "conf": 0.252,
-      "detected_by": "2"
-    },
-    {
-      "gt_id": "GT_S10_03",
-      "gt_pos": [
-        52.94,
-        224.69
-      ],
-      "rep_pos": [
-        53.04,
-        224.63
-      ],
-      "error_m": 0.12,
-      "conf": 0.509,
-      "detected_by": "2"
-    },
-    {
-      "gt_id": "GT_S10_04",
-      "gt_pos": [
-        54.69,
-        224.38
-      ],
-      "rep_pos": [
-        54.71,
-        224.29
-      ],
-      "error_m": 0.09,
-      "conf": 0.501,
-      "detected_by": "2"
-    },
-    {
-      "gt_id": "GT_S10_05",
-      "gt_pos": [
-        56.5,
-        221.64
-      ],
-      "rep_pos": [
-        56.51,
-        221.59
-      ],
-      "error_m": 0.05,
-      "conf": 0.473,
-      "detected_by": "2"
-    },
-    {
-      "gt_id": "GT_S10_06",
-      "gt_pos": [
-        57.19,
-        224.38
-      ],
-      "rep_pos": [
-        57.22,
-        224.45
-      ],
-      "error_m": 0.08,
-      "conf": 0.287,
-      "detected_by": "2"
-    },
-    {
-      "gt_id": "GT_S10_07",
-      "gt_pos": [
-        57.31,
-        229.84
-      ],
-      "rep_pos": [
-        57.36,
-        229.84
-      ],
-      "error_m": 0.05,
+      "error_m": 1.69,
       "conf": 0.476,
-      "detected_by": "2"
+      "detected_by": "9"
     },
     {
-      "gt_id": "GT_S15_00",
+      "gt_id": "GT_S04_05",
       "gt_pos": [
-        51.94,
-        288.91
+        3498.12,
+        565.62
       ],
       "rep_pos": [
-        45.52,
-        294.53
+        3497.38,
+        564.84
       ],
-      "error_m": 8.53,
-      "conf": 0.237,
-      "detected_by": "2"
+      "error_m": 1.08,
+      "conf": 0.283,
+      "detected_by": "9"
     },
     {
-      "gt_id": "GT_S15_01",
+      "gt_id": "GT_S04_06",
       "gt_pos": [
-        69.63,
-        290.55
+        3509.38,
+        571.09
       ],
       "rep_pos": [
-        73.39,
-        293.43
+        3509.69,
+        570.08
       ],
-      "error_m": 4.74,
-      "conf": 0.223,
-      "detected_by": "2"
+      "error_m": 1.06,
+      "conf": 0.398,
+      "detected_by": "9"
     },
     {
-      "gt_id": "GT_S15_02",
+      "gt_id": "GT_S04_07",
       "gt_pos": [
-        8.38,
-        269.61
+        3625.0,
+        469.53
       ],
       "rep_pos": [
-        8.42,
-        269.74
+        3620.38,
+        471.25
       ],
-      "error_m": 0.14,
-      "conf": 0.574,
-      "detected_by": "2"
+      "error_m": 4.93,
+      "conf": 0.247,
+      "detected_by": "9"
     },
     {
-      "gt_id": "GT_S15_03",
+      "gt_id": "GT_S04_08",
       "gt_pos": [
-        9.69,
-        270.0
+        3623.75,
+        410.16
       ],
       "rep_pos": [
-        9.73,
-        270.23
+        3624.31,
+        411.64
       ],
-      "error_m": 0.23,
-      "conf": 0.665,
-      "detected_by": "2"
+      "error_m": 1.58,
+      "conf": 0.504,
+      "detected_by": "9"
     },
     {
-      "gt_id": "GT_S15_04",
+      "gt_id": "GT_S04_09",
       "gt_pos": [
-        14.13,
-        252.03
+        3611.25,
+        407.81
       ],
       "rep_pos": [
-        14.68,
-        251.98
+        3624.31,
+        411.64
       ],
-      "error_m": 0.55,
-      "conf": 0.225,
-      "detected_by": "2"
+      "error_m": 13.61,
+      "conf": 0.504,
+      "detected_by": "9"
     },
     {
-      "gt_id": "GT_S15_05",
+      "gt_id": "GT_S04_11",
       "gt_pos": [
-        15.0,
-        251.95
+        3664.38,
+        363.28
       ],
       "rep_pos": [
-        15.27,
-        251.83
+        3662.88,
+        363.05
       ],
-      "error_m": 0.3,
-      "conf": 0.268,
-      "detected_by": "2"
+      "error_m": 1.52,
+      "conf": 0.252,
+      "detected_by": "9"
     },
     {
-      "gt_id": "GT_S15_06",
+      "gt_id": "GT_S04_12",
       "gt_pos": [
-        22.19,
-        259.3
+        3673.75,
+        393.75
       ],
       "rep_pos": [
-        15.27,
-        251.83
+        3671.62,
+        397.11
       ],
-      "error_m": 10.18,
-      "conf": 0.268,
-      "detected_by": "2"
+      "error_m": 3.98,
+      "conf": 0.233,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_14",
+      "gt_pos": [
+        3776.88,
+        482.03
+      ],
+      "rep_pos": [
+        3777.12,
+        484.14
+      ],
+      "error_m": 2.12,
+      "conf": 0.455,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_15",
+      "gt_pos": [
+        3779.38,
+        513.28
+      ],
+      "rep_pos": [
+        3779.5,
+        514.14
+      ],
+      "error_m": 0.87,
+      "conf": 0.393,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_27",
+      "gt_pos": [
+        3612.5,
+        173.44
+      ],
+      "rep_pos": [
+        3612.94,
+        174.3
+      ],
+      "error_m": 0.97,
+      "conf": 0.483,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_28",
+      "gt_pos": [
+        3614.38,
+        228.91
+      ],
+      "rep_pos": [
+        3614.19,
+        227.89
+      ],
+      "error_m": 1.04,
+      "conf": 0.4,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_29",
+      "gt_pos": [
+        3581.25,
+        217.19
+      ],
+      "rep_pos": [
+        3582.06,
+        216.88
+      ],
+      "error_m": 0.87,
+      "conf": 0.267,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_30",
+      "gt_pos": [
+        3585.62,
+        193.75
+      ],
+      "rep_pos": [
+        3585.94,
+        194.92
+      ],
+      "error_m": 1.21,
+      "conf": 0.269,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_31",
+      "gt_pos": [
+        3611.25,
+        117.19
+      ],
+      "rep_pos": [
+        3611.62,
+        119.14
+      ],
+      "error_m": 1.98,
+      "conf": 0.518,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_38",
+      "gt_pos": [
+        3608.12,
+        31.25
+      ],
+      "rep_pos": [
+        3607.94,
+        32.34
+      ],
+      "error_m": 1.1,
+      "conf": 0.276,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_39",
+      "gt_pos": [
+        3501.88,
+        14.06
+      ],
+      "rep_pos": [
+        3501.56,
+        16.02
+      ],
+      "error_m": 1.99,
+      "conf": 0.528,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_40",
+      "gt_pos": [
+        3488.12,
+        44.53
+      ],
+      "rep_pos": [
+        3488.25,
+        45.39
+      ],
+      "error_m": 0.87,
+      "conf": 0.534,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_41",
+      "gt_pos": [
+        3496.25,
+        53.91
+      ],
+      "rep_pos": [
+        3488.25,
+        45.39
+      ],
+      "error_m": 11.69,
+      "conf": 0.534,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_42",
+      "gt_pos": [
+        3501.88,
+        42.97
+      ],
+      "rep_pos": [
+        3502.56,
+        43.52
+      ],
+      "error_m": 0.87,
+      "conf": 0.246,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_43",
+      "gt_pos": [
+        3433.12,
+        31.25
+      ],
+      "rep_pos": [
+        3437.44,
+        30.78
+      ],
+      "error_m": 4.35,
+      "conf": 0.217,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_44",
+      "gt_pos": [
+        3450.62,
+        106.25
+      ],
+      "rep_pos": [
+        3449.62,
+        104.53
+      ],
+      "error_m": 1.99,
+      "conf": 0.323,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_45",
+      "gt_pos": [
+        3447.5,
+        125.78
+      ],
+      "rep_pos": [
+        3447.62,
+        128.98
+      ],
+      "error_m": 3.2,
+      "conf": 0.342,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_46",
+      "gt_pos": [
+        3460.0,
+        128.12
+      ],
+      "rep_pos": [
+        3459.5,
+        130.47
+      ],
+      "error_m": 2.4,
+      "conf": 0.595,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_47",
+      "gt_pos": [
+        3460.62,
+        96.88
+      ],
+      "rep_pos": [
+        3460.94,
+        96.09
+      ],
+      "error_m": 0.85,
+      "conf": 0.265,
+      "detected_by": "9"
+    },
+    {
+      "gt_id": "GT_S04_48",
+      "gt_pos": [
+        3473.12,
+        125.78
+      ],
+      "rep_pos": [
+        3473.12,
+        127.19
+      ],
+      "error_m": 1.41,
+      "conf": 0.592,
+      "detected_by": "9"
     }
   ],
   "false_alarms": [
     {
-      "target_key": "TGT_0_54.4_31.0",
+      "target_key": "TGT_13_3075.7_1630.4",
       "class_name": "human",
-      "conf": 0.354,
-      "world_x": 54.36,
-      "world_y": 31.01,
-      "sector_id": 0,
+      "conf": 0.503,
+      "world_x": 3075.69,
+      "world_y": 1630.39,
+      "sector_id": 13,
       "detected_by": "0",
       "time": 1.0
     },
     {
-      "target_key": "TGT_0_9.8_39.4",
+      "target_key": "TGT_13_2488.3_1783.7",
       "class_name": "human",
-      "conf": 0.232,
-      "world_x": 9.84,
-      "world_y": 39.41,
-      "sector_id": 0,
+      "conf": 0.429,
+      "world_x": 2488.31,
+      "world_y": 1783.67,
+      "sector_id": 13,
       "detected_by": "0",
       "time": 1.0
     },
     {
-      "target_key": "TGT_3_299.8_43.5",
+      "target_key": "TGT_13_2645.4_1818.5",
       "class_name": "human",
-      "conf": 0.619,
-      "world_x": 299.78,
-      "world_y": 43.55,
-      "sector_id": 3,
+      "conf": 0.284,
+      "world_x": 2645.44,
+      "world_y": 1818.52,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_13_2950.1_2010.5",
+      "class_name": "human",
+      "conf": 0.283,
+      "world_x": 2950.06,
+      "world_y": 2010.55,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_13_2415.0_1629.0",
+      "class_name": "human",
+      "conf": 0.231,
+      "world_x": 2415.0,
+      "world_y": 1628.98,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_13_3054.1_1613.4",
+      "class_name": "human",
+      "conf": 0.227,
+      "world_x": 3054.06,
+      "world_y": 1613.36,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_13_2620.2_1814.6",
+      "class_name": "human",
+      "conf": 0.218,
+      "world_x": 2620.19,
+      "world_y": 1814.61,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_2736.9_3066.7",
+      "class_name": "human",
+      "conf": 0.612,
+      "world_x": 2736.94,
+      "world_y": 3066.72,
+      "sector_id": 18,
       "detected_by": "1",
       "time": 1.0
     },
     {
-      "target_key": "TGT_3_289.1_24.6",
+      "target_key": "TGT_18_3091.5_2886.9",
       "class_name": "human",
-      "conf": 0.583,
-      "world_x": 289.13,
-      "world_y": 24.55,
-      "sector_id": 3,
+      "conf": 0.562,
+      "world_x": 3091.5,
+      "world_y": 2886.88,
+      "sector_id": 18,
       "detected_by": "1",
       "time": 1.0
     },
     {
-      "target_key": "TGT_3_281.6_47.2",
+      "target_key": "TGT_18_2645.3_2778.4",
       "class_name": "human",
-      "conf": 0.371,
-      "world_x": 281.6,
-      "world_y": 47.22,
-      "sector_id": 3,
+      "conf": 0.54,
+      "world_x": 2645.31,
+      "world_y": 2778.36,
+      "sector_id": 18,
       "detected_by": "1",
       "time": 1.0
     },
     {
-      "target_key": "TGT_3_270.1_42.3",
+      "target_key": "TGT_18_2679.6_3147.3",
       "class_name": "human",
-      "conf": 0.262,
-      "world_x": 270.07,
-      "world_y": 42.3,
-      "sector_id": 3,
+      "conf": 0.5,
+      "world_x": 2679.62,
+      "world_y": 3147.27,
+      "sector_id": 18,
       "detected_by": "1",
       "time": 1.0
     },
     {
-      "target_key": "TGT_3_289.8_45.0",
+      "target_key": "TGT_18_2904.8_2591.5",
       "class_name": "human",
-      "conf": 0.233,
-      "world_x": 289.76,
-      "world_y": 45.03,
-      "sector_id": 3,
+      "conf": 0.386,
+      "world_x": 2904.75,
+      "world_y": 2591.48,
+      "sector_id": 18,
       "detected_by": "1",
       "time": 1.0
     },
     {
-      "target_key": "TGT_1_107.8_21.7",
+      "target_key": "TGT_18_2852.8_2866.6",
       "class_name": "human",
-      "conf": 0.302,
-      "world_x": 107.84,
-      "world_y": 21.71,
-      "sector_id": 1,
-      "detected_by": "0",
-      "time": 5.0
-    },
-    {
-      "target_key": "TGT_1_89.0_76.7",
-      "class_name": "human",
-      "conf": 0.274,
-      "world_x": 89.02,
-      "world_y": 76.7,
-      "sector_id": 1,
-      "detected_by": "0",
-      "time": 5.0
-    },
-    {
-      "target_key": "TGT_1_85.3_66.9",
-      "class_name": "human",
-      "conf": 0.205,
-      "world_x": 85.35,
-      "world_y": 66.91,
-      "sector_id": 1,
-      "detected_by": "0",
-      "time": 5.0
-    },
-    {
-      "target_key": "TGT_2_176.4_48.3",
-      "class_name": "human",
-      "conf": 0.671,
-      "world_x": 176.39,
-      "world_y": 48.27,
-      "sector_id": 2,
+      "conf": 0.301,
+      "world_x": 2852.81,
+      "world_y": 2866.56,
+      "sector_id": 18,
       "detected_by": "1",
-      "time": 5.0
+      "time": 1.0
     },
     {
-      "target_key": "TGT_2_184.8_46.3",
+      "target_key": "TGT_18_2930.6_2810.3",
       "class_name": "human",
-      "conf": 0.344,
-      "world_x": 184.78,
-      "world_y": 46.26,
-      "sector_id": 2,
+      "conf": 0.241,
+      "world_x": 2930.62,
+      "world_y": 2810.31,
+      "sector_id": 18,
       "detected_by": "1",
-      "time": 5.0
+      "time": 1.0
     },
     {
-      "target_key": "TGT_2_215.6_63.2",
+      "target_key": "TGT_18_2990.7_2841.5",
       "class_name": "human",
-      "conf": 0.216,
-      "world_x": 215.6,
-      "world_y": 63.17,
-      "sector_id": 2,
+      "conf": 0.24,
+      "world_x": 2990.69,
+      "world_y": 2841.48,
+      "sector_id": 18,
       "detected_by": "1",
-      "time": 5.0
+      "time": 1.0
     },
     {
-      "target_key": "TGT_2_226.5_55.2",
+      "target_key": "TGT_18_3033.7_2751.5",
       "class_name": "human",
-      "conf": 0.214,
-      "world_x": 226.48,
-      "world_y": 55.24,
-      "sector_id": 2,
+      "conf": 0.236,
+      "world_x": 3033.69,
+      "world_y": 2751.48,
+      "sector_id": 18,
       "detected_by": "1",
-      "time": 5.0
+      "time": 1.0
     },
     {
-      "target_key": "TGT_2_224.9_51.8",
+      "target_key": "TGT_18_3193.8_2458.2",
       "class_name": "human",
-      "conf": 0.68,
-      "world_x": 224.94,
-      "world_y": 51.81,
-      "sector_id": 2,
-      "detected_by": "0",
-      "time": 13.0
+      "conf": 0.204,
+      "world_x": 3193.81,
+      "world_y": 2458.2,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_2_176.4_48.3",
+      "target_key": "TGT_12_2132.1_1653.4",
       "class_name": "human",
-      "conf": 0.671,
-      "world_x": 176.39,
-      "world_y": 48.27,
-      "sector_id": 2,
-      "detected_by": "0",
-      "time": 13.0
+      "conf": 0.251,
+      "world_x": 2132.06,
+      "world_y": 1653.36,
+      "sector_id": 12,
+      "detected_by": "2",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_2_220.5_64.8",
+      "target_key": "TGT_21_889.8_3251.3",
       "class_name": "human",
-      "conf": 0.649,
-      "world_x": 220.51,
-      "world_y": 64.78,
-      "sector_id": 2,
-      "detected_by": "0",
-      "time": 13.0
+      "conf": 0.563,
+      "world_x": 889.75,
+      "world_y": 3251.33,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_2_222.5_46.1",
+      "target_key": "TGT_21_1197.1_3562.1",
       "class_name": "human",
-      "conf": 0.633,
-      "world_x": 222.54,
-      "world_y": 46.1,
-      "sector_id": 2,
-      "detected_by": "0",
-      "time": 13.0
-    },
-    {
-      "target_key": "TGT_2_220.9_58.0",
-      "class_name": "human",
-      "conf": 0.611,
-      "world_x": 220.89,
-      "world_y": 58.02,
-      "sector_id": 2,
-      "detected_by": "0",
-      "time": 13.0
-    },
-    {
-      "target_key": "TGT_2_211.2_77.1",
-      "class_name": "human",
-      "conf": 0.543,
-      "world_x": 211.21,
-      "world_y": 77.13,
-      "sector_id": 2,
-      "detected_by": "0",
-      "time": 13.0
+      "conf": 0.322,
+      "world_x": 1197.12,
+      "world_y": 3562.11,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
     }
   ]
 }

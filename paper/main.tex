@@ -18,102 +18,156 @@
 
 \begin{document}
 
-\title{An Autonomous Multispectral UAV Swarm Framework with Delay-Tolerant Networking and Dual-Threshold Hysteresis EW-CVT for Post-Disaster Search and Rescue}
+\title{Autonomous Multispectral UAV Swarms for Post-Disaster Search and Rescue: An Integrated Perception, FANET Mesh, and Resilient Flight Framework}
 
-\author{\IEEEauthorblockN{Devesh Agarwal}
-\IEEEauthorblockA{\textit{Department of Computer Science and Engineering} \\
-\textit{National Institute of Technology}\\
-Email: deveshagarwal652005@gmail.com}
+\author{\IEEEauthorblockN{Devesh Agarwal, Naman Chaudhary, Sankalp Mittal}
+\IEEEauthorblockA{\textit{Department of Information Technology} \\
+\textit{National Institute of Technology}}
 }
 
 \maketitle
 
 \begin{abstract}
-Rapid victim localization in post-disaster wilderness and urban debris scenarios presents severe perceptual, communication, and kinetic challenges for autonomous unmanned aerial vehicle (UAV) swarms. Single-modality optical sensors fail in low-contrast conditions, while distributed wireless mesh networks degrade over multi-kilometer operational envelopes due to log-distance path loss and obstacle shadowing. Furthermore, dynamic territorial re-partitioning algorithms, such as Energy-Weighted Centroidal Voronoi Tessellations (EW-CVT), typically suffer from high-frequency trajectory oscillation (chattering) induced by sensor noise and minor centroid drifts, dissipating critical rotor battery energy. In this paper, we propose an end-to-end autonomous multi-UAV search-and-rescue (SAR) framework integrating three tightly coupled innovations: (1) a 4-channel early-fusion multispectral object detector ($640 \times 512 \times 4$, Visible RGB + Thermal LWIR) utilizing a high-resolution P2 stride-4 feature pyramid head to identify small, occluded human targets; (2) a decentralized Flying Ad-Hoc Network (FANET) with an EdgeBroker Delay-Tolerant Networking (DTN) architecture utilizing store-and-forward QoS 1 buffers to guarantee eventual target consensus; and (3) a Dual-Threshold Hysteresis Loop ($\tau_\epsilon = 0.02 \times B_{\text{max}}$, $\tau_\delta = 5.0\,\text{m}$) governing EW-CVT flight commands to eliminate boundary chattering while enforcing an instantaneous hard-override failover trigger upon network topology changes. Validated across large-scale simulations up to $10.24\,\text{km}^2$ and $25\,\text{km}^2$ using real-world multispectral aerial data, the proposed framework achieved $100.0\%$ area survey coverage, $76.83\%$ human victim recall with $3.31\,\text{m}$ localization accuracy, $98.68\%$ chattering suppression saving $24.14\,\text{kJ}$ of propulsion energy, and an energy fairness index of $\mathcal{J} = 0.9998$.
+Post-disaster search-and-rescue (SAR) operations in catastrophic environments demand rapid, wide-area reconnaissance under severe environmental, sensory, and infrastructural degradation. Autonomous Unmanned Aerial Vehicle (UAV) swarms provide high-speed mobility and distributed sensing; however, practical deployment is fundamentally constrained by three coupled bottlenecks: (1) single-modality optical sensors fail in low-visibility conditions (smoke, darkness, shadow occlusion, and camouflage); (2) Flying Ad-Hoc Networks (FANETs) suffer chronic packet loss and network partitioning over multi-kilometer operational envelopes, causing conventional centralized MQTT telemetry brokers to collapse; and (3) dynamic territorial re-allocation algorithms waste significant rotor propulsion energy on high-frequency heading oscillations (trajectory chattering) induced by battery sensor noise and centroid drifts. In this paper, we propose a holistic, end-to-end autonomous UAV swarm framework that resolves these cross-layer challenges. First, we develop a 4-channel early-fusion multispectral detector ($640 \times 512 \times 4$, Visible RGB + Thermal LWIR) featuring a high-resolution P2 stride-4 feature pyramid head specialized for detecting small, occluded human victims ($<32^2\,\text{px}$) from high-altitude vantage points ($25\text{--}50\,\text{m}$ AGL). Second, we design an RF physics-informed, fully decentralized MQTT-inspired EdgeBroker that replaces central servers with localized broker-per-node pub/sub engines. By coupling Log-Distance Shadow Fading ($\sigma = 7.5\,\text{dB}$) with Distributed Multi-Level Topic (DMLT) filtering and Delay-Tolerant Networking (DTN) store-and-forward QoS~1 buffering, the system guarantees progressive target consensus upon proximity convergence without single points of failure. Third, we introduce a dual-speed flight envelope ($50\,\text{m/s}$ transit dash, $32\,\text{m/s}$ search cruise) radiating from unified Base Station corridors, coupled with an autonomous in-flight failover mechanism governed by an anti-chattering Dual-Threshold Hysteresis Loop ($\tau_\epsilon = 0.02 \times B_{\text{max}}$, $\tau_\delta = 5.0\,\text{m}$) for Energy-Weighted Centroidal Voronoi Tessellations (EW-CVT). Evaluated on the RGBT DronePerson aerial benchmark and full-scale 10-UAV mission simulations across a $16.0\,\text{km}^2$ disaster arena, the perception model achieves $0.646\,\text{mAP}_{50}$ with $4.9\,\text{ms}$ edge latency, while the swarm achieves $100.0\%$ survey coverage, $71.04\%$ in-flight victim recall ($2.15\,\text{m}$ mean localization accuracy, $3.22\,\text{m}$ RMSE), $98.42\%$ chattering suppression saving $29.49\,\text{kJ}$ of kinetic rotor propulsion energy, and an energy fairness index of $\mathcal{J} = 0.9991$.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Autonomous UAV Swarms, Search and Rescue (SAR), Multispectral Early Fusion, Energy-Weighted Voronoi (EW-CVT), Dual-Threshold Hysteresis, Delay-Tolerant Networking (DTN), FANET.
+Autonomous UAV Swarms, Search and Rescue (SAR), Multispectral Early Fusion, YOLOv8-P2, Delay-Tolerant Networking (DTN), FANET, Energy-Weighted Voronoi (EW-CVT), Hysteresis Control.
 \end{IEEEkeywords}
 
 \section{Introduction}
 
-\subsection{Research Background}
-Post-disaster search-and-rescue (SAR) operations following earthquakes, floods, and structural collapses demand immediate, wide-area reconnaissance within the critical ``golden 72 hours'' of survival. Autonomous Unmanned Aerial Vehicle (UAV) swarms offer scalable, rapid-deployment capabilities to survey hazardous, impassable terrains without endangering human responders. However, practical deployment in complex wilderness and disaster debris environments introduces severe cross-layer engineering challenges spanning perception, wireless networking, and spatial flight control.
+\subsection{Research Background and Motivation}
+Following major seismic disasters, flash floods, and industrial collapses, the initial 72 hours—termed the ``golden rescue window''—dictate victim survival rates. Ground-based search operations are frequently obstructed by collapsed transit arteries, hazardous chemical leaks, and secondary structural collapses. Autonomous Unmanned Aerial Vehicle (UAV) swarms represent a transformative paradigm for disaster management, offering rapid deployment, aerial flexibility, and distributed field coverage without placing human personnel at risk \cite{ref1, ref5, ref6}.
 
-From a perception standpoint, standard visible-spectrum (RGB) cameras degrade catastrophically under adverse lighting, smoke, shadow occlusion, and camouflage clutter. Long-wave infrared (LWIR) thermal cameras provide robust human signature extraction based on body heat emissivity, yet thermal imagery lacks fine textural and structural edge features. Fusing visible and thermal modalities into a cohesive aerial perception system remains essential for small-target human discovery.
+However, translating theoretical multi-agent swarm algorithms into functional disaster response platforms requires overcoming formidable multi-disciplinary obstacles spanning computer vision, wireless telecommunications, spatial coordination, and rotorcraft aerodynamics \cite{ref7, ref8, ref18, ref19}.
 
-From a networking perspective, Flying Ad-Hoc Networks (FANETs) deployed over multi-kilometer disaster domains suffer from severe radio frequency (RF) attenuation, multipath fading, and non-line-of-sight (NLoS) shadowing caused by mountainous topography and collapsed buildings. Drones operating beyond point-to-point transmission range experience chronic packet dropouts, obstructing real-time swarm coordination and Ground Control Station (GCS) telemetry synchronization.
+In post-disaster environments, visible-spectrum (RGB) sensing degrades severely under thermal shadows, thick particulate smoke, dust plumes, and camouflage rubble. Long-wave infrared (LWIR) thermal sensors detect biological heat signatures independently of ambient illumination, yet thermal imagery lacks high-frequency textural gradients necessary for fine-grained morphological discrimination. As a result, single-modality aerial detectors either suffer from high false-negative rates in low light or excessive false alarms on sun-heated rubble \cite{ref3, ref4}.
+
+Simultaneously, the communication backbone of the swarm—the Flying Ad-Hoc Network (FANET)—must operate across sprawling search arenas ($>10\,\text{km}^2$) without fixed cellular or satellite infrastructure \cite{ref11, ref12}. Conventional commercial UAV telemetry predominantly relies on centralized publish-subscribe protocols like MQTT, which route all messages through a single Ground Control Station (GCS) or cloud broker. In wide-area post-disaster reconnaissance, as drones disperse to survey assigned sectors, inter-UAV baselines exceed direct line-of-sight range ($d > 2.5\,\text{km}$). Severe RF path loss, multipath fading, and non-line-of-sight (NLoS) obstacle shadowing inevitably partition the network, severing links to the central broker. This causes centralized MQTT architectures to suffer total telemetry blackout, dropping vital target alerts and preventing peer-to-peer coordination \cite{ref14, ref15, ref21}.
+
+Finally, spatial coverage control algorithms must efficiently divide wide-area search sectors while dynamically adapting to mid-mission hardware loss and non-uniform battery drain \cite{ref9}. While Centroidal Voronoi Tessellations (CVT) and Energy-Weighted CVT (EW-CVT) provide mathematical frameworks for area partitioning, practical implementation exposes a severe flight stability flaw: high-frequency oscillatory chattering \cite{ref8}. Minor sensor noise from Analog-to-Digital Converter (ADC) voltage readings and sub-meter centroid shifts force flight autopilots to execute non-stop yaw, pitch, and roll corrections, dissipating valuable rotor propulsion energy without expanding search coverage.
 
 \subsection{Research Questions}
-To achieve reliable autonomous multi-UAV SAR, three fundamental questions must be resolved:
+To address these interrelated vulnerabilities, this research investigates three core engineering questions:
 \begin{enumerate}
-    \item \textit{How can heterogeneous multispectral sensing be integrated into lightweight edge deep learning architectures to optimize the detection of small, occluded human targets ($<32^2\,\text{px}$) from high-altitude vantage points?}
-    \item \textit{How can decentralized swarm consensus and victim alert dissemination be preserved across intermittent, lossy RF mesh networks without overwhelming available wireless channel capacity?}
-    \item \textit{How can dynamic, energy-weighted spatial territory partitioning be stabilized to prevent high-frequency trajectory chattering caused by sensor noise and minor centroid migrations, without delaying emergency failover during node crashes?}
+    \item \textit{How can heterogeneous RGB and thermal modalities be fused into a lightweight, real-time edge architecture capable of detecting tiny, occluded human targets ($<32^2\,\text{px}$) from high-altitude aerial perspectives?}
+    \item \textit{How can decentralized target discovery consensus be achieved over multi-kilometer partitioned wireless channels without relying on fragile central MQTT brokers or incurring broadcast storm flooding?}
+    \item \textit{How can energy-weighted territorial partitioning dynamically compensate for catastrophic in-flight drone failures while preventing rotor trajectory chattering during steady-state cruising?}
 \end{enumerate}
 
-\subsection{Research Purpose and Significance}
-This research establishes an integrated, mathematically grounded aerial robotics framework addressing these interconnected bottlenecks. By harmonizing a 4-channel early-fusion YOLOv8-P2 perception backbone, a delay-tolerant store-and-forward communication broker, and a dual-threshold hysteresis control loop for Energy-Weighted Centroidal Voronoi Tessellations (EW-CVT), this work eliminates unnecessary propulsion energy waste while providing resilient $100\%$ area coverage. The framework balances energy depletion across surviving swarm agents, ensuring that fatigued drones are not overburdened during in-flight hardware failures.
+\subsection{Key System Contributions}
+To resolve these challenges, we propose an end-to-end autonomous UAV swarm framework for disaster response. Our specific contributions include:
+\begin{enumerate}
+    \item \textbf{4-Channel Early-Fusion YOLOv8-P2 Perception Backbone}: We design a 29-layer neural network ingesting aligned 4-channel tensors ($[R, G, B, \text{LWIR}]$). By incorporating a high-resolution P2 feature pyramid head at stride 4 ($160 \times 128$), the architecture preserves fine-grained spatial feature maps for tiny human victims ($<32^2\,\text{px}$) that are lost in standard stride-8 pyramids, achieving $0.646\,\text{mAP}_{50}$ and $0.670$ precision at $4.9\,\text{ms}$ edge inference latency on real-world aerial multispectral datasets.
+    \item \textbf{Decentralized MQTT-Inspired EdgeBroker with RF Physics}: We replace fragile centralized telemetry servers with a fully decentralized broker-per-node architecture. Coupled with an RF physical channel model (log-distance path loss, $\sigma = 7.5\,\text{dB}$ shadow fading, dynamic SNR-to-PER logistic mapping), the EdgeBroker enforces Distributed Multi-Level Topic (DMLT) filtering to eliminate broadcast storm flooding, while persistent QoS~1 store-and-forward queues guarantee eventual victim consensus upon proximity convergence (reaching $100.0\%$ consensus upon return-to-base convergence) without central coordinator dependencies.
+    \item \textbf{Base Station Corridors and Dual-Speed Flight Dynamics}: We establish an operational envelope comprising a unified Ground Control Station (GCS) launch pad with radiating, non-overlapping transit dash corridors ($50\,\text{m/s}$), optimal optical sensor cruise ($32\,\text{m/s}$), and automated Return-to-Launch (RTL).
+    \item \textbf{Anti-Chattering Dual-Threshold Hysteresis EW-CVT with Hard Failover Override}: We formulate a coupled energy ($\tau_\epsilon = 0.02 \times B_{\text{max}}$) and spatial ($\tau_\delta = 5.0\,\text{m}$) hysteresis loop that suppresses $98.42\%$ of oscillatory maneuvers ($1,247$ chattering turns suppressed), saving $29.49\,\text{kJ}$ of propulsion energy. An instantaneous Data Link Layer override bypasses hysteresis upon node loss, reallocating abandoned sectors via power-distance cost to guarantee $100.0\%$ area survey coverage.
+\end{enumerate}
 
-\subsection{Paper Organization}
-The remainder of this paper is organized as follows: Section II reviews related literature in multispectral aerial perception, FANET communications, and Voronoi swarm control. Section III details the mathematical formulation of the proposed system architecture, including the 4-channel detector, RF physics model, EW-CVT partitioning, and the dual-threshold hysteresis loop. Section IV presents empirical results from large-scale simulated SAR missions. Section V concludes the paper with future research directions.
+\section{Related Work}
 
-\section{Literature Review}
+\subsection{Multispectral Object Detection in Aerial Robotics}
+Aerial object detection for SAR has evolved from hand-crafted features to deep convolutional neural networks \cite{ref2, ref13}. Standard YOLO architectures (YOLOv5 to YOLOv8) downsample input frames by factors of 8 (P3), 16 (P4), and 32 (P5), making them effective for terrestrial vehicle and pedestrian detection. However, in high-altitude aerial reconnaissance ($25\text{--}50\,\text{m}$ AGL), human victims frequently occupy fewer than $32 \times 32$ pixels. Within standard backbones, features corresponding to small victims are completely obliterated by consecutive strided convolutions.
 
-\subsection{Aerial Multispectral Perception}
-Deep learning object detectors, particularly the You Only Look Once (YOLO) family, have become the standard for aerial computer vision. However, standard architectures (YOLOv5 to YOLOv8) employ downsampling strides (8, 16, 32) tailored for medium-to-large objects. Small targets from aerial vantages ($25\text{--}50\,\text{m}$ altitude) frequently collapse within early pooling layers. Recent research has investigated multispectral fusion strategies. Late-fusion ensembles process RGB and thermal feeds through separate backbones before concatenating bounding boxes; however, this doubles computational latency and memory footprints, rendering them impractical for SWaP-constrained (Size, Weight, and Power) edge UAV companions. Early fusion, integrating RGB and thermal channels at the initial convolutional layer, preserves cross-spectral spatial correlations while maintaining near-real-time edge inference speeds.
+Multispectral imagery combining visible and thermal bands provides a promising solution \cite{ref3}. Existing approaches predominantly utilize late-fusion ensembles, which process RGB and thermal inputs through two distinct neural backbones before concatenating candidate bounding boxes. While effective, late fusion doubles edge GPU memory footprints and inference latency, violating the strict SWaP constraints of operational UAVs. Mid-fusion architectures require complex cross-attention feature alignment modules. In contrast, early fusion merges raw pixel channels at the first layer, allowing early convolutional kernels to jointly extract complementary thermal gradients and visual texture with negligible computational overhead.
 
-\subsection{FANETs and Delay-Tolerant Networking}
-Communication in multi-UAV swarms relies on decentralized ad-hoc routing. Traditional mobile ad-hoc network (MANET) protocols (e.g., AODV, OLSR) assume continuous, connected topology and fail when inter-UAV distances exceed line-of-sight RF range ($d > 2.5\,\text{km}$). Under disaster conditions, log-distance shadow fading and debris blockage cause frequent network partitioning. Delay-Tolerant Networking (DTN) and store-and-forward architectures buffer undelivered packets in persistent local queues until opportunistic peer proximity enables reliable transmission. However, unconstrained broadcast flooding in DTNs saturates wireless spectrum and causes queue overflow.
+\subsection{FANET Communications and Decentralized Publish-Subscribe}
+Decentralized inter-drone communication relies on Flying Ad-Hoc Networks (FANETs) \cite{ref11}. Traditional ad-hoc routing protocols such as Ad-hoc On-Demand Distance Vector (AODV) and Optimized Link State Routing (OLSR) presume end-to-end multi-hop path connectivity \cite{ref12}. In post-disaster scenarios, wide-area dispersion and topographical shadowing routinely break multi-hop paths, triggering network partitioning and protocol collapse.
+
+Simultaneously, aerial telemetry and mission coordination frequently utilize the Message Queuing Telemetry Transport (MQTT) publish-subscribe standard due to its lightweight packet framing and topic-based abstraction \cite{ref21}. However, standard MQTT strictly mandates a centralized broker topology (e.g., hosted at a Ground Control Station or cloud server). In wide-area SAR operations, routing all peer-to-peer traffic through a central broker creates a catastrophic Single Point of Failure (SPoF) and renders the fleet entirely inoperable once UAVs fly beyond line-of-sight backhaul range. While MQTT for Sensor Networks (MQTT-SN) introduces UDP transport, it still presumes static gateway infrastructure \cite{ref21}.
+
+Delay-Tolerant Networking (DTN) addresses intermittent connectivity via the store-and-forward paradigm \cite{ref10}. However, conventional epidemic flooding in DTNs causes massive channel contention and broadcast storm problems in bandwidth-constrained RF links \cite{ref15}. To achieve scalable, infrastructureless dissemination, communication engines must transition to a fully decentralized, broker-per-node pub/sub mesh that couples topic-based filtering with RF physical channel awareness and opportunistic store-and-forward queues.
 
 \subsection{Voronoi Swarm Partitioning and Flight Stability}
-Centroidal Voronoi Tessellations (CVT) and Lloyd's relaxation algorithms partition geographic space by assigning sub-regions based on Euclidean distance to UAV generators. In heterogeneous fleets, Energy-Weighted CVT (EW-CVT) incorporates residual battery capacity into the metric, scaling cell size proportional to available energy. Despite theoretical elegance, standard EW-CVT suffers from high-frequency trajectory chattering: continuous computational ticks subject to Analog-to-Digital Converter (ADC) battery voltage noise and infinitesimal centroid drifts trigger non-stop yaw and roll corrections. This chattering squanders kinetic rotor energy without contributing to search progress.
+Centroidal Voronoi Tessellations (CVT) and Lloyd's relaxation algorithms partition geographic space by assigning sub-regions based on Euclidean distance to UAV generators \cite{ref7, ref8}. In heterogeneous fleets, Energy-Weighted CVT (EW-CVT) incorporates residual battery capacity into the metric, scaling cell size proportional to available energy \cite{ref9}.
 
-\subsection{Contributions of This Work}
-To address these gaps, our contributions are threefold:
-\begin{enumerate}
-    \item A unified 4-channel early-fusion YOLOv8n-P2 detector incorporating a stride-4 ($160 \times 128$) P2 head, delivering high recall on small occluded human targets.
-    \item An RF physics-informed EdgeBroker communication engine incorporating log-distance shadow fading and store-and-forward QoS 1 buffering, achieving $>80\%$ swarm consensus across partitioned wide-area deployments.
-    \item A mathematically formulated Dual-Threshold Hysteresis Loop ($\tau_\epsilon, \tau_\delta$) governing EW-CVT flight commands, suppressing $98.68\%$ of oscillatory turns, saving $24.14\,\text{kJ}$ of rotor energy, and maintaining an instantaneous topology override condition for in-flight motor failover.
-\end{enumerate}
+Despite theoretical elegance, standard EW-CVT suffers from high-frequency trajectory chattering: continuous computational ticks subject to Analog-to-Digital Converter (ADC) battery voltage noise and infinitesimal centroid drifts trigger non-stop yaw and roll corrections. This chattering squanders kinetic rotor energy without contributing to search progress. Introducing discrete hysteresis thresholds is therefore critical to ensure trajectory corrections occur only when coverage optimization benefits offset aerodynamic turning costs.
 
 \section{System Architecture and Methodology}
 
-The system architecture spans four interconnected layers: Perception, Communication, Spatial Partitioning, and Hysteresis Flight Control, as conceptualized in Fig. 1.
+The proposed architecture operates across four tightly coupled subsystems: Perception, Communications, Spatial Deployment, and Hysteresis Flight Control.
 
 \subsection{4-Channel Early-Fusion Perception (YOLOv8n-P2)}
-The perception subsystem ingests calibrated pairs of visible RGB images $\mathbf{I}_{\text{RGB}} \in \mathbb{R}^{H \times W \times 3}$ and Long-Wave Infrared (LWIR) thermal images $\mathbf{I}_{\text{IR}} \in \mathbb{R}^{H \times W \times 1}$. The streams are aligned into a 4-channel multispectral tensor $\mathbf{X} \in \mathbb{R}^{640 \times 512 \times 4}$.
+The perception subsystem ingests synchronized visible-spectrum RGB imagery $\mathbf{I}_{\text{RGB}} \in \mathbb{R}^{H \times W \times 3}$ and Long-Wave Infrared (LWIR) thermal imagery $\mathbf{I}_{\text{IR}} \in \mathbb{R}^{H \times W \times 1}$. After spatial rectification and radiometric normalization, the streams are concatenated along the channel dimension into a 4-channel tensor $\mathbf{X} \in \mathbb{R}^{640 \times 512 \times 4}$ with ordering $[T, B, G, R]$.
 
-The stem convolution layer is modified to accept four input channels with modified weights $\mathbf{W}_{\text{stem}} \in \mathbb{R}^{C_{\text{out}} \times 4 \times k \times k}$. To resolve small-target feature loss, we introduce a high-resolution P2 feature pyramid head at stride 4. While standard YOLOv8 extracts features at scales P3 ($80 \times 64$), P4 ($40 \times 32$), and P5 ($20 \times 16$), the P2 head fuses low-level spatial geometry directly from layer 2 via path-aggregation feature concatenation:
+The neural backbone adapts the YOLOv8 architecture by expanding the stem convolution tensor to $\mathbf{W}_{\text{stem}} \in \mathbb{R}^{64 \times 4 \times 3 \times 3}$. To resolve the small-object resolution bottleneck, we introduce a high-resolution P2 feature pyramid head at stride 4. While standard YOLOv8 utilizes downsampled heads at strides 8 (P3), 16 (P4), and 32 (P5), our P2 head extracts fine-grained spatial features directly from backbone layer 2 ($160 \times 128$) via path-aggregation feature concatenation:
 \begin{equation}
-    \mathbf{F}_{\text{P2}} = \text{Conv}\left( \left[ \mathbf{F}_{\text{stem}}^{(2)}, \, \text{Up}_2(\mathbf{F}_{\text{P3}}) \right] \right)
+    \mathbf{F}_{\text{P2}} = \text{C2f}\left( \left[ \mathbf{F}_{\text{stem}}^{(2)}, \, \text{Up}_2(\mathbf{F}_{\text{P3}}) \right] \right)
 \end{equation}
-This yields a high-resolution detection grid of $160 \times 128$ anchor cells, increasing receptive resolution for human targets with ground footprints under $32 \times 32$ pixels.
+The resulting architecture contains 29 convolutional and cross-stage partial bottleneck layers feeding four multiscale detection heads (P2, P3, P4, P5), outputting bounding box coordinates and human class confidence $\tau_{\text{conf}}$.
 
-\subsection{RF Channel Physics and Delay-Tolerant EdgeBroker}
-Inter-UAV wireless communication is governed by free-space path loss and log-distance shadow fading over carrier frequency $f = 2.4\,\text{GHz}$ and $5.0\,\text{GHz}$. The total path loss $PL(d)$ at 3D distance $d$ is:
+Detected target bounding box centers $(x_{\text{norm}}, y_{\text{norm}})$ are projected into global world coordinates $(X, Y)$ via pinhole camera transformation and sector boundaries:
+\begin{align}
+    X_{\text{world}} &= X_{\text{min}} + x_{\text{norm}} \cdot W_{\text{sec}} \\
+    Y_{\text{world}} &= Y_{\text{min}} + y_{\text{norm}} \cdot H_{\text{sec}}
+\end{align}
+where $[X_{\text{min}}, Y_{\text{min}}]$ represents the lower spatial corner and $W_{\text{sec}}, H_{\text{sec}}$ denote sector dimensions.
+
+\subsection{Decentralized MQTT-Inspired EdgeBroker and Channel Physics}
+
+Conventional multi-UAV telemetry architectures rely on a centralized MQTT broker, where each UAV acts as a client connected to a single central server (e.g., at the Ground Control Station). In wide-area post-disaster reconnaissance spanning multi-kilometer search envelopes, this topology introduces a catastrophic Single Point of Failure (SPoF). As UAVs disperse beyond direct line-of-sight range or encounter topographical blockage, the connection to the central server collapses, resulting in immediate telemetry blackout and dropped target alerts.
+
+To resolve this limitation, we formulate a fully decentralized, broker-per-node communication architecture. Every UAV $i \in \{0, \dots, n-1\}$ hosts an embedded, autonomous EdgeBroker instance coupled to physical peer-to-peer (P2P) sockets (binding port $6000 + i$ and subscribing to peers $j \ne i$). This architecture operates across three key mechanisms:
+
+\subsubsection{Distributed Multi-Level Topic (DMLT) Routing}
+To eliminate broadcast storm flooding across the scarce FANET spectrum, the EdgeBroker replaces unconstrained flooding with topic-filtered dissemination inspired by MQTT-SN \cite{ref21}. Topics $\mathcal{T}$ are partitioned into functional sub-trees: $\texttt{telemetry}$ (GPS coordinates, heading, and battery state), $\texttt{target\_alert}$ (multispectral victim coordinates, bounding box confidence, and detector metadata), and $\texttt{map\_sync}$ (sector occupancy and dynamic failover claims).
+
+Each node maintains a neighbor subscription manifest $\mathcal{S}_j \subset \mathcal{T}$. Before committing an outbound transmission over the physical RF layer, the EdgeBroker evaluates subscriber interest:
 \begin{equation}
-    PL(d) = 20 \log_{10}(d) + 20 \log_{10}(f) - 27.55 + X_\sigma
+    \text{Filter}(m, j) = \begin{cases}
+        \text{Transmit}, & \text{if } \text{topic}(m) \in \mathcal{S}_j \\
+        \text{Suppress}, & \text{otherwise}
+    \end{cases}
 \end{equation}
-where $X_\sigma \sim \mathcal{N}(0, \sigma^2)$ is a zero-mean Gaussian random variable representing shadowing clutter ($\sigma = 7.5\,\text{dB}$ for post-disaster debris). The observed Signal-to-Noise Ratio (SNR) at receiver $j$ from transmitter $i$ is:
+If neighbor $j$ is not subscribed to topic $(m)$, the transmission is suppressed at the application layer, dramatically cutting spectral occupancy and RF contention. Furthermore, to eliminate cyclic message re-broadcasting and infinite routing loops across the ad-hoc mesh, every message carries a globally unique identifier $\text{UUID}_k$. Each EdgeBroker maintains a local seen-set $\mathcal{H}_i$; if $\text{UUID}_k \in \mathcal{H}_i$, downstream re-propagation is suppressed immediately.
+
+\subsubsection{Log-Distance RF Channel Physics}
+Physical layer propagation across carrier frequency $f = 5.0\,\text{GHz}$ is modeled via free-space path loss, log-normal shadow fading, and obstacle attenuation:
 \begin{equation}
-    \text{SNR}_{ij}(d) = P_{\text{tx}} + G_{\text{tx}} + G_{\text{rx}} - PL(d) - P_{\text{noise}}
+    PL(d) = 20 \log_{10}(d) + 20 \log_{10}(f \cdot 10^3) - 27.55 + X_\sigma + L_{\text{obs}}
 \end{equation}
-where $P_{\text{tx}} = 33\,\text{dBm}\,(2\,\text{W})$, antenna gains $G_{\text{tx}} = G_{\text{rx}} = 2.15\,\text{dBi}$, and thermal noise floor $P_{\text{noise}} = -95\,\text{dBm}$. The dynamic Packet Error Rate (PER) is modeled via a generalized logistic link:
+where $d$ is the 3D Euclidean distance between UAVs in meters, $X_\sigma \sim \mathcal{N}(0, \sigma^2)$ is a Gaussian shadow fading random variable ($\sigma = 7.5\,\text{dB}$ for post-disaster debris clutter), and $L_{\text{obs}} = 15.0\,\text{dB}$ represents non-line-of-sight concrete attenuation. The received Signal-to-Noise Ratio (SNR) between UAV $i$ and peer $j$ is:
+\begin{equation}
+    \text{SNR}_{ij}(d) = P_{\text{tx}} - PL(d) - P_{\text{noise}}
+\end{equation}
+where transmitter power $P_{\text{tx}} = 30\,\text{dBm}\,(1.0\,\text{W})$ and thermal noise floor $P_{\text{noise}} = -90\,\text{dBm}$.
+
+Dynamic Packet Error Rate (PER) is governed by a generalized logistic waterfall link:
 \begin{equation}
     \text{PER}(\text{SNR}) = \frac{1}{1 + \exp\left( k \cdot (\text{SNR} - \text{SNR}_{\text{thresh}}) \right)}
 \end{equation}
-with $k = 0.5$ and $\text{SNR}_{\text{thresh}} = 10.0\,\text{dB}$.
+where steepness parameter $k = 0.5$ and transition cutoff $\text{SNR}_{\text{thresh}} = 15.0\,\text{dB}$.
 
-When $\text{PER}_{ij} > \gamma_{\text{drop}}$, target alert packets $m_k$ are not discarded; rather, the localized EdgeBroker enqueues them into a persistent FIFO QoS 1 buffer:
+\subsubsection{Opportunistic QoS 1 Store-and-Forward Buffering}
+In standard MQTT, QoS~0 drops packets if physical transmission fails, whereas QoS~1 mandates delivery acknowledgment. When severe path loss or obstacle shadowing causes link dropouts ($\text{SNR}_{ij} < 15.0\,\text{dB}$ or $\text{PER}_{ij} > 0.20$), target alert packets are not discarded. Instead, the EdgeBroker enqueues the serialized payload into peer-specific FIFO QoS~1 buffers:
 \begin{equation}
-    \mathcal{Q}_i = \left\{ m_k \;\middle|\; \text{SNR}_{ij} < \text{SNR}_{\text{thresh}} \right\}
+    \mathcal{Q}_{ij} = \left\{ m_k \;\middle|\; \text{SNR}_{ij} < \text{SNR}_{\text{thresh}} \right\}
 \end{equation}
-When UAVs converge within RF range during criss-crossing search sweeps or Return-to-Launch (RTL) flight at the Ground Control Station, buffers are flushed via high-throughput proximity bursts.
+Whenever a UAV converges within direct communication range of a peer ($d_{ij} < 300\,\text{m}$), or during transit convergence near the Base Station, SNR rises above threshold ($\text{PER}_{ij} < 0.20$), triggering opportunistic buffer flushes. The buffered messages are re-transmitted in high-throughput proximity bursts, progressively synchronizing target registries across the swarm without central server dependency.
 
-\subsection{Energy-Weighted Centroidal Voronoi Tessellation}
-Let $\Omega \subset \mathbb{R}^2$ represent the bounded search arena. The swarm consists of $n$ active UAVs with spatial coordinates $\mathbf{x}_i = (x_i, y_i)$. In standard CVT, cells $V_i$ are assigned via Euclidean distance. Under EW-CVT, the assignment evaluates the power distance weighted by residual battery $B_i(t)$:
+\begin{figure*}[htbp]
+\centering
+\includegraphics[height=3.1cm,keepaspectratio]{sar_network_and_mission_performance.png}
+\caption{System Performance Characterization: (Left) Swarm area coverage progression and DTN store-and-forward consensus propagation over simulated mission time; (Right) FANET RF physical channel degradation displaying observed Signal-to-Noise Ratio (SNR dB) and empirical Packet Error Rate (PER) vs. 3D inter-UAV distance under severe disaster obstacle shadowing ($\sigma = 7.5\,\text{dB}$).}
+\label{fig:perf}
+\end{figure*}
+
+\subsection{Base Station Launch Corridors and Dual-Speed Envelope}
+To eliminate launch congestion and mid-air trajectory collisions, all UAVs launch synchronously from designated launch pads at a unified Ground Control Station (GCS) staging area located at the South-West boundary ($5\%$ arena offset).
+
+Flight control operates under a dual-speed flight envelope:
+\begin{equation}
+    v(t) = \begin{cases}
+        50.0\,\text{m/s}, & \text{state} \in \{\text{TRANSIT, RETURNING}\} \\
+        32.0\,\text{m/s}, & \text{state} = \text{SEARCHING} \\
+        0.0\,\text{m/s}, & \text{state} \in \{\text{LANDED, CRASHED}\}
+    \end{cases}
+\end{equation}
+During the transit phase, UAVs dash along non-overlapping radial corridors toward their assigned search sectors. Upon entering assigned boundaries, UAVs decelerate to $32.0\,\text{m/s}$ optimal optical search cruise to maintain adequate camera frame overlap. Waypoints within assigned sectors are sequenced using greedy nearest-neighbor Euclidean minimization outward from the base station.
+
+\subsection{Energy-Weighted Centroidal Voronoi Tessellation (EW-CVT)}
+Let $\Omega \subset \mathbb{R}^2$ represent the bounded search arena. The swarm consists of $n$ active UAVs with spatial coordinates $\mathbf{x}_i = (x_i, y_i)$. Under EW-CVT, the territorial assignment evaluates the power distance weighted by residual battery $B_i(t)$:
 \begin{equation}
     d_w(\mathbf{p}, \mathbf{x}_i) = \frac{\|\mathbf{p} - \mathbf{x}_i\|^2}{w_i(t)}
 \end{equation}
@@ -121,14 +175,14 @@ where the dynamic energy weight $w_i(t)$ is defined as:
 \begin{equation}
     w_i(t) = \left( \frac{B_i(t)}{B_{\text{max}}} \right)^\alpha
 \end{equation}
-Here $\alpha \ge 0$ is the EW-CVT energy weighting sensitivity exponent. The theoretical mass centroid $C_i^*$ of Voronoi cell $V_i$ is computed as:
+Here $\alpha \ge 0$ is the EW-CVT energy weighting sensitivity exponent ($\alpha = 0$ corresponds to standard unweighted CVT; $\alpha = 1.0$ provides linear energy balancing). The theoretical mass centroid $C_i^*$ of Voronoi cell $V_i$ is computed as:
 \begin{equation}
     C_i^* = \frac{\int_{V_i} \mathbf{p} \cdot \rho(\mathbf{p}) \, d\mathbf{p}}{\int_{V_i} \rho(\mathbf{p}) \, d\mathbf{p}}
 \end{equation}
-where $\rho(\mathbf{p})$ represents a prior spatial victim distribution density.
+where $\rho(\mathbf{p})$ represents a prior spatial target density.
 
-\subsection{Dual-Threshold Hysteresis Flight Control}
-Continuous recalculation of $w_i(t)$ and $C_i^*$ causes high-frequency oscillatory chattering. We introduce a Dual-Threshold Hysteresis Loop that locks updates until kinetic and energy thresholds are exceeded:
+\subsection{Dual-Threshold Anti-Chattering Hysteresis Control}
+Continuous updates of $w_i(t)$ and $C_i^*$ induce high-frequency trajectory chattering. We introduce a Dual-Threshold Hysteresis Loop that locks updates until kinetic and energy thresholds are exceeded:
 
 \subsubsection{Battery Decay Hysteresis ($\tau_\epsilon$)}
 Let $t_k$ denote the timestamp of the last executed partition update. The effective generator weight $w_i(t)$ evaluated at time $t$ is locked unless discharge exceeds margin $\tau_\epsilon$:
@@ -141,7 +195,7 @@ Let $t_k$ denote the timestamp of the last executed partition update. The effect
 where $\tau_\epsilon = 0.02 \times B_{\text{max}}$ (a discrete $2\%$ discharge lock).
 
 \subsubsection{Spatial Centroid Hysteresis ($\tau_\delta$)}
-Even after battery discharge, minor adjacent boundary adjustments may shift theoretical centroid $C_i^*$ by only centimeters. Waypoint commands $C_i(t)$ are filtered via:
+Even after battery discharge, minor adjacent boundary adjustments may shift theoretical centroid $C_i^*$ by only centimeters. Waypoint commands $C_i(t)$ sent to the autopilot are filtered via:
 \begin{equation}
     C_i(t) = \begin{cases}
         C_i^*, & \text{if } \|C_i^* - C_i(t_k)\| \ge \tau_\delta \\
@@ -151,41 +205,53 @@ Even after battery discharge, minor adjacent boundary adjustments may shift theo
 where $\tau_\delta = 5.0\,\text{m}$, calibrated against UAV turning radius and camera FOV.
 
 \subsubsection{Forced-Override Condition (Node Failure)}
-During catastrophic events (e.g., in-flight motor failure), steady-state hysteresis must be bypassed. Let $\mathcal{N}(t)$ denote the active network topology vector derived from Data Link Layer (DLL) heartbeats. The master update trigger $\mathcal{U}_i(t)$ is formulated as:
+During catastrophic events (e.g., in-flight motor failure), steady-state hysteresis must be bypassed. Let $\mathcal{N}(t)$ denote the active network topology vector derived from Data Link Layer (DLL) heartbeats. The master update trigger $\mathcal{U}_i(t)$ evaluates as:
+\begin{multline}
+    \mathcal{U}_i(t) = \left( (B_i(t_k) - B_i(t) \ge \tau_\epsilon) \land (\|C_i^* - C_i(t_k)\| \ge \tau_\delta) \right) \\
+    \lor (\mathcal{N}(t) \ne \mathcal{N}(t_k))
+\end{multline}
+If $\mathcal{U}_i(t) = \text{True}$, UAV $i$ updates its partition, commits baseline $t_k \leftarrow t$, and adjusts its route. If topology drops ($n \to n-1$), the right-hand term forces an immediate hard update, overriding $\tau_\epsilon$ and $\tau_\delta$. Abandoned sectors are adopted by surviving peers minimizing power-distance cost:
 \begin{equation}
-    \mathcal{U}_i(t) = \left( (B_i(t_k) - B_i(t) \ge \tau_\epsilon) \land (\|C_i^* - C_i(t_k)\| \ge \tau_\delta) \right) \lor (\mathcal{N}(t) \ne \mathcal{N}(t_k))
+    \text{Cost}(p, s) = \frac{\|\mathbf{x}_p - \mathbf{c}_s\|^2}{\max\left(0.01, \, \left(\frac{B_p(t)}{B_{\text{max}}}\right)^\alpha\right)}
 \end{equation}
-If $\mathcal{U}_i(t) = \text{True}$, UAV $i$ updates its Voronoi partition, commits baseline $t_k \leftarrow t$, and commands the flight controller. If topology changes ($\mathcal{N}(t) \ne \mathcal{N}(t_k)$), the right-hand term forces an instantaneous hard update, overriding $\tau_\epsilon$ and $\tau_\delta$.
 
 \begin{algorithm}[t]
-\caption{Dual-Threshold Hysteresis EW-CVT Flight Control}
-\label{alg:hysteresis}
+\caption{Autonomous Swarm Search and Failover Execution}
+\label{alg:swarm_sar}
 \begin{algorithmic}[1]
-\REQUIRE Drone $i$, baseline $(t_k, B_i(t_k), C_i(t_k), \mathcal{N}(t_k))$, thresholds $(\tau_\epsilon, \tau_\delta, \alpha)$
-\STATE Read telemetry: current time $t$, battery $B_i(t)$, topology $\mathcal{N}(t)$
-\STATE Compute theoretical centroid $C_i^*$ via EW-CVT (Eq. 6--8)
-\STATE $\Delta B \leftarrow B_i(t_k) - B_i(t)$
-\STATE $\Delta C \leftarrow \|C_i^* - C_i(t_k)\|$
-\STATE $\text{topo\_changed} \leftarrow (\mathcal{N}(t) \ne \mathcal{N}(t_k))$
-\STATE $\mathcal{U}_i(t) \leftarrow (\Delta B \ge \tau_\epsilon \land \Delta C \ge \tau_\delta) \lor \text{topo\_changed}$
-\IF{$\mathcal{U}_i(t)$ is True}
-    \STATE $t_k \leftarrow t$, \; $B_i(t_k) \leftarrow B_i(t)$
-    \STATE $w_i(t) \leftarrow (B_i(t)/B_{\text{max}})^\alpha$
-    \STATE $C_i(t) \leftarrow C_i^*$
-    \STATE $\mathcal{N}(t_k) \leftarrow \mathcal{N}(t)$
-    \STATE Steer autopilot toward $C_i(t)$
-\ELSE
-    \STATE Maintain commanded waypoint $C_i(t) \leftarrow C_i(t_k)$
-    \STATE Suppress heading jitter; accumulate kinetic energy saved
-\ENDIF
+\REQUIRE Fleet $N$, Base Station pad $\mathbf{x}_{\text{base}}$, parameters $(\alpha, \tau_\epsilon, \tau_\delta)$
+\STATE Launch swarm along radial transit corridors at $v = 50\,\text{m/s}$
+\FOR{each simulation tick $t$}
+    \STATE Update topology $\mathcal{N}(t) \leftarrow \{i \mid \text{UAV } i \text{ is alive}\}$
+    \IF{$\mathcal{N}(t) \ne \mathcal{N}(t_k)$}
+        \STATE Extract abandoned sectors from failed UAVs
+        \FOR{each abandoned sector $s$}
+            \STATE Assign $s$ to $\arg\min_{p \in \mathcal{N}(t)} \text{Cost}(p, s)$ (Eq.~15)
+        \ENDFOR
+        \STATE Force hard update trigger $\mathcal{U}_i(t) \leftarrow \text{True}$
+    \ENDIF
+    \FOR{each active UAV $i \in \mathcal{N}(t)$}
+        \STATE Measure $B_i(t)$ and compute theoretical $C_i^*$ (Eq.~11)
+        \STATE Evaluate $\mathcal{U}_i(t)$ via Dual-Threshold Loop (Eq.~14)
+        \IF{$\mathcal{U}_i(t)$ is True}
+            \STATE Commit $t_k \leftarrow t$, $w_i(t) \leftarrow (B_i(t)/B_{\text{max}})^\alpha$, $C_i(t) \leftarrow C_i^*$
+        \ELSE
+            \STATE Lock commanded waypoint $C_i(t) \leftarrow C_i(t_k)$
+        \ENDIF
+        \STATE Navigate toward $C_i(t)$; execute 4-channel inference
+        \STATE Broadcast alerts; buffer undelivered packets in $\mathcal{Q}_i$
+    \ENDFOR
+\ENDFOR
+\STATE Return surviving fleet to Base Station; flush QoS 1 buffers
 \end{algorithmic}
 \end{algorithm}
 
 \subsubsection{Kinetic Propulsion Energy Model}
 Level flight propulsion power $P_{\text{propulsion}}(v)$ at airspeed $v$ is modeled as:
-\begin{equation}
-    P_{\text{prop}}(v) = P_0 \left(1 + \frac{3 v^2}{v_{\text{tip}}^2}\right) + P_i \left( \sqrt{1 + \frac{v^4}{4 v_0^4}} - \frac{v^2}{2 v_0^2} \right)^{\frac{1}{2}} + \frac{1}{2} d_0 \rho s A v^3
-\end{equation}
+\begin{multline}
+    P_{\text{prop}}(v) = P_0 \left(1 + \frac{3 v^2}{v_{\text{tip}}^2}\right) \\
+    + P_i \left( \sqrt{1 + \frac{v^4}{4 v_0^4}} - \frac{v^2}{2 v_0^2} \right)^{\frac{1}{2}} + \frac{1}{2} d_0 \rho s A v^3
+\end{multline}
 The kinetic energy preserved by suppressing a chattering turn is:
 \begin{equation}
     E_{\text{saved}} = \frac{1}{2} I_{\text{yaw}} \omega_{\text{yaw}}^2 + \int_0^{\Delta t_{\text{turn}}} P_{\text{prop}}(v) \, dt
@@ -193,90 +259,128 @@ The kinetic energy preserved by suppressing a chattering turn is:
 
 \section{Experimental Evaluation and Analysis}
 
-\subsection{Experimental Setup and Implementation}
-The proposed framework was evaluated using the real-world multispectral RGBT DronePerson benchmark dataset, comprising paired visible and thermal aerial frames collected at varying altitudes ($25\text{--}50\,\text{m}$) over disaster-like environments. World sectors were instantiated within the FlyNetSim simulation engine over two extensive footprints:
+\subsection{Experimental Setup and Dataset Benchmark}
+The proposed framework was evaluated using the real-world multispectral RGBT DronePerson benchmark dataset, comprising paired visible and thermal aerial frames collected at altitudes of $25\text{--}50\,\text{m}$ AGL over complex wilderness and debris scenarios. The dataset comprises $4,900$ training images ($54,974$ annotated human boxes) and $1,225$ validation frames ($14,460$ annotated victim instances).
+
+The autonomous swarm framework was evaluated on an expansive post-disaster search mission within the SARWorld environment:
 \begin{itemize}
-    \item \textbf{Setup A}: $3200\,\text{m} \times 3200\,\text{m}$ ($10.24\,\text{km}^2$), 6 UAVs, $25$ sectors.
-    \item \textbf{Setup B}: $5000\,\text{m} \times 5000\,\text{m}$ ($25.0\,\text{km}^2$), 10 UAVs, injected motor failure on UAV 4 at $T=80\,\text{s}$.
+    \item \textbf{Search Arena}: $4000\,\text{m} \times 4000\,\text{m}$ ($16.0\,\text{km}^2$), divided into a $5 \times 5$ grid of $25$ search sectors ($800\,\text{m} \times 800\,\text{m}$ each).
+    \item \textbf{Swarm Fleet}: $10$ autonomous UAVs launching synchronously from the unified Base Station pad at $(200.0\,\text{m}, 200.0\,\text{m})$ ($5\%$ South-West arena margin).
+    \item \textbf{Ground Truth Targets}: $259$ victim annotations distributed across search sectors.
+    \item \textbf{In-Flight Hardware Failure}: Catastrophic motor failure injected on UAV~2 at $T=75.0\,\text{s}$ at spatial coordinates $(1352.8\,\text{m}, 1653.9\,\text{m})$.
 \end{itemize}
 
-All UAVs initiate from a unified Ground Control Station launch pad (SW corner at $5\%$ arena offset). Drones utilize a dual-speed flight envelope: high-speed transit dash at $50\,\text{m/s}$ along non-overlapping radial corridors, decelerating to $32\,\text{m/s}$ optical search cruise upon reaching assigned sectors.
-
-\subsection{Perception Performance Comparison}
-We trained the 4-channel YOLOv8n-P2 detector for 40 epochs on dual NVIDIA GPUs and compared it against single-modality baselines (RGB-only, Thermal-only) and the standard YOLOv8n (P3--P5) feature pyramid.
+\subsection{Perception Layer Benchmark}
+The 4-channel YOLOv8n-P2 neural detector was trained for 40 epochs on dual Tesla T4 GPUs using AdamW optimizer ($\text{lr} = 0.002$). Input channels $[R, G, B, \text{Thermal}]$ were merged at the stem convolution with channel-averaged transfer learning initialization. Table~\ref{tab:perception} reports the architectural specifications and empirical validation metrics on the $1,225$-image test split.
 
 \begin{table}[htbp]
-\caption{Multispectral Detection Performance Comparison}
+\caption{Multispectral YOLOv8n-P2 Perception Backbone Specification and Empirical Validation Metrics (RGBT DronePerson Dataset)}
 \label{tab:perception}
 \centering
-\begin{tabular}{lcccc}
+\resizebox{\columnwidth}{!}{
+\begin{tabular}{lc}
 \toprule
-\textbf{Model \& Modality} & \textbf{Precision} & \textbf{Recall} & \textbf{mAP}$_{50}$ & \textbf{AP}$_S$ ($<32^2\text{px}$) \\
+\textbf{Model Parameter / Evaluation Metric} & \textbf{Empirical Value} \\
 \midrule
-YOLOv8n (RGB-only) & 0.412 & 0.528 & 0.463 & 0.214 \\
-YOLOv8n (Thermal-only) & 0.447 & 0.589 & 0.512 & 0.268 \\
-YOLOv8n (RGB+T Early) & 0.461 & 0.672 & 0.581 & 0.312 \\
-\textbf{YOLOv8n-P2 (RGB+T Proposed)} & \textbf{0.481} & \textbf{0.768} & \textbf{0.684} & \textbf{0.429} \\
+Input Tensor Ordering \& Dimensions & 4-Channel $[R, G, B, \text{Thermal}]$, $640 \times 512 \times 4$ \\
+Total Model Layers (fused) & 90 layers (29 architectural layers) \\
+Multiscale Detection Heads & 4 heads: P2 (stride 4), P3 (8), P4 (16), P5 (32) \\
+High-Resolution P2 Feature Map & $160 \times 128$ receptive field \\
+Trainable Parameters & 2,921,316 ($2.92\,\text{M}$) \\
+Computational Complexity & 12.2 GFLOPs \\
+Dataset Benchmark Split & 4,900 train / 1,225 val images (14,460 victims) \\
+Training Schedule & 40 epochs, AdamW ($\text{lr}=0.002$), dual Tesla T4 \\
+\midrule
+Validation Precision ($P$) & \textbf{0.670} (67.0\%) \\
+Validation Recall ($R$) & \textbf{0.625} (62.5\%) \\
+Mean Average Precision ($\text{mAP}_{50}$) & \textbf{0.646} (64.6\%) \\
+Mean Average Precision ($\text{mAP}_{50-95}$) & \textbf{0.238} (23.8\%) \\
+Preprocess Latency (per frame) & 1.1 ms \\
+Edge Neural Inference Latency & 4.9 ms (Tesla T4 GPU) \\
+Postprocess Latency (NMS) & 1.3 ms \\
+Total End-to-End Latency & 7.3 ms ($>136\,\text{FPS}$) \\
 \bottomrule
 \end{tabular}
+}
 \end{table}
 
-As documented in Table I, the proposed 4-channel YOLOv8n-P2 achieves a superior recall of $76.83\%$ and boosts small-target average precision ($\text{AP}_S$) by $+37.5\%$ over standard RGB+T YOLOv8n ($0.429$ vs. $0.312$). The stride-4 P2 head retains fine-grained features critical for detecting small human victims under foliage and shadow occlusion.
-
-\subsection{Swarm Spatial Exploration and Network Dynamics}
-In Setup A ($10.24\,\text{km}^2$, 6 UAVs), the swarm swept all $25$ sectors within $234\,\text{s}$, achieving $100.0\%$ area survey coverage. The time-to-first-detection (TTFD) was $1.0\,\text{s}$. The swarm identified $199$ verified targets out of $259$ ground-truth human annotations with a mean localization error of $3.31\,\text{m}$ (RMSE $6.87\,\text{m}$).
+The P2 stride-4 head extracts feature maps at $160 \times 128$ resolution directly from layer 2 of the backbone. Because human victims viewed from $25\text{--}50\,\text{m}$ AGL often subtend fewer than $32 \times 32$ pixels, standard stride-8 pyramids (P3) suffer from severe feature downsampling. The P2 lateral skip connection preserves subtle thermal contrasts against rubble, enabling the model to attain $0.646\,\text{mAP}_{50}$ and $0.670$ precision while sustaining high-speed edge throughput ($136.9\,\text{FPS}$).
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.92\linewidth]{sar_mission_spatial_validation.png}
-\caption{Spatial validation map of the 6-UAV search mission across the $3.2\,\text{km} \times 3.2\,\text{km}$ arena, showing Base Station radial corridors, flight sweeps, true targets (TP), and ground truth annotations.}
+\includegraphics[width=0.82\columnwidth]{sar_mission_spatial_validation.png}
+\caption{Spatial validation map of the 10-UAV SAR mission over a $16.0\,\text{km}^2$ disaster arena ($4000\,\text{m} \times 4000\,\text{m}$): Radiating Base Station transit corridors from $(200\,\text{m}, 200\,\text{m})$, patrol tracks, confirmed True Positive detections (TP: 184), missed victims (FN: 75), false alarms (FP: 337), and in-flight failover recovery following UAV~2 failure at $T=75.0\,\text{s}$ (sectors 17 and 23 reallocated to surviving peers).}
 \label{fig:spatial}
 \end{figure}
 
-Due to multi-kilometer inter-UAV dispersion ($d > 2.5\,\text{km}$), the direct point-to-point Packet Delivery Ratio (PDR) dropped to $13.76\%$, triggering the EdgeBroker DTN mechanism. Exactly $1,699$ undelivered packets were stored in QoS 1 buffers. During egress convergence toward the Base Station, high-SNR proximity bursts flushed buffered registries, elevating swarm consensus to $80.5\%$. In Setup B ($25.0\,\text{km}^2$), consensus reached $97.7\%$ upon full fleet return.
+\subsection{Swarm Spatial Coverage and In-Flight Failover}
+During the live 10-UAV mission sweep ($16.0\,\text{km}^2$), the swarm swept all $25$ sectors within $191.0\,\text{s}$, achieving $100.0\%$ area survey coverage (Fig.~\ref{fig:spatial}). The Time-to-First-Detection (TTFD) occurred at $T=1.0\,\text{s}$ by UAV~0. The fleet discovered $184$ verified human targets out of $259$ ground-truth victims ($71.04\%$ recall, $35.32\%$ precision, $0.4718$ F1-score) with a mean spatial localization error of $2.15\,\text{m}$ (RMSE $3.22\,\text{m}$).
 
-\subsection{EW-CVT Workload Balancing and Anti-Chattering}
-To assess the effect of EW-CVT and hysteresis, we tracked battery variance and kinetic turning effort across the fleet.
+At $T=75.0\,\text{s}$, UAV~2 suffered catastrophic propulsion failure at $(1352.8\,\text{m}, 1653.9\,\text{m})$. The Data Link Layer heartbeat loss triggered the forced-override condition instantaneously ($\mathcal{N}(t) \ne \mathcal{N}(t_k)$). Surviving UAVs dynamically re-partitioned the operational area using power-distance cost (Eq.~15), executing 7 forced overrides to adopt abandoned sectors [17, 23] (reassigned to UAV~3 and UAV~1, respectively). All $25$ sectors were successfully surveyed, validating full autonomous recovery without human intervention.
+
+\subsection{Decentralized Mesh Telemetry and Delay-Tolerant Consensus}
+Over multi-kilometer inter-drone baselines ($d > 2.5\,\text{km}$), log-distance path loss and obstacle shadowing ($\sigma = 7.5\,\text{dB}$) severely degraded line-of-sight propagation, yielding a direct Packet Delivery Ratio (PDR) of only $6.96\%$ (310 delivered out of 4,454 published packets, Fig.~\ref{fig:perf}, Right). In a conventional centralized MQTT deployment, this prolonged disconnection would sever communication with the central broker, dropping all telemetry and precluding cooperative target consensus.
+
+Under our decentralized architecture, each node's embedded EdgeBroker autonomously buffered $4,144$ undelivered alert messages in peer-specific QoS~1 store-and-forward queues. DMLT topic filtering successfully suppressed redundant retransmissions across non-subscribed channels. Throughout the search phase, opportunistic inter-UAV encounters sustained an instantaneous target consensus of $59.40\%$. During mission return-to-base convergence toward the Ground Control Station launch pad ($d < 300\,\text{m}$), high-SNR proximity bursts triggered complete queue flushes, elevating swarm-wide target consensus to $100.0\%$ without human intervention or central server infrastructure (Fig.~\ref{fig:perf}, Left).
+
+\subsection{EW-CVT Workload Equilibrium and Anti-Chattering Hysteresis}
+To quantify the impact of the Dual-Threshold Hysteresis Loop and EW-CVT energy equity, we benchmarked the operational telemetry against an unconstrained baseline (Table~\ref{tab:system}).
 
 \begin{table}[htbp]
-\caption{System-Level Swarm Mission and EW-CVT Performance}
+\caption{System-Level Swarm Mission and EW-CVT Performance Summary ($16.0\,\text{km}^2$ Arena, 10-UAV Fleet)}
 \label{tab:system}
 \centering
+\renewcommand{\arraystretch}{0.84}
+\resizebox{\columnwidth}{!}{
 \begin{tabular}{lcc}
 \toprule
-\textbf{Performance Metric} & \textbf{Setup A (6 UAVs)} & \textbf{Setup B (10 UAVs)} \\
+\textbf{Experimental Metric} & \textbf{Unconstrained Baseline} & \textbf{Proposed Framework} \\
 \midrule
-Search Domain & $3.2\,\text{km} \times 3.2\,\text{km}$ & $5.0\,\text{km} \times 5.0\,\text{km}$ \\
-Total Area Coverage & 100.0\% (25/25) & 100.0\% (25/25) \\
-Discovered Human Targets & 199 / 259 & 185 / 259 \\
-Mean Spatial Localization Error & 3.31 m & 2.60 m \\
-Injected Hardware Failure & None & UAV 4 (T=80s) \\
-Failover Coverage Recovery & N/A & 100\% (S16, S20) \\
-Total Hysteresis Evaluations & 982 & 1,460 \\
-Steady-State Updates Executed & 13 & 28 \\
-Chattering Events Suppressed & 969 & 1,432 \\
-\textbf{Chattering Suppression Rate} & \textbf{98.68\%} & \textbf{98.08\%} \\
-\textbf{Kinetic Energy Preserved} & \textbf{24,141.85 J} & \textbf{36,890.12 J} \\
-Jain's Energy Fairness Index ($\mathcal{J}$) & 0.9998 & 0.9972 \\
-Fleet Battery Spread ($\Delta B$) & 3.75\% & 8.75\% \\
-Min Remaining Battery Margin & +73.36\% & +68.50\% \\
+Search Arena Dimensions & $4000\,\text{m} \times 4000\,\text{m}$ & $4000\,\text{m} \times 4000\,\text{m}$ \\
+Total Operational Footprint & $16.0\,\text{km}^2$ (25 sectors) & $16.0\,\text{km}^2$ (25 sectors) \\
+Unified Base Station Origin & $(200\,\text{m}, 200\,\text{m})$ & $(200\,\text{m}, 200\,\text{m})$ \\
+Initial Autonomous Swarm Fleet & 10 UAVs & 10 UAVs \\
+Mid-Mission In-Flight Failure & UAV 2 ($T=75.0\,\text{s}$) & UAV 2 ($T=75.0\,\text{s}$) \\
+Surviving Fleet Operational Size & 9 UAVs & 9 UAVs \\
+Area Survey Coverage & Incomplete ($92.0\%$) & \textbf{100.0\% (25/25)} \\
+Total Mission Sweep Time & $191.0\,\text{s}$ & $191.0\,\text{s}$ \\
+Time-to-First-Detection (TTFD) & $1.0\,\text{s}$ & \textbf{1.0 s} \\
+Ground Truth Human Victims & 259 victims & 259 victims \\
+Confirmed True Positives (TP) & 184 victims & \textbf{184 victims} \\
+False Positive Alarms (FP) & 337 targets & 337 targets \\
+Missed False Negatives (FN) & 75 victims & 75 victims \\
+In-Flight Perception Precision & 35.32\% & 35.32\% \\
+In-Flight Victim Recall Rate & 71.04\% & \textbf{71.04\%} \\
+Perception F1-Score & 0.4718 & 0.4718 \\
+Mean Spatial Localization Error & 2.15 m & \textbf{2.15 m} \\
+RMSE Localization Error & 3.22 m & 3.22 m \\
+Direct Packet Delivery Ratio (PDR) & 6.96\% (310/4,454) & 6.96\% (310/4,454) \\
+QoS 1 Buffered Alert Messages & 0 (dropped) & \textbf{4,144 packets} \\
+Instantaneous Swarm Consensus & 6.96\% & \textbf{59.40\%} \\
+Post-RTL Swarm Target Consensus & 6.96\% & \textbf{100.0\%} \\
+\midrule
+Total Hysteresis Evaluations & 1,267 ticks & 1,267 ticks \\
+Discrete Trajectory Updates ($t_k \leftarrow t$) & 1,267 updates & \textbf{20 updates} \\
+Chattering Maneuvers Suppressed & 0 turns (0.0\%) & \textbf{1,247 turns (98.42\%)} \\
+Kinetic Propulsion Energy Preserved & 0.0 J & \textbf{29,493.65 J (29.49 kJ)} \\
+Forced Overrides on Node Loss & N/A & 7 overrides \\
+Failover Coverage Guarantee & Incomplete / Manual & \textbf{100.0\% Reallocated} \\
+EW-CVT Energy Exponent ($\alpha$) & $\alpha = 0.0$ (Unweighted) & \textbf{$\alpha = 1.0$ (Proposed)} \\
+Jain's Energy Fairness Index ($\mathcal{J}$) & 0.9997 & \textbf{0.9991} \\
+Fleet Residual Battery Spread ($\Delta B$) & 5.08\% & \textbf{8.41\%} \\
+Fleet Battery Standard Deviation ($\sigma_B$) & 1.57\% & \textbf{2.84\%} \\
+Fleet Endurance Safety Margin & +78.46\% & \textbf{+75.13\%} \\
 \bottomrule
 \end{tabular}
+}
 \end{table}
 
-As shown in Table II, without hysteresis the flight controllers would have undergone 982 trajectory adjustments. The dual-threshold loop suppressed 969 jitter maneuvers ($98.68\%$ suppression rate), reducing physical corrections to just 13 steady updates and saving $24.14\,\text{kJ}$ of rotor propulsion energy.
+In an unconstrained Voronoi implementation, continuous computational ticks and sensor noise would trigger 1,267 trajectory perturbations. The dual-threshold hysteresis loop suppressed 1,247 oscillatory turns ($98.42\%$ suppression rate), executing only 20 discrete updates (13 steady updates and 7 failover overrides). This preserved $29,493.65\,\text{J}$ ($29.49\,\text{kJ}$) of kinetic rotor propulsion energy across the fleet.
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.92\linewidth]{sar_network_and_mission_performance.png}
-\caption{Exploration dynamics: (Left) Area coverage rate and consensus spread vs. time; (Right) Inter-UAV distance vs. observed SNR and dynamic PER curve.}
-\label{fig:network}
-\end{figure}
-
-The EW-CVT parameter $\alpha = 1.0$ maintained near-perfect fleet energy equity, yielding a Jain's Fairness Index of $\mathcal{J} = 0.9998$ with a residual battery spread of only $\Delta B = 3.75\%$ across the active drones. Under Setup B's catastrophic failure, the forced-override condition triggered within $1.0\,\text{s}$, reallocating abandoned Sectors 16 and 20 to UAV 3 via power-distance cost and preserving $100\%$ area coverage.
+Furthermore, the EW-CVT energy weighting exponent $\alpha = 1.0$ dynamically balanced operational workloads, factoring residual battery reserves into failover reassignment costs. Surviving UAVs achieved a Jain's Energy Fairness Index of $\mathcal{J} = 0.9991$, maintaining a tight residual battery spread of $\Delta B = 8.41\%$ (min $90.13\%$, max $98.54\%$, mean $93.63\%$) with standard deviation $\sigma_B = 2.84\%$. Crucially, all 9 surviving UAVs concluded search sweeps with a $+75.13\%$ endurance safety margin above the mandatory $15\%$ Return-to-Launch safety threshold.
 
 \section{Conclusion}
-This paper presented an integrated autonomous multispectral UAV swarm framework for post-disaster search and rescue. By combining a 4-channel early-fusion YOLOv8n-P2 detector with a delay-tolerant FANET mesh broker and a Dual-Threshold Hysteresis EW-CVT flight controller, the system solves the triad of aerial small-target perception, multi-kilometer wireless disconnection, and boundary chattering instability. Extensive simulation across wide-area disaster environments confirmed $100\%$ survey coverage, $76.83\%$ victim recall, $98.68\%$ chattering suppression, and $24.14\,\text{kJ}$ of conserved kinetic energy. Future work will deploy the architecture onto physical quadrotor testbeds equipped with Jetson Orin edge processors and ad-hoc SDR transceivers.
+This paper presented an integrated, end-to-end autonomous multispectral UAV swarm framework for post-disaster search and rescue. By unifying a 4-channel early-fusion YOLOv8n-P2 detector with an RF physics-informed Delay-Tolerant EdgeBroker, a dual-speed Base Station flight corridor envelope, and an anti-chattering Dual-Threshold Hysteresis EW-CVT controller, the framework successfully overcomes the compounded bottlenecks of small-target aerial perception, multi-kilometer wireless disconnection, and flight path chattering instability. Extensive benchmark experiments across a $16.0\,\text{km}^2$ disaster arena with 10 UAVs demonstrated $100.0\%$ area survey coverage, $71.04\%$ in-flight victim recall ($2.15\,\text{m}$ localization accuracy, $3.22\,\text{m}$ RMSE), $98.42\%$ chattering suppression saving $29.49\,\text{kJ}$ of rotor energy, and autonomous in-flight failover recovery. Future work will deploy the architecture onto physical hexarotor testbeds equipped with Jetson Orin edge accelerators and software-defined radio transceivers.
 
 \balance
 \begin{thebibliography}{00}
@@ -298,6 +402,9 @@ This paper presented an integrated autonomous multispectral UAV swarm framework 
 \bibitem{ref16} J. G. Proakis and M. Salehi, \textit{Digital Communications}, 5th ed. New York: McGraw-Hill, 2008.
 \bibitem{ref17} R. K. Jain, D. M. Chiu, and W. R. Hawe, ``A quantitative measure of fairness and discrimination for resource allocation in shared computer systems,'' \textit{DEC Research Report TR-301}, 1984.
 \bibitem{ref18} Y. Zeng, R. Zhang, and T. J. Lim, ``Wireless communications with unmanned aerial vehicles: Opportunities and challenges,'' \textit{IEEE Commun. Mag.}, vol. 54, no. 5, pp. 36--42, 2016.
+\bibitem{ref19} J. Hu and P. X. Liu, ``Coordinated search and rescue with multiple autonomous aerial and ground vehicles,'' \textit{IEEE Trans. Ind. Inform.}, vol. 16, no. 9, pp. 6003--6012, 2020.
+\bibitem{ref20} P. J. Besl and N. D. McKay, ``A method for registration of 3-D shapes,'' \textit{IEEE Trans. Pattern Anal. Mach. Intell.}, vol. 14, no. 2, pp. 239--256, 1992.
+\bibitem{ref21} U. Hunkeler, H. L. Truong, and A. Stanford-Clark, ``MQTT-S---A publish/subscribe protocol for Wireless Sensor Networks,'' in \textit{Proc. 3rd Int. Conf. Commun. Syst. Softw. Middleware and Workshops (COMSWARE)}, 2008, pp. 791--798.
 \end{thebibliography}
 
 \end{document}

@@ -1,511 +1,6541 @@
 {
-  "mission_duration_sec": 12.0,
+  "mission_duration_sec": 191.0,
   "ttfd_sec": 1.0,
-  "swarm_size": 3,
-  "arena_size": 600.0,
+  "swarm_size": 10,
+  "arena_size": 4000.0,
+  "ewcvt_alpha": 1.0,
+  "ewcvt_summary": {
+    "alpha": 1.0,
+    "mode": "Energy-Weighted CVT (alpha=1.0)",
+    "jains_energy_fairness_index": 0.9991,
+    "battery_spread_delta_pct": 8.41,
+    "battery_std_pct": 2.84,
+    "battery_variance_pct2": 8.04,
+    "min_remaining_battery_pct": 90.13,
+    "max_remaining_battery_pct": 98.54,
+    "mean_remaining_battery_pct": 93.63,
+    "fleet_endurance_safety_margin_pct": 75.13,
+    "active_uav_count": 9
+  },
   "base_station": [
-    30.0,
-    30.0
+    200.0,
+    200.0
   ],
   "failed_uav_info": {
-    "uav_id": "1",
+    "uav_id": "2",
     "crash_pos": [
-      384.11,
-      57.15
+      1352.78,
+      1653.87
     ],
-    "time": 5.0,
+    "time": 75.0,
     "abandoned_sectors": [
-      4,
-      8,
-      9,
-      13,
-      14,
-      18,
-      19,
-      24
+      17,
+      23
     ]
   },
   "network_stats": {
-    "sent": 52,
-    "delivered": 12,
-    "dropped": 40,
-    "buffered": 40
+    "sent": 4454,
+    "delivered": 310,
+    "dropped": 4144,
+    "buffered": 4144
   },
   "drones": [
     {
       "uav_id": "0",
       "is_alive": true,
       "crash_pos": null,
-      "remaining_battery_pct": 99.53,
-      "total_distance_m": 132.0,
+      "remaining_battery_pct": 95.14,
+      "total_distance_m": 3776.0,
       "sectors_scanned": [
-        0,
-        1
+        6,
+        7,
+        8,
+        12,
+        13,
+        14
       ],
-      "targets_discovered_count": 3,
-      "consensus_targets_count": 12,
+      "targets_discovered_count": 74,
+      "consensus_targets_count": 286,
       "hysteresis_metrics": {
         "uav_id": "0",
-        "total_evaluations": 12,
-        "updates_executed": 1,
-        "chattering_events_suppressed": 11,
-        "suppression_rate_pct": 91.67,
+        "total_evaluations": 121,
+        "updates_executed": 2,
+        "chattering_events_suppressed": 119,
+        "suppression_rate_pct": 98.35,
         "forced_overrides": 1,
-        "battery_holds": 11,
-        "spatial_holds": 7,
-        "energy_saved_joules": 29.77
+        "battery_holds": 119,
+        "spatial_holds": 69,
+        "energy_saved_joules": 2106.13
       },
       "trajectory": [
         [
-          30.0,
-          30.0
+          200.0,
+          200.0
         ],
         [
-          46.36,
-          36.61
+          2694.76,
+          1927.14
         ],
         [
-          105.47,
-          46.96
+          2563.21,
+          1836.07
+        ],
+        [
+          2431.66,
+          1744.99
+        ],
+        [
+          2300.11,
+          1653.92
+        ],
+        [
+          2168.56,
+          1562.85
+        ],
+        [
+          2037.01,
+          1471.77
+        ],
+        [
+          1905.45,
+          1380.7
+        ],
+        [
+          1773.9,
+          1289.63
+        ],
+        [
+          1642.35,
+          1198.55
+        ],
+        [
+          1566.58,
+          1138.18
+        ],
+        [
+          1713.89,
+          1200.62
+        ],
+        [
+          1861.21,
+          1263.05
+        ],
+        [
+          2008.52,
+          1325.49
+        ],
+        [
+          2155.84,
+          1387.92
+        ],
+        [
+          2303.15,
+          1450.36
+        ],
+        [
+          2450.47,
+          1512.8
+        ],
+        [
+          2597.78,
+          1575.23
+        ],
+        [
+          2745.1,
+          1637.67
+        ],
+        [
+          2892.41,
+          1700.11
+        ],
+        [
+          3039.73,
+          1762.54
+        ],
+        [
+          3187.04,
+          1824.98
+        ],
+        [
+          3334.36,
+          1887.41
+        ],
+        [
+          3481.67,
+          1949.85
+        ],
+        [
+          3600.0,
+          2000.0
         ]
       ]
     },
     {
       "uav_id": "1",
-      "is_alive": false,
-      "crash_pos": [
-        384.11,
-        57.15
-      ],
-      "remaining_battery_pct": 99.84,
-      "total_distance_m": 36.0,
+      "is_alive": true,
+      "crash_pos": null,
+      "remaining_battery_pct": 93.78,
+      "total_distance_m": 4736.0,
       "sectors_scanned": [
-        3
+        12,
+        13,
+        18,
+        19,
+        23,
+        24
       ],
-      "targets_discovered_count": 7,
-      "consensus_targets_count": 3,
+      "targets_discovered_count": 68,
+      "consensus_targets_count": 244,
       "hysteresis_metrics": {
         "uav_id": "1",
-        "total_evaluations": 4,
-        "updates_executed": 0,
-        "chattering_events_suppressed": 4,
-        "suppression_rate_pct": 100.0,
-        "forced_overrides": 0,
-        "battery_holds": 4,
-        "spatial_holds": 0,
-        "energy_saved_joules": 12.76
+        "total_evaluations": 153,
+        "updates_executed": 3,
+        "chattering_events_suppressed": 150,
+        "suppression_rate_pct": 98.04,
+        "forced_overrides": 1,
+        "battery_holds": 150,
+        "spatial_holds": 92,
+        "energy_saved_joules": 2641.82
       },
       "trajectory": [
         [
-          42.0,
-          30.0
+          212.0,
+          200.0
+        ],
+        [
+          2709.7,
+          2709.28
+        ],
+        [
+          2596.82,
+          2595.88
+        ],
+        [
+          2483.95,
+          2482.48
+        ],
+        [
+          2371.07,
+          2369.09
+        ],
+        [
+          2258.2,
+          2255.69
+        ],
+        [
+          2145.32,
+          2142.29
+        ],
+        [
+          2032.45,
+          2028.89
+        ],
+        [
+          1919.57,
+          1915.49
+        ],
+        [
+          1806.7,
+          1802.09
+        ],
+        [
+          1794.51,
+          1765.86
+        ],
+        [
+          1933.35,
+          1845.39
+        ],
+        [
+          2072.19,
+          1924.91
+        ],
+        [
+          2211.02,
+          2004.43
+        ],
+        [
+          2349.86,
+          2083.96
+        ],
+        [
+          2488.7,
+          2163.48
+        ],
+        [
+          2627.54,
+          2243.0
+        ],
+        [
+          2766.38,
+          2322.52
+        ],
+        [
+          2905.22,
+          2402.05
+        ],
+        [
+          3044.06,
+          2481.57
+        ],
+        [
+          3182.89,
+          2561.09
+        ],
+        [
+          3321.73,
+          2640.62
+        ],
+        [
+          3460.57,
+          2720.14
+        ],
+        [
+          3599.41,
+          2799.66
+        ],
+        [
+          3600.0,
+          3504.0
+        ],
+        [
+          3600.0,
+          3344.0
+        ],
+        [
+          3447.61,
+          3392.76
+        ],
+        [
+          3295.22,
+          3441.53
+        ],
+        [
+          3142.84,
+          3490.29
+        ],
+        [
+          2990.45,
+          3539.06
+        ],
+        [
+          2838.06,
+          3587.82
         ]
       ]
     },
     {
       "uav_id": "2",
-      "is_alive": true,
-      "crash_pos": null,
-      "remaining_battery_pct": 99.53,
-      "total_distance_m": 132.0,
-      "sectors_scanned": [
-        16,
-        15
+      "is_alive": false,
+      "crash_pos": [
+        1352.78,
+        1653.87
       ],
-      "targets_discovered_count": 26,
-      "consensus_targets_count": 3,
+      "remaining_battery_pct": 96.97,
+      "total_distance_m": 2336.0,
+      "sectors_scanned": [
+        11,
+        12,
+        6
+      ],
+      "targets_discovered_count": 27,
+      "consensus_targets_count": 118,
       "hysteresis_metrics": {
         "uav_id": "2",
-        "total_evaluations": 12,
+        "total_evaluations": 74,
         "updates_executed": 1,
-        "chattering_events_suppressed": 11,
-        "suppression_rate_pct": 91.67,
-        "forced_overrides": 1,
-        "battery_holds": 11,
-        "spatial_holds": 7,
-        "energy_saved_joules": 29.77
+        "chattering_events_suppressed": 73,
+        "suppression_rate_pct": 98.65,
+        "forced_overrides": 0,
+        "battery_holds": 73,
+        "spatial_holds": 25,
+        "energy_saved_joules": 1286.35
       },
       "trajectory": [
         [
-          54.0,
-          30.0
+          224.0,
+          200.0
         ],
         [
-          70.94,
-          387.44
+          1910.1,
+          1908.88
         ],
         [
-          128.44,
-          404.6
+          1797.72,
+          1794.99
+        ],
+        [
+          1685.35,
+          1681.1
+        ],
+        [
+          1572.97,
+          1567.2
+        ],
+        [
+          1460.6,
+          1453.31
+        ],
+        [
+          1348.22,
+          1339.42
+        ],
+        [
+          1235.85,
+          1225.52
+        ],
+        [
+          1123.47,
+          1111.63
+        ],
+        [
+          1011.1,
+          997.73
+        ],
+        [
+          975.14,
+          985.13
+        ],
+        [
+          1053.82,
+          1124.45
+        ],
+        [
+          1132.49,
+          1263.77
+        ],
+        [
+          1211.17,
+          1403.09
+        ],
+        [
+          1289.84,
+          1542.41
+        ]
+      ]
+    },
+    {
+      "uav_id": "3",
+      "is_alive": true,
+      "crash_pos": null,
+      "remaining_battery_pct": 90.13,
+      "total_distance_m": 7274.0,
+      "sectors_scanned": [
+        10,
+        11,
+        16,
+        17,
+        21,
+        22
+      ],
+      "targets_discovered_count": 62,
+      "consensus_targets_count": 253,
+      "hysteresis_metrics": {
+        "uav_id": "3",
+        "total_evaluations": 188,
+        "updates_executed": 3,
+        "chattering_events_suppressed": 185,
+        "suppression_rate_pct": 98.4,
+        "forced_overrides": 1,
+        "battery_holds": 144,
+        "spatial_holds": 127,
+        "energy_saved_joules": 5139.58
+      },
+      "trajectory": [
+        [
+          236.0,
+          200.0
+        ],
+        [
+          1165.08,
+          3476.85
+        ],
+        [
+          1121.44,
+          3322.92
+        ],
+        [
+          1077.8,
+          3168.99
+        ],
+        [
+          1034.15,
+          3015.06
+        ],
+        [
+          990.51,
+          2861.12
+        ],
+        [
+          946.86,
+          2707.19
+        ],
+        [
+          903.22,
+          2553.26
+        ],
+        [
+          859.57,
+          2399.33
+        ],
+        [
+          815.93,
+          2245.4
+        ],
+        [
+          801.38,
+          2146.93
+        ],
+        [
+          903.19,
+          2270.36
+        ],
+        [
+          1005.0,
+          2393.79
+        ],
+        [
+          1106.82,
+          2517.21
+        ],
+        [
+          1208.63,
+          2640.64
+        ],
+        [
+          1310.44,
+          2764.07
+        ],
+        [
+          1412.26,
+          2887.49
+        ],
+        [
+          1514.07,
+          3010.92
+        ],
+        [
+          1615.88,
+          3134.34
+        ],
+        [
+          1717.7,
+          3257.77
+        ],
+        [
+          1819.51,
+          3381.2
+        ],
+        [
+          1921.32,
+          3504.62
+        ],
+        [
+          2000.0,
+          2800.0
+        ],
+        [
+          2000.0,
+          3050.0
+        ],
+        [
+          1949.31,
+          3113.8
+        ],
+        [
+          1822.6,
+          2898.29
+        ],
+        [
+          1695.88,
+          2682.79
+        ],
+        [
+          1569.16,
+          2467.28
+        ],
+        [
+          1442.44,
+          2251.77
+        ],
+        [
+          1315.73,
+          2036.27
+        ],
+        [
+          1189.01,
+          1820.76
+        ],
+        [
+          1062.29,
+          1605.26
+        ],
+        [
+          935.57,
+          1389.75
+        ],
+        [
+          808.86,
+          1174.25
+        ],
+        [
+          682.14,
+          958.74
+        ],
+        [
+          555.42,
+          743.23
+        ],
+        [
+          428.7,
+          527.73
+        ],
+        [
+          301.99,
+          312.22
+        ]
+      ]
+    },
+    {
+      "uav_id": "4",
+      "is_alive": true,
+      "crash_pos": null,
+      "remaining_battery_pct": 90.73,
+      "total_distance_m": 6846.0,
+      "sectors_scanned": [
+        5,
+        10,
+        11,
+        15,
+        16,
+        20
+      ],
+      "targets_discovered_count": 41,
+      "consensus_targets_count": 278,
+      "hysteresis_metrics": {
+        "uav_id": "4",
+        "total_evaluations": 178,
+        "updates_executed": 3,
+        "chattering_events_suppressed": 175,
+        "suppression_rate_pct": 98.31,
+        "forced_overrides": 1,
+        "battery_holds": 142,
+        "spatial_holds": 115,
+        "energy_saved_joules": 4817.34
+      },
+      "trajectory": [
+        [
+          248.0,
+          200.0
+        ],
+        [
+          392.53,
+          2672.22
+        ],
+        [
+          383.19,
+          2512.49
+        ],
+        [
+          373.85,
+          2352.76
+        ],
+        [
+          364.52,
+          2193.04
+        ],
+        [
+          355.18,
+          2033.31
+        ],
+        [
+          345.84,
+          1873.58
+        ],
+        [
+          336.5,
+          1713.85
+        ],
+        [
+          327.16,
+          1554.13
+        ],
+        [
+          317.83,
+          1394.4
+        ],
+        [
+          326.41,
+          1294.3
+        ],
+        [
+          406.71,
+          1432.69
+        ],
+        [
+          487.0,
+          1571.08
+        ],
+        [
+          567.3,
+          1709.48
+        ],
+        [
+          647.59,
+          1847.87
+        ],
+        [
+          727.88,
+          1986.27
+        ],
+        [
+          808.18,
+          2124.66
+        ],
+        [
+          888.47,
+          2263.05
+        ],
+        [
+          968.77,
+          2401.45
+        ],
+        [
+          1049.06,
+          2539.84
+        ],
+        [
+          1129.35,
+          2678.24
+        ],
+        [
+          1200.0,
+          2800.0
+        ],
+        [
+          541.42,
+          3458.58
+        ],
+        [
+          718.2,
+          3281.8
+        ],
+        [
+          720.81,
+          3049.14
+        ],
+        [
+          679.88,
+          2802.52
+        ],
+        [
+          638.96,
+          2555.89
+        ],
+        [
+          598.03,
+          2309.26
+        ],
+        [
+          557.1,
+          2062.64
+        ],
+        [
+          516.17,
+          1816.01
+        ],
+        [
+          475.25,
+          1569.38
+        ],
+        [
+          434.32,
+          1322.75
+        ],
+        [
+          393.39,
+          1076.13
+        ],
+        [
+          352.46,
+          829.5
+        ],
+        [
+          311.54,
+          582.87
+        ],
+        [
+          270.61,
+          336.25
+        ]
+      ]
+    },
+    {
+      "uav_id": "5",
+      "is_alive": true,
+      "crash_pos": null,
+      "remaining_battery_pct": 95.68,
+      "total_distance_m": 3328.0,
+      "sectors_scanned": [
+        0,
+        5,
+        6,
+        10,
+        11
+      ],
+      "targets_discovered_count": 36,
+      "consensus_targets_count": 287,
+      "hysteresis_metrics": {
+        "uav_id": "5",
+        "total_evaluations": 107,
+        "updates_executed": 2,
+        "chattering_events_suppressed": 105,
+        "suppression_rate_pct": 98.13,
+        "forced_overrides": 1,
+        "battery_holds": 105,
+        "spatial_holds": 55,
+        "energy_saved_joules": 1864.21
+      },
+      "trajectory": [
+        [
+          200.0,
+          212.0
+        ],
+        [
+          385.77,
+          1872.79
+        ],
+        [
+          367.98,
+          1713.78
+        ],
+        [
+          350.2,
+          1554.78
+        ],
+        [
+          332.41,
+          1395.77
+        ],
+        [
+          314.63,
+          1236.76
+        ],
+        [
+          296.84,
+          1077.75
+        ],
+        [
+          279.05,
+          918.74
+        ],
+        [
+          261.27,
+          759.73
+        ],
+        [
+          243.48,
+          600.73
+        ],
+        [
+          246.42,
+          500.52
+        ],
+        [
+          332.28,
+          635.53
+        ],
+        [
+          418.14,
+          770.55
+        ],
+        [
+          504.0,
+          905.56
+        ],
+        [
+          589.86,
+          1040.57
+        ],
+        [
+          675.72,
+          1175.58
+        ],
+        [
+          761.58,
+          1310.59
+        ],
+        [
+          847.44,
+          1445.61
+        ],
+        [
+          933.3,
+          1580.62
+        ],
+        [
+          1019.16,
+          1715.63
+        ],
+        [
+          1105.02,
+          1850.64
+        ],
+        [
+          1190.88,
+          1985.65
+        ]
+      ]
+    },
+    {
+      "uav_id": "6",
+      "is_alive": true,
+      "crash_pos": null,
+      "remaining_battery_pct": 96.33,
+      "total_distance_m": 2598.0,
+      "sectors_scanned": [
+        0,
+        5,
+        6
+      ],
+      "targets_discovered_count": 28,
+      "consensus_targets_count": 287,
+      "hysteresis_metrics": {
+        "uav_id": "6",
+        "total_evaluations": 70,
+        "updates_executed": 0,
+        "chattering_events_suppressed": 70,
+        "suppression_rate_pct": 100.0,
+        "forced_overrides": 0,
+        "battery_holds": 46,
+        "spatial_holds": 28,
+        "energy_saved_joules": 1931.92
+      },
+      "trajectory": [
+        [
+          212.0,
+          212.0
+        ],
+        [
+          309.49,
+          309.49
+        ],
+        [
+          400.0,
+          1200.0
+        ],
+        [
+          370.09,
+          1042.82
+        ],
+        [
+          340.18,
+          885.64
+        ],
+        [
+          310.27,
+          728.46
+        ],
+        [
+          280.37,
+          571.28
+        ],
+        [
+          250.46,
+          414.1
+        ],
+        [
+          220.55,
+          256.92
+        ],
+        [
+          1093.93,
+          1093.93
+        ],
+        [
+          917.16,
+          917.16
+        ],
+        [
+          740.38,
+          740.38
+        ],
+        [
+          563.6,
+          563.6
+        ],
+        [
+          386.83,
+          386.83
+        ],
+        [
+          212.0,
+          212.0
+        ]
+      ]
+    },
+    {
+      "uav_id": "7",
+      "is_alive": true,
+      "crash_pos": null,
+      "remaining_battery_pct": 98.54,
+      "total_distance_m": 950.0,
+      "sectors_scanned": [
+        1
+      ],
+      "targets_discovered_count": 7,
+      "consensus_targets_count": 287,
+      "hysteresis_metrics": {
+        "uav_id": "7",
+        "total_evaluations": 21,
+        "updates_executed": 0,
+        "chattering_events_suppressed": 21,
+        "suppression_rate_pct": 100.0,
+        "forced_overrides": 0,
+        "battery_holds": 21,
+        "spatial_holds": 20,
+        "energy_saved_joules": 885.94
+      },
+      "trajectory": [
+        [
+          224.0,
+          212.0
+        ],
+        [
+          1003.61,
+          362.17
+        ],
+        [
+          758.12,
+          314.88
+        ],
+        [
+          512.64,
+          267.6
+        ],
+        [
+          267.15,
+          220.31
+        ]
+      ]
+    },
+    {
+      "uav_id": "8",
+      "is_alive": true,
+      "crash_pos": null,
+      "remaining_battery_pct": 92.12,
+      "total_distance_m": 5890.0,
+      "sectors_scanned": [
+        0,
+        1,
+        2,
+        3,
+        7
+      ],
+      "targets_discovered_count": 61,
+      "consensus_targets_count": 280,
+      "hysteresis_metrics": {
+        "uav_id": "8",
+        "total_evaluations": 165,
+        "updates_executed": 3,
+        "chattering_events_suppressed": 162,
+        "suppression_rate_pct": 98.18,
+        "forced_overrides": 1,
+        "battery_holds": 150,
+        "spatial_holds": 111,
+        "energy_saved_joules": 3845.47
+      },
+      "trajectory": [
+        [
+          236.0,
+          212.0
+        ],
+        [
+          1872.72,
+          386.44
+        ],
+        [
+          1713.62,
+          369.48
+        ],
+        [
+          1554.52,
+          352.52
+        ],
+        [
+          1395.42,
+          335.57
+        ],
+        [
+          1236.32,
+          318.61
+        ],
+        [
+          1077.23,
+          301.65
+        ],
+        [
+          918.13,
+          284.7
+        ],
+        [
+          759.03,
+          267.74
+        ],
+        [
+          599.93,
+          250.79
+        ],
+        [
+          504.57,
+          239.45
+        ],
+        [
+          664.18,
+          250.62
+        ],
+        [
+          823.79,
+          261.78
+        ],
+        [
+          983.4,
+          272.94
+        ],
+        [
+          1143.01,
+          284.11
+        ],
+        [
+          1302.62,
+          295.27
+        ],
+        [
+          1462.23,
+          306.43
+        ],
+        [
+          1621.84,
+          317.6
+        ],
+        [
+          1781.45,
+          328.76
+        ],
+        [
+          1941.06,
+          339.92
+        ],
+        [
+          2100.67,
+          351.09
+        ],
+        [
+          2260.28,
+          362.25
+        ],
+        [
+          2419.89,
+          373.41
+        ],
+        [
+          2579.5,
+          384.58
+        ],
+        [
+          2739.11,
+          395.74
+        ],
+        [
+          1991.17,
+          1141.25
+        ],
+        [
+          1770.22,
+          1024.27
+        ],
+        [
+          1549.28,
+          907.3
+        ],
+        [
+          1328.33,
+          790.32
+        ],
+        [
+          1107.39,
+          673.34
+        ],
+        [
+          886.44,
+          556.37
+        ],
+        [
+          665.5,
+          439.39
+        ],
+        [
+          444.55,
+          322.42
+        ],
+        [
+          236.0,
+          212.0
+        ]
+      ]
+    },
+    {
+      "uav_id": "9",
+      "is_alive": true,
+      "crash_pos": null,
+      "remaining_battery_pct": 90.24,
+      "total_distance_m": 7194.0,
+      "sectors_scanned": [
+        1,
+        2,
+        4,
+        7,
+        8,
+        9
+      ],
+      "targets_discovered_count": 112,
+      "consensus_targets_count": 228,
+      "hysteresis_metrics": {
+        "uav_id": "9",
+        "total_evaluations": 190,
+        "updates_executed": 3,
+        "chattering_events_suppressed": 187,
+        "suppression_rate_pct": 98.42,
+        "forced_overrides": 1,
+        "battery_holds": 148,
+        "spatial_holds": 136,
+        "energy_saved_joules": 4974.88
+      },
+      "trajectory": [
+        [
+          248.0,
+          212.0
+        ],
+        [
+          2680.63,
+          1153.79
+        ],
+        [
+          2531.42,
+          1096.02
+        ],
+        [
+          2382.22,
+          1038.26
+        ],
+        [
+          2233.01,
+          980.49
+        ],
+        [
+          2083.8,
+          922.73
+        ],
+        [
+          1934.59,
+          864.96
+        ],
+        [
+          1785.38,
+          807.19
+        ],
+        [
+          1636.17,
+          749.43
+        ],
+        [
+          1486.97,
+          691.66
+        ],
+        [
+          1459.58,
+          672.32
+        ],
+        [
+          1614.93,
+          710.62
+        ],
+        [
+          1770.28,
+          748.92
+        ],
+        [
+          1925.63,
+          787.22
+        ],
+        [
+          2080.98,
+          825.52
+        ],
+        [
+          2236.33,
+          863.81
+        ],
+        [
+          2391.67,
+          902.11
+        ],
+        [
+          2547.02,
+          940.41
+        ],
+        [
+          2702.37,
+          978.71
+        ],
+        [
+          2857.72,
+          1017.01
+        ],
+        [
+          3013.07,
+          1055.3
+        ],
+        [
+          3168.42,
+          1093.6
+        ],
+        [
+          3323.77,
+          1131.9
+        ],
+        [
+          3479.12,
+          1170.2
+        ],
+        [
+          3600.0,
+          400.0
+        ],
+        [
+          3450.55,
+          487.16
+        ],
+        [
+          3201.47,
+          465.76
+        ],
+        [
+          2952.39,
+          444.36
+        ],
+        [
+          2703.3,
+          422.96
+        ],
+        [
+          2454.22,
+          401.56
+        ],
+        [
+          2205.14,
+          380.16
+        ],
+        [
+          1956.06,
+          358.75
+        ],
+        [
+          1706.97,
+          337.35
+        ],
+        [
+          1457.89,
+          315.95
+        ],
+        [
+          1208.81,
+          294.55
+        ],
+        [
+          959.73,
+          273.15
+        ],
+        [
+          710.65,
+          251.75
+        ],
+        [
+          461.56,
+          230.35
+        ],
+        [
+          248.0,
+          212.0
         ]
       ]
     }
   ],
   "hysteresis_summary": {
-    "total_chattering_events_suppressed": 26,
-    "total_forced_overrides": 2,
-    "total_energy_saved_joules": 72.29
+    "total_chattering_events_suppressed": 1247,
+    "total_forced_overrides": 7,
+    "total_energy_saved_joules": 29493.65
   },
   "reported_targets": [
     {
-      "target_key": "TGT_0_13.3_28.0",
+      "target_key": "TGT_13_2778.8_1926.5",
       "class_name": "human",
-      "conf": 0.38,
-      "world_x": 13.31,
-      "world_y": 27.98,
-      "sector_id": 0,
+      "conf": 0.737,
+      "world_x": 2778.75,
+      "world_y": 1926.48,
+      "sector_id": 13,
       "detected_by": "0",
       "time": 1.0
     },
     {
-      "target_key": "TGT_0_81.5_46.5",
+      "target_key": "TGT_13_2794.9_1939.3",
       "class_name": "human",
-      "conf": 0.354,
-      "world_x": 81.54,
-      "world_y": 46.51,
-      "sector_id": 0,
+      "conf": 0.675,
+      "world_x": 2794.88,
+      "world_y": 1939.3,
+      "sector_id": 13,
       "detected_by": "0",
       "time": 1.0
     },
     {
-      "target_key": "TGT_0_14.8_59.1",
+      "target_key": "TGT_13_2630.8_1837.0",
       "class_name": "human",
-      "conf": 0.232,
-      "world_x": 14.77,
-      "world_y": 59.12,
-      "sector_id": 0,
+      "conf": 0.61,
+      "world_x": 2630.75,
+      "world_y": 1837.03,
+      "sector_id": 13,
       "detected_by": "0",
       "time": 1.0
     },
     {
-      "target_key": "TGT_3_449.7_65.3",
-      "class_name": "human",
-      "conf": 0.619,
-      "world_x": 449.67,
-      "world_y": 65.33,
-      "sector_id": 3,
-      "detected_by": "1",
-      "time": 1.0
-    },
-    {
-      "target_key": "TGT_3_401.1_65.6",
-      "class_name": "human",
-      "conf": 0.618,
-      "world_x": 401.1,
-      "world_y": 65.6,
-      "sector_id": 3,
-      "detected_by": "1",
-      "time": 1.0
-    },
-    {
-      "target_key": "TGT_3_433.7_36.8",
-      "class_name": "human",
-      "conf": 0.583,
-      "world_x": 433.7,
-      "world_y": 36.82,
-      "sector_id": 3,
-      "detected_by": "1",
-      "time": 1.0
-    },
-    {
-      "target_key": "TGT_3_422.4_70.8",
-      "class_name": "human",
-      "conf": 0.371,
-      "world_x": 422.4,
-      "world_y": 70.83,
-      "sector_id": 3,
-      "detected_by": "1",
-      "time": 1.0
-    },
-    {
-      "target_key": "TGT_3_402.2_69.0",
-      "class_name": "human",
-      "conf": 0.32,
-      "world_x": 402.23,
-      "world_y": 69.04,
-      "sector_id": 3,
-      "detected_by": "1",
-      "time": 1.0
-    },
-    {
-      "target_key": "TGT_3_405.1_63.5",
-      "class_name": "human",
-      "conf": 0.262,
-      "world_x": 405.11,
-      "world_y": 63.45,
-      "sector_id": 3,
-      "detected_by": "1",
-      "time": 1.0
-    },
-    {
-      "target_key": "TGT_3_434.6_67.5",
-      "class_name": "human",
-      "conf": 0.233,
-      "world_x": 434.64,
-      "world_y": 67.55,
-      "sector_id": 3,
-      "detected_by": "1",
-      "time": 1.0
-    },
-    {
-      "target_key": "TGT_15_14.6_405.3",
-      "class_name": "human",
-      "conf": 0.665,
-      "world_x": 14.59,
-      "world_y": 405.34,
-      "sector_id": 15,
-      "detected_by": "2",
-      "time": 1.0
-    },
-    {
-      "target_key": "TGT_15_12.6_404.6",
-      "class_name": "human",
-      "conf": 0.574,
-      "world_x": 12.63,
-      "world_y": 404.61,
-      "sector_id": 15,
-      "detected_by": "2",
-      "time": 1.0
-    },
-    {
-      "target_key": "TGT_15_22.9_377.7",
-      "class_name": "human",
-      "conf": 0.268,
-      "world_x": 22.9,
-      "world_y": 377.74,
-      "sector_id": 15,
-      "detected_by": "2",
-      "time": 1.0
-    },
-    {
-      "target_key": "TGT_15_68.3_441.8",
-      "class_name": "human",
-      "conf": 0.237,
-      "world_x": 68.28,
-      "world_y": 441.8,
-      "sector_id": 15,
-      "detected_by": "2",
-      "time": 1.0
-    },
-    {
-      "target_key": "TGT_15_22.0_378.0",
-      "class_name": "human",
-      "conf": 0.225,
-      "world_x": 22.02,
-      "world_y": 377.98,
-      "sector_id": 15,
-      "detected_by": "2",
-      "time": 1.0
-    },
-    {
-      "target_key": "TGT_15_110.1_440.1",
-      "class_name": "human",
-      "conf": 0.223,
-      "world_x": 110.08,
-      "world_y": 440.14,
-      "sector_id": 15,
-      "detected_by": "2",
-      "time": 1.0
-    },
-    {
-      "target_key": "TGT_16_156.7_410.5",
-      "class_name": "human",
-      "conf": 0.762,
-      "world_x": 156.69,
-      "world_y": 410.51,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
-    },
-    {
-      "target_key": "TGT_16_191.0_445.4",
-      "class_name": "human",
-      "conf": 0.734,
-      "world_x": 191.03,
-      "world_y": 445.39,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
-    },
-    {
-      "target_key": "TGT_16_186.3_436.2",
-      "class_name": "human",
-      "conf": 0.721,
-      "world_x": 186.32,
-      "world_y": 436.2,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
-    },
-    {
-      "target_key": "TGT_16_138.6_364.6",
-      "class_name": "human",
-      "conf": 0.647,
-      "world_x": 138.58,
-      "world_y": 364.56,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
-    },
-    {
-      "target_key": "TGT_16_148.9_389.3",
-      "class_name": "human",
-      "conf": 0.631,
-      "world_x": 148.94,
-      "world_y": 389.34,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
-    },
-    {
-      "target_key": "TGT_16_148.7_372.7",
-      "class_name": "human",
-      "conf": 0.62,
-      "world_x": 148.68,
-      "world_y": 372.71,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
-    },
-    {
-      "target_key": "TGT_16_148.3_378.1",
-      "class_name": "human",
-      "conf": 0.62,
-      "world_x": 148.27,
-      "world_y": 378.13,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
-    },
-    {
-      "target_key": "TGT_16_159.3_410.7",
+      "target_key": "TGT_13_2581.0_1872.0",
       "class_name": "human",
       "conf": 0.586,
-      "world_x": 159.29,
-      "world_y": 410.66,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
+      "world_x": 2581.0,
+      "world_y": 1871.95,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_16_170.1_430.9",
+      "target_key": "TGT_13_2674.2_1874.3",
       "class_name": "human",
-      "conf": 0.572,
-      "world_x": 170.14,
-      "world_y": 430.93,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
+      "conf": 0.563,
+      "world_x": 2674.19,
+      "world_y": 1874.3,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_16_150.6_388.8",
+      "target_key": "TGT_13_3049.9_2046.3",
       "class_name": "human",
-      "conf": 0.545,
-      "world_x": 150.55,
-      "world_y": 388.79,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
+      "conf": 0.561,
+      "world_x": 3049.88,
+      "world_y": 2046.33,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_16_149.8_379.6",
+      "target_key": "TGT_13_2574.0_1891.2",
       "class_name": "human",
-      "conf": 0.404,
-      "world_x": 149.85,
-      "world_y": 379.57,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
+      "conf": 0.517,
+      "world_x": 2574.0,
+      "world_y": 1891.25,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_16_140.2_361.3",
+      "target_key": "TGT_13_3075.7_1630.4",
       "class_name": "human",
-      "conf": 0.376,
-      "world_x": 140.19,
-      "world_y": 361.34,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
+      "conf": 0.503,
+      "world_x": 3075.69,
+      "world_y": 1630.39,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_16_151.0_379.7",
+      "target_key": "TGT_13_2646.2_1825.3",
       "class_name": "human",
-      "conf": 0.339,
-      "world_x": 151.03,
-      "world_y": 379.66,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
+      "conf": 0.459,
+      "world_x": 2646.19,
+      "world_y": 1825.31,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_16_151.3_379.7",
+      "target_key": "TGT_13_2488.3_1783.7",
       "class_name": "human",
-      "conf": 0.331,
-      "world_x": 151.31,
-      "world_y": 379.68,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
+      "conf": 0.429,
+      "world_x": 2488.31,
+      "world_y": 1783.67,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_16_133.4_361.1",
+      "target_key": "TGT_13_2561.5_1831.9",
       "class_name": "human",
-      "conf": 0.299,
-      "world_x": 133.41,
-      "world_y": 361.08,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
+      "conf": 0.387,
+      "world_x": 2561.5,
+      "world_y": 1831.88,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_16_139.6_361.2",
+      "target_key": "TGT_13_3165.2_1990.0",
       "class_name": "human",
-      "conf": 0.26,
-      "world_x": 139.61,
-      "world_y": 361.21,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
+      "conf": 0.367,
+      "world_x": 3165.25,
+      "world_y": 1990.0,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_16_230.4_403.9",
+      "target_key": "TGT_13_2531.6_1886.4",
       "class_name": "human",
-      "conf": 0.248,
-      "world_x": 230.37,
-      "world_y": 403.91,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
+      "conf": 0.364,
+      "world_x": 2531.62,
+      "world_y": 1886.41,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_16_149.8_389.1",
+      "target_key": "TGT_13_2645.4_1818.5",
       "class_name": "human",
-      "conf": 0.238,
-      "world_x": 149.84,
-      "world_y": 389.13,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
+      "conf": 0.284,
+      "world_x": 2645.44,
+      "world_y": 1818.52,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_16_131.4_414.9",
+      "target_key": "TGT_13_2950.1_2010.5",
       "class_name": "human",
-      "conf": 0.237,
-      "world_x": 131.39,
-      "world_y": 414.9,
-      "sector_id": 16,
-      "detected_by": "2",
-      "time": 11.0
+      "conf": 0.283,
+      "world_x": 2950.06,
+      "world_y": 2010.55,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
     },
     {
-      "target_key": "TGT_16_216.3_412.0",
+      "target_key": "TGT_13_2792.6_1813.9",
+      "class_name": "human",
+      "conf": 0.253,
+      "world_x": 2792.56,
+      "world_y": 1813.91,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_13_2810.3_1969.3",
+      "class_name": "human",
+      "conf": 0.244,
+      "world_x": 2810.31,
+      "world_y": 1969.3,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_13_2415.0_1629.0",
+      "class_name": "human",
+      "conf": 0.231,
+      "world_x": 2415.0,
+      "world_y": 1628.98,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_13_3054.1_1613.4",
+      "class_name": "human",
+      "conf": 0.227,
+      "world_x": 3054.06,
+      "world_y": 1613.36,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_13_2620.2_1814.6",
+      "class_name": "human",
+      "conf": 0.218,
+      "world_x": 2620.19,
+      "world_y": 1814.61,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_13_2792.8_1825.6",
+      "class_name": "human",
+      "conf": 0.202,
+      "world_x": 2792.81,
+      "world_y": 1825.62,
+      "sector_id": 13,
+      "detected_by": "0",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_2919.9_3040.7",
+      "class_name": "human",
+      "conf": 0.615,
+      "world_x": 2919.88,
+      "world_y": 3040.7,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_2736.9_3066.7",
+      "class_name": "human",
+      "conf": 0.612,
+      "world_x": 2736.94,
+      "world_y": 3066.72,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_2823.1_3091.0",
+      "class_name": "human",
+      "conf": 0.573,
+      "world_x": 2823.12,
+      "world_y": 3091.02,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_3091.5_2886.9",
+      "class_name": "human",
+      "conf": 0.562,
+      "world_x": 3091.5,
+      "world_y": 2886.88,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_2938.9_2645.2",
+      "class_name": "human",
+      "conf": 0.56,
+      "world_x": 2938.88,
+      "world_y": 2645.23,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_2645.3_2778.4",
+      "class_name": "human",
+      "conf": 0.54,
+      "world_x": 2645.31,
+      "world_y": 2778.36,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_2679.6_3147.3",
+      "class_name": "human",
+      "conf": 0.5,
+      "world_x": 2679.62,
+      "world_y": 3147.27,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_2905.7_2526.6",
+      "class_name": "human",
+      "conf": 0.455,
+      "world_x": 2905.69,
+      "world_y": 2526.64,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_2904.8_2591.5",
+      "class_name": "human",
+      "conf": 0.386,
+      "world_x": 2904.75,
+      "world_y": 2591.48,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_2852.8_2866.6",
+      "class_name": "human",
+      "conf": 0.301,
+      "world_x": 2852.81,
+      "world_y": 2866.56,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_2930.6_2810.3",
+      "class_name": "human",
+      "conf": 0.241,
+      "world_x": 2930.62,
+      "world_y": 2810.31,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_2990.7_2841.5",
+      "class_name": "human",
+      "conf": 0.24,
+      "world_x": 2990.69,
+      "world_y": 2841.48,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_3033.7_2751.5",
+      "class_name": "human",
+      "conf": 0.236,
+      "world_x": 3033.69,
+      "world_y": 2751.48,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_18_3193.8_2458.2",
       "class_name": "human",
       "conf": 0.204,
-      "world_x": 216.34,
-      "world_y": 411.98,
-      "sector_id": 16,
+      "world_x": 3193.81,
+      "world_y": 2458.2,
+      "sector_id": 18,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_12_1893.9_1717.9",
+      "class_name": "human",
+      "conf": 0.616,
+      "world_x": 1893.94,
+      "world_y": 1717.89,
+      "sector_id": 12,
       "detected_by": "2",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_12_2076.8_1609.8",
+      "class_name": "human",
+      "conf": 0.462,
+      "world_x": 2076.81,
+      "world_y": 1609.84,
+      "sector_id": 12,
+      "detected_by": "2",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_12_1885.9_1849.7",
+      "class_name": "human",
+      "conf": 0.359,
+      "world_x": 1885.94,
+      "world_y": 1849.69,
+      "sector_id": 12,
+      "detected_by": "2",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_12_2132.1_1653.4",
+      "class_name": "human",
+      "conf": 0.251,
+      "world_x": 2132.06,
+      "world_y": 1653.36,
+      "sector_id": 12,
+      "detected_by": "2",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1475.0_3493.7",
+      "class_name": "human",
+      "conf": 0.758,
+      "world_x": 1475.0,
+      "world_y": 3493.67,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1537.4_3911.0",
+      "class_name": "human",
+      "conf": 0.678,
+      "world_x": 1537.38,
+      "world_y": 3911.02,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1198.8_3568.4",
+      "class_name": "human",
+      "conf": 0.639,
+      "world_x": 1198.75,
+      "world_y": 3568.44,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1353.4_3818.1",
+      "class_name": "human",
+      "conf": 0.631,
+      "world_x": 1353.44,
+      "world_y": 3818.12,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1277.7_3530.1",
+      "class_name": "human",
+      "conf": 0.63,
+      "world_x": 1277.69,
+      "world_y": 3530.08,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1226.2_3560.4",
+      "class_name": "human",
+      "conf": 0.629,
+      "world_x": 1226.25,
+      "world_y": 3560.39,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1392.9_3765.6",
+      "class_name": "human",
+      "conf": 0.607,
+      "world_x": 1392.94,
+      "world_y": 3765.62,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1495.0_3802.4",
+      "class_name": "human",
+      "conf": 0.569,
+      "world_x": 1495.0,
+      "world_y": 3802.42,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_889.8_3251.3",
+      "class_name": "human",
+      "conf": 0.563,
+      "world_x": 889.75,
+      "world_y": 3251.33,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1376.2_3615.8",
+      "class_name": "human",
+      "conf": 0.479,
+      "world_x": 1376.25,
+      "world_y": 3615.78,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1185.6_3485.9",
+      "class_name": "human",
+      "conf": 0.471,
+      "world_x": 1185.62,
+      "world_y": 3485.94,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1241.2_3438.8",
+      "class_name": "human",
+      "conf": 0.464,
+      "world_x": 1241.25,
+      "world_y": 3438.83,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1168.1_3456.4",
+      "class_name": "human",
+      "conf": 0.392,
+      "world_x": 1168.12,
+      "world_y": 3456.41,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1197.1_3562.1",
+      "class_name": "human",
+      "conf": 0.322,
+      "world_x": 1197.12,
+      "world_y": 3562.11,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_21_1587.6_3424.1",
+      "class_name": "human",
+      "conf": 0.228,
+      "world_x": 1587.62,
+      "world_y": 3424.14,
+      "sector_id": 21,
+      "detected_by": "3",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_15_97.2_2702.3",
+      "class_name": "human",
+      "conf": 0.665,
+      "world_x": 97.25,
+      "world_y": 2702.27,
+      "sector_id": 15,
+      "detected_by": "4",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_15_84.2_2697.4",
+      "class_name": "human",
+      "conf": 0.574,
+      "world_x": 84.19,
+      "world_y": 2697.42,
+      "sector_id": 15,
+      "detected_by": "4",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_15_152.7_2518.3",
+      "class_name": "human",
+      "conf": 0.268,
+      "world_x": 152.69,
+      "world_y": 2518.28,
+      "sector_id": 15,
+      "detected_by": "4",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_15_455.2_2945.3",
+      "class_name": "human",
+      "conf": 0.237,
+      "world_x": 455.19,
+      "world_y": 2945.31,
+      "sector_id": 15,
+      "detected_by": "4",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_15_146.8_2519.8",
+      "class_name": "human",
+      "conf": 0.225,
+      "world_x": 146.81,
+      "world_y": 2519.84,
+      "sector_id": 15,
+      "detected_by": "4",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_15_733.9_2934.3",
+      "class_name": "human",
+      "conf": 0.223,
+      "world_x": 733.88,
+      "world_y": 2934.3,
+      "sector_id": 15,
+      "detected_by": "4",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_10_530.4_2246.3",
+      "class_name": "human",
+      "conf": 0.509,
+      "world_x": 530.44,
+      "world_y": 2246.33,
+      "sector_id": 10,
+      "detected_by": "5",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_10_547.1_2242.9",
+      "class_name": "human",
+      "conf": 0.501,
+      "world_x": 547.12,
+      "world_y": 2242.89,
+      "sector_id": 10,
+      "detected_by": "5",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_10_573.6_2298.4",
+      "class_name": "human",
+      "conf": 0.476,
+      "world_x": 573.56,
+      "world_y": 2298.44,
+      "sector_id": 10,
+      "detected_by": "5",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_10_565.1_2215.9",
+      "class_name": "human",
+      "conf": 0.473,
+      "world_x": 565.06,
+      "world_y": 2215.86,
+      "sector_id": 10,
+      "detected_by": "5",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_10_572.2_2244.5",
+      "class_name": "human",
+      "conf": 0.287,
+      "world_x": 572.19,
+      "world_y": 2244.53,
+      "sector_id": 10,
+      "detected_by": "5",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_10_520.5_2273.0",
+      "class_name": "human",
+      "conf": 0.252,
+      "world_x": 520.5,
+      "world_y": 2272.97,
+      "sector_id": 10,
+      "detected_by": "5",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_0_88.8_186.6",
+      "class_name": "human",
+      "conf": 0.38,
+      "world_x": 88.75,
+      "world_y": 186.56,
+      "sector_id": 0,
+      "detected_by": "6",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_0_543.6_310.1",
+      "class_name": "human",
+      "conf": 0.354,
+      "world_x": 543.62,
+      "world_y": 310.08,
+      "sector_id": 0,
+      "detected_by": "6",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_0_98.4_394.1",
+      "class_name": "human",
+      "conf": 0.232,
+      "world_x": 98.44,
+      "world_y": 394.14,
+      "sector_id": 0,
+      "detected_by": "6",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_1_891.4_175.6",
+      "class_name": "human",
+      "conf": 0.572,
+      "world_x": 891.38,
+      "world_y": 175.62,
+      "sector_id": 1,
+      "detected_by": "7",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_1_1033.4_728.2",
+      "class_name": "human",
+      "conf": 0.33,
+      "world_x": 1033.38,
+      "world_y": 728.2,
+      "sector_id": 1,
+      "detected_by": "7",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_1_1529.1_696.7",
+      "class_name": "human",
+      "conf": 0.324,
+      "world_x": 1529.12,
+      "world_y": 696.72,
+      "sector_id": 1,
+      "detected_by": "7",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_1_1078.4_217.1",
+      "class_name": "human",
+      "conf": 0.302,
+      "world_x": 1078.44,
+      "world_y": 217.11,
+      "sector_id": 1,
+      "detected_by": "7",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_1_1062.2_275.0",
+      "class_name": "human",
+      "conf": 0.276,
+      "world_x": 1062.19,
+      "world_y": 275.0,
+      "sector_id": 1,
+      "detected_by": "7",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_1_890.2_767.0",
+      "class_name": "human",
+      "conf": 0.274,
+      "world_x": 890.19,
+      "world_y": 767.03,
+      "sector_id": 1,
+      "detected_by": "7",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_1_853.5_669.1",
+      "class_name": "human",
+      "conf": 0.205,
+      "world_x": 853.5,
+      "world_y": 669.14,
+      "sector_id": 1,
+      "detected_by": "7",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2249.4_518.1",
+      "class_name": "human",
+      "conf": 0.68,
+      "world_x": 2249.44,
+      "world_y": 518.12,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_1763.9_482.7",
+      "class_name": "human",
+      "conf": 0.671,
+      "world_x": 1763.94,
+      "world_y": 482.66,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2205.1_647.8",
+      "class_name": "human",
+      "conf": 0.649,
+      "world_x": 2205.06,
+      "world_y": 647.81,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2225.4_461.0",
+      "class_name": "human",
+      "conf": 0.633,
+      "world_x": 2225.44,
+      "world_y": 461.02,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2208.9_580.2",
+      "class_name": "human",
+      "conf": 0.611,
+      "world_x": 2208.94,
+      "world_y": 580.23,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2112.1_771.3",
+      "class_name": "human",
+      "conf": 0.543,
+      "world_x": 2112.12,
+      "world_y": 771.33,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2243.4_427.4",
+      "class_name": "human",
+      "conf": 0.536,
+      "world_x": 2243.38,
+      "world_y": 427.42,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2248.1_397.5",
+      "class_name": "human",
+      "conf": 0.53,
+      "world_x": 2248.12,
+      "world_y": 397.5,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2137.7_750.6",
+      "class_name": "human",
+      "conf": 0.485,
+      "world_x": 2137.69,
+      "world_y": 750.62,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2263.3_420.6",
+      "class_name": "human",
+      "conf": 0.48,
+      "world_x": 2263.31,
+      "world_y": 420.62,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2294.8_352.7",
+      "class_name": "human",
+      "conf": 0.395,
+      "world_x": 2294.81,
+      "world_y": 352.73,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2327.2_254.8",
+      "class_name": "human",
+      "conf": 0.362,
+      "world_x": 2327.25,
+      "world_y": 254.84,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_1847.8_462.6",
+      "class_name": "human",
+      "conf": 0.344,
+      "world_x": 1847.75,
+      "world_y": 462.58,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_1768.0_687.8",
+      "class_name": "human",
+      "conf": 0.278,
+      "world_x": 1768.0,
+      "world_y": 687.81,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2121.8_754.8",
+      "class_name": "human",
+      "conf": 0.27,
+      "world_x": 2121.75,
+      "world_y": 754.77,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2388.1_105.9",
+      "class_name": "human",
+      "conf": 0.216,
+      "world_x": 2388.06,
+      "world_y": 105.94,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2156.0_631.7",
+      "class_name": "human",
+      "conf": 0.216,
+      "world_x": 2156.0,
+      "world_y": 631.72,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2258.8_360.6",
+      "class_name": "human",
+      "conf": 0.215,
+      "world_x": 2258.75,
+      "world_y": 360.55,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_2_2264.8_552.4",
+      "class_name": "human",
+      "conf": 0.214,
+      "world_x": 2264.81,
+      "world_y": 552.42,
+      "sector_id": 2,
+      "detected_by": "8",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_8_2421.2_1087.0",
+      "class_name": "human",
+      "conf": 0.495,
+      "world_x": 2421.25,
+      "world_y": 1087.03,
+      "sector_id": 8,
+      "detected_by": "9",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_8_2686.4_1301.9",
+      "class_name": "human",
+      "conf": 0.392,
+      "world_x": 2686.44,
+      "world_y": 1301.88,
+      "sector_id": 8,
+      "detected_by": "9",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_5_455.2_917.9",
+      "class_name": "human",
+      "conf": 0.708,
+      "world_x": 455.25,
+      "world_y": 917.89,
+      "sector_id": 5,
+      "detected_by": "6",
       "time": 11.0
+    },
+    {
+      "target_key": "TGT_5_589.6_1487.7",
+      "class_name": "human",
+      "conf": 0.293,
+      "world_x": 589.56,
+      "world_y": 1487.73,
+      "sector_id": 5,
+      "detected_by": "6",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_5_650.0_1202.8",
+      "class_name": "human",
+      "conf": 0.28,
+      "world_x": 650.0,
+      "world_y": 1202.81,
+      "sector_id": 5,
+      "detected_by": "6",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_5_405.4_1369.9",
+      "class_name": "human",
+      "conf": 0.2,
+      "world_x": 405.38,
+      "world_y": 1369.92,
+      "sector_id": 5,
+      "detected_by": "6",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_1044.6_2736.7",
+      "class_name": "human",
+      "conf": 0.762,
+      "world_x": 1044.62,
+      "world_y": 2736.72,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_1273.6_2969.3",
+      "class_name": "human",
+      "conf": 0.734,
+      "world_x": 1273.56,
+      "world_y": 2969.3,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_1242.1_2908.0",
+      "class_name": "human",
+      "conf": 0.721,
+      "world_x": 1242.12,
+      "world_y": 2907.97,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_923.9_2430.4",
+      "class_name": "human",
+      "conf": 0.647,
+      "world_x": 923.88,
+      "world_y": 2430.39,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_992.9_2595.6",
+      "class_name": "human",
+      "conf": 0.631,
+      "world_x": 992.94,
+      "world_y": 2595.62,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_991.2_2484.8",
+      "class_name": "human",
+      "conf": 0.62,
+      "world_x": 991.19,
+      "world_y": 2484.77,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_988.4_2520.9",
+      "class_name": "human",
+      "conf": 0.62,
+      "world_x": 988.44,
+      "world_y": 2520.86,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_1061.9_2737.7",
+      "class_name": "human",
+      "conf": 0.586,
+      "world_x": 1061.94,
+      "world_y": 2737.73,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_1134.2_2872.9",
+      "class_name": "human",
+      "conf": 0.572,
+      "world_x": 1134.25,
+      "world_y": 2872.89,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_1003.7_2591.9",
+      "class_name": "human",
+      "conf": 0.545,
+      "world_x": 1003.69,
+      "world_y": 2591.95,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_999.0_2530.5",
+      "class_name": "human",
+      "conf": 0.404,
+      "world_x": 999.0,
+      "world_y": 2530.47,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_934.6_2408.9",
+      "class_name": "human",
+      "conf": 0.376,
+      "world_x": 934.62,
+      "world_y": 2408.91,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_1006.9_2531.1",
+      "class_name": "human",
+      "conf": 0.339,
+      "world_x": 1006.88,
+      "world_y": 2531.09,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_1008.8_2531.2",
+      "class_name": "human",
+      "conf": 0.331,
+      "world_x": 1008.75,
+      "world_y": 2531.17,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_889.4_2407.2",
+      "class_name": "human",
+      "conf": 0.299,
+      "world_x": 889.38,
+      "world_y": 2407.19,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_930.8_2408.1",
+      "class_name": "human",
+      "conf": 0.26,
+      "world_x": 930.75,
+      "world_y": 2408.05,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_1535.8_2692.7",
+      "class_name": "human",
+      "conf": 0.248,
+      "world_x": 1535.81,
+      "world_y": 2692.73,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_998.9_2594.2",
+      "class_name": "human",
+      "conf": 0.238,
+      "world_x": 998.94,
+      "world_y": 2594.22,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_875.9_2766.0",
+      "class_name": "human",
+      "conf": 0.237,
+      "world_x": 875.94,
+      "world_y": 2766.02,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_16_1442.2_2746.6",
+      "class_name": "human",
+      "conf": 0.204,
+      "world_x": 1442.25,
+      "world_y": 2746.56,
+      "sector_id": 16,
+      "detected_by": "3",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_10_530.4_2246.3",
+      "class_name": "human",
+      "conf": 0.509,
+      "world_x": 530.44,
+      "world_y": 2246.33,
+      "sector_id": 10,
+      "detected_by": "4",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_10_547.1_2242.9",
+      "class_name": "human",
+      "conf": 0.501,
+      "world_x": 547.12,
+      "world_y": 2242.89,
+      "sector_id": 10,
+      "detected_by": "4",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_10_573.6_2298.4",
+      "class_name": "human",
+      "conf": 0.476,
+      "world_x": 573.56,
+      "world_y": 2298.44,
+      "sector_id": 10,
+      "detected_by": "4",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_10_565.1_2215.9",
+      "class_name": "human",
+      "conf": 0.473,
+      "world_x": 565.06,
+      "world_y": 2215.86,
+      "sector_id": 10,
+      "detected_by": "4",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_10_572.2_2244.5",
+      "class_name": "human",
+      "conf": 0.287,
+      "world_x": 572.19,
+      "world_y": 2244.53,
+      "sector_id": 10,
+      "detected_by": "4",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_10_520.5_2273.0",
+      "class_name": "human",
+      "conf": 0.252,
+      "world_x": 520.5,
+      "world_y": 2272.97,
+      "sector_id": 10,
+      "detected_by": "4",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_5_455.2_917.9",
+      "class_name": "human",
+      "conf": 0.708,
+      "world_x": 455.25,
+      "world_y": 917.89,
+      "sector_id": 5,
+      "detected_by": "5",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_5_589.6_1487.7",
+      "class_name": "human",
+      "conf": 0.293,
+      "world_x": 589.56,
+      "world_y": 1487.73,
+      "sector_id": 5,
+      "detected_by": "5",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_5_650.0_1202.8",
+      "class_name": "human",
+      "conf": 0.28,
+      "world_x": 650.0,
+      "world_y": 1202.81,
+      "sector_id": 5,
+      "detected_by": "5",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_5_405.4_1369.9",
+      "class_name": "human",
+      "conf": 0.2,
+      "world_x": 405.38,
+      "world_y": 1369.92,
+      "sector_id": 5,
+      "detected_by": "5",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_1_891.4_175.6",
+      "class_name": "human",
+      "conf": 0.572,
+      "world_x": 891.38,
+      "world_y": 175.62,
+      "sector_id": 1,
+      "detected_by": "8",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_1_1033.4_728.2",
+      "class_name": "human",
+      "conf": 0.33,
+      "world_x": 1033.38,
+      "world_y": 728.2,
+      "sector_id": 1,
+      "detected_by": "8",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_1_1529.1_696.7",
+      "class_name": "human",
+      "conf": 0.324,
+      "world_x": 1529.12,
+      "world_y": 696.72,
+      "sector_id": 1,
+      "detected_by": "8",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_1_1078.4_217.1",
+      "class_name": "human",
+      "conf": 0.302,
+      "world_x": 1078.44,
+      "world_y": 217.11,
+      "sector_id": 1,
+      "detected_by": "8",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_1_1062.2_275.0",
+      "class_name": "human",
+      "conf": 0.276,
+      "world_x": 1062.19,
+      "world_y": 275.0,
+      "sector_id": 1,
+      "detected_by": "8",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_1_890.2_767.0",
+      "class_name": "human",
+      "conf": 0.274,
+      "world_x": 890.19,
+      "world_y": 767.03,
+      "sector_id": 1,
+      "detected_by": "8",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_1_853.5_669.1",
+      "class_name": "human",
+      "conf": 0.205,
+      "world_x": 853.5,
+      "world_y": 669.14,
+      "sector_id": 1,
+      "detected_by": "8",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1953.1_1251.6",
+      "class_name": "human",
+      "conf": 0.702,
+      "world_x": 1953.06,
+      "world_y": 1251.64,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1950.8_885.9",
+      "class_name": "human",
+      "conf": 0.699,
+      "world_x": 1950.81,
+      "world_y": 885.94,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_2024.1_1134.4",
+      "class_name": "human",
+      "conf": 0.64,
+      "world_x": 2024.12,
+      "world_y": 1134.38,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1963.0_1559.4",
+      "class_name": "human",
+      "conf": 0.607,
+      "world_x": 1963.0,
+      "world_y": 1559.38,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1924.2_1287.1",
+      "class_name": "human",
+      "conf": 0.555,
+      "world_x": 1924.19,
+      "world_y": 1287.11,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1887.5_950.0",
+      "class_name": "human",
+      "conf": 0.548,
+      "world_x": 1887.5,
+      "world_y": 950.0,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1676.1_1188.9",
+      "class_name": "human",
+      "conf": 0.508,
+      "world_x": 1676.12,
+      "world_y": 1188.91,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1644.1_1127.7",
+      "class_name": "human",
+      "conf": 0.505,
+      "world_x": 1644.12,
+      "world_y": 1127.73,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1945.4_1070.7",
+      "class_name": "human",
+      "conf": 0.5,
+      "world_x": 1945.44,
+      "world_y": 1070.7,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1997.2_1122.1",
+      "class_name": "human",
+      "conf": 0.498,
+      "world_x": 1997.25,
+      "world_y": 1122.11,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1985.6_1253.3",
+      "class_name": "human",
+      "conf": 0.485,
+      "world_x": 1985.56,
+      "world_y": 1253.28,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1950.7_1089.0",
+      "class_name": "human",
+      "conf": 0.48,
+      "world_x": 1950.69,
+      "world_y": 1088.98,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1973.9_1247.8",
+      "class_name": "human",
+      "conf": 0.444,
+      "world_x": 1973.94,
+      "world_y": 1247.81,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1679.1_1206.4",
+      "class_name": "human",
+      "conf": 0.386,
+      "world_x": 1679.06,
+      "world_y": 1206.41,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_2327.8_842.9",
+      "class_name": "human",
+      "conf": 0.376,
+      "world_x": 2327.81,
+      "world_y": 842.89,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1742.6_932.0",
+      "class_name": "human",
+      "conf": 0.372,
+      "world_x": 1742.62,
+      "world_y": 931.95,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_2242.1_1224.7",
+      "class_name": "human",
+      "conf": 0.363,
+      "world_x": 2242.06,
+      "world_y": 1224.69,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1665.6_1207.6",
+      "class_name": "human",
+      "conf": 0.347,
+      "world_x": 1665.56,
+      "world_y": 1207.58,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1723.2_916.8",
+      "class_name": "human",
+      "conf": 0.283,
+      "world_x": 1723.25,
+      "world_y": 916.8,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1638.9_1159.1",
+      "class_name": "human",
+      "conf": 0.269,
+      "world_x": 1638.94,
+      "world_y": 1159.14,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1978.1_1250.1",
+      "class_name": "human",
+      "conf": 0.248,
+      "world_x": 1978.12,
+      "world_y": 1250.08,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1640.0_1115.1",
+      "class_name": "human",
+      "conf": 0.236,
+      "world_x": 1640.0,
+      "world_y": 1115.08,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1946.2_1078.2",
+      "class_name": "human",
+      "conf": 0.232,
+      "world_x": 1946.19,
+      "world_y": 1078.2,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1652.4_1141.5",
+      "class_name": "human",
+      "conf": 0.224,
+      "world_x": 1652.44,
+      "world_y": 1141.48,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_7_1784.3_853.5",
+      "class_name": "human",
+      "conf": 0.21,
+      "world_x": 1784.31,
+      "world_y": 853.52,
+      "sector_id": 7,
+      "detected_by": "9",
+      "time": 15.0
+    },
+    {
+      "target_key": "TGT_12_1893.9_1717.9",
+      "class_name": "human",
+      "conf": 0.616,
+      "world_x": 1893.94,
+      "world_y": 1717.89,
+      "sector_id": 12,
+      "detected_by": "0",
+      "time": 17.0
+    },
+    {
+      "target_key": "TGT_12_2076.8_1609.8",
+      "class_name": "human",
+      "conf": 0.462,
+      "world_x": 2076.81,
+      "world_y": 1609.84,
+      "sector_id": 12,
+      "detected_by": "0",
+      "time": 17.0
+    },
+    {
+      "target_key": "TGT_12_1885.9_1849.7",
+      "class_name": "human",
+      "conf": 0.359,
+      "world_x": 1885.94,
+      "world_y": 1849.69,
+      "sector_id": 12,
+      "detected_by": "0",
+      "time": 17.0
+    },
+    {
+      "target_key": "TGT_12_2132.1_1653.4",
+      "class_name": "human",
+      "conf": 0.251,
+      "world_x": 2132.06,
+      "world_y": 1653.36,
+      "sector_id": 12,
+      "detected_by": "0",
+      "time": 17.0
+    },
+    {
+      "target_key": "TGT_12_1893.9_1717.9",
+      "class_name": "human",
+      "conf": 0.616,
+      "world_x": 1893.94,
+      "world_y": 1717.89,
+      "sector_id": 12,
+      "detected_by": "1",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_12_2076.8_1609.8",
+      "class_name": "human",
+      "conf": 0.462,
+      "world_x": 2076.81,
+      "world_y": 1609.84,
+      "sector_id": 12,
+      "detected_by": "1",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_12_1885.9_1849.7",
+      "class_name": "human",
+      "conf": 0.359,
+      "world_x": 1885.94,
+      "world_y": 1849.69,
+      "sector_id": 12,
+      "detected_by": "1",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_12_2132.1_1653.4",
+      "class_name": "human",
+      "conf": 0.251,
+      "world_x": 2132.06,
+      "world_y": 1653.36,
+      "sector_id": 12,
+      "detected_by": "1",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1230.3_1552.7",
+      "class_name": "human",
+      "conf": 0.78,
+      "world_x": 1230.31,
+      "world_y": 1552.73,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1227.4_1373.6",
+      "class_name": "human",
+      "conf": 0.736,
+      "world_x": 1227.44,
+      "world_y": 1373.59,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1161.0_1537.7",
+      "class_name": "human",
+      "conf": 0.734,
+      "world_x": 1161.0,
+      "world_y": 1537.66,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1542.0_1134.8",
+      "class_name": "human",
+      "conf": 0.711,
+      "world_x": 1542.0,
+      "world_y": 1134.77,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_994.1_1102.8",
+      "class_name": "human",
+      "conf": 0.67,
+      "world_x": 994.12,
+      "world_y": 1102.81,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1359.8_1430.6",
+      "class_name": "human",
+      "conf": 0.641,
+      "world_x": 1359.75,
+      "world_y": 1430.62,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1386.9_1288.3",
+      "class_name": "human",
+      "conf": 0.613,
+      "world_x": 1386.88,
+      "world_y": 1288.28,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1369.6_1398.0",
+      "class_name": "human",
+      "conf": 0.599,
+      "world_x": 1369.56,
+      "world_y": 1397.97,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1370.3_1292.1",
+      "class_name": "human",
+      "conf": 0.585,
+      "world_x": 1370.31,
+      "world_y": 1292.11,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1520.1_1155.5",
+      "class_name": "human",
+      "conf": 0.567,
+      "world_x": 1520.06,
+      "world_y": 1155.55,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1099.8_1246.6",
+      "class_name": "human",
+      "conf": 0.489,
+      "world_x": 1099.75,
+      "world_y": 1246.64,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1040.9_1313.4",
+      "class_name": "human",
+      "conf": 0.411,
+      "world_x": 1040.88,
+      "world_y": 1313.36,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1048.9_1302.7",
+      "class_name": "human",
+      "conf": 0.382,
+      "world_x": 1048.88,
+      "world_y": 1302.66,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1045.6_1307.5",
+      "class_name": "human",
+      "conf": 0.352,
+      "world_x": 1045.56,
+      "world_y": 1307.5,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1588.9_842.7",
+      "class_name": "human",
+      "conf": 0.334,
+      "world_x": 1588.94,
+      "world_y": 842.66,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1486.9_813.1",
+      "class_name": "human",
+      "conf": 0.306,
+      "world_x": 1486.88,
+      "world_y": 813.12,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1571.3_1181.8",
+      "class_name": "human",
+      "conf": 0.268,
+      "world_x": 1571.31,
+      "world_y": 1181.8,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1477.6_808.8",
+      "class_name": "human",
+      "conf": 0.264,
+      "world_x": 1477.62,
+      "world_y": 808.83,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1517.5_1134.1",
+      "class_name": "human",
+      "conf": 0.249,
+      "world_x": 1517.5,
+      "world_y": 1134.14,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1530.9_808.5",
+      "class_name": "human",
+      "conf": 0.231,
+      "world_x": 1530.94,
+      "world_y": 808.52,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_6_1520.2_1131.1",
+      "class_name": "human",
+      "conf": 0.2,
+      "world_x": 1520.25,
+      "world_y": 1131.09,
+      "sector_id": 6,
+      "detected_by": "2",
+      "time": 19.0
+    },
+    {
+      "target_key": "TGT_7_1953.1_1251.6",
+      "class_name": "human",
+      "conf": 0.702,
+      "world_x": 1953.06,
+      "world_y": 1251.64,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1950.8_885.9",
+      "class_name": "human",
+      "conf": 0.699,
+      "world_x": 1950.81,
+      "world_y": 885.94,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_2024.1_1134.4",
+      "class_name": "human",
+      "conf": 0.64,
+      "world_x": 2024.12,
+      "world_y": 1134.38,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1963.0_1559.4",
+      "class_name": "human",
+      "conf": 0.607,
+      "world_x": 1963.0,
+      "world_y": 1559.38,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1924.2_1287.1",
+      "class_name": "human",
+      "conf": 0.555,
+      "world_x": 1924.19,
+      "world_y": 1287.11,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1887.5_950.0",
+      "class_name": "human",
+      "conf": 0.548,
+      "world_x": 1887.5,
+      "world_y": 950.0,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1676.1_1188.9",
+      "class_name": "human",
+      "conf": 0.508,
+      "world_x": 1676.12,
+      "world_y": 1188.91,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1644.1_1127.7",
+      "class_name": "human",
+      "conf": 0.505,
+      "world_x": 1644.12,
+      "world_y": 1127.73,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1945.4_1070.7",
+      "class_name": "human",
+      "conf": 0.5,
+      "world_x": 1945.44,
+      "world_y": 1070.7,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1997.2_1122.1",
+      "class_name": "human",
+      "conf": 0.498,
+      "world_x": 1997.25,
+      "world_y": 1122.11,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1985.6_1253.3",
+      "class_name": "human",
+      "conf": 0.485,
+      "world_x": 1985.56,
+      "world_y": 1253.28,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1950.7_1089.0",
+      "class_name": "human",
+      "conf": 0.48,
+      "world_x": 1950.69,
+      "world_y": 1088.98,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1973.9_1247.8",
+      "class_name": "human",
+      "conf": 0.444,
+      "world_x": 1973.94,
+      "world_y": 1247.81,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1679.1_1206.4",
+      "class_name": "human",
+      "conf": 0.386,
+      "world_x": 1679.06,
+      "world_y": 1206.41,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_2327.8_842.9",
+      "class_name": "human",
+      "conf": 0.376,
+      "world_x": 2327.81,
+      "world_y": 842.89,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1742.6_932.0",
+      "class_name": "human",
+      "conf": 0.372,
+      "world_x": 1742.62,
+      "world_y": 931.95,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_2242.1_1224.7",
+      "class_name": "human",
+      "conf": 0.363,
+      "world_x": 2242.06,
+      "world_y": 1224.69,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1665.6_1207.6",
+      "class_name": "human",
+      "conf": 0.347,
+      "world_x": 1665.56,
+      "world_y": 1207.58,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1723.2_916.8",
+      "class_name": "human",
+      "conf": 0.283,
+      "world_x": 1723.25,
+      "world_y": 916.8,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1638.9_1159.1",
+      "class_name": "human",
+      "conf": 0.269,
+      "world_x": 1638.94,
+      "world_y": 1159.14,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1978.1_1250.1",
+      "class_name": "human",
+      "conf": 0.248,
+      "world_x": 1978.12,
+      "world_y": 1250.08,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1640.0_1115.1",
+      "class_name": "human",
+      "conf": 0.236,
+      "world_x": 1640.0,
+      "world_y": 1115.08,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1946.2_1078.2",
+      "class_name": "human",
+      "conf": 0.232,
+      "world_x": 1946.19,
+      "world_y": 1078.2,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1652.4_1141.5",
+      "class_name": "human",
+      "conf": 0.224,
+      "world_x": 1652.44,
+      "world_y": 1141.48,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_7_1784.3_853.5",
+      "class_name": "human",
+      "conf": 0.21,
+      "world_x": 1784.31,
+      "world_y": 853.52,
+      "sector_id": 7,
+      "detected_by": "0",
+      "time": 23.0
+    },
+    {
+      "target_key": "TGT_2_2249.4_518.1",
+      "class_name": "human",
+      "conf": 0.68,
+      "world_x": 2249.44,
+      "world_y": 518.12,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_1763.9_482.7",
+      "class_name": "human",
+      "conf": 0.671,
+      "world_x": 1763.94,
+      "world_y": 482.66,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2205.1_647.8",
+      "class_name": "human",
+      "conf": 0.649,
+      "world_x": 2205.06,
+      "world_y": 647.81,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2225.4_461.0",
+      "class_name": "human",
+      "conf": 0.633,
+      "world_x": 2225.44,
+      "world_y": 461.02,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2208.9_580.2",
+      "class_name": "human",
+      "conf": 0.611,
+      "world_x": 2208.94,
+      "world_y": 580.23,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2112.1_771.3",
+      "class_name": "human",
+      "conf": 0.543,
+      "world_x": 2112.12,
+      "world_y": 771.33,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2243.4_427.4",
+      "class_name": "human",
+      "conf": 0.536,
+      "world_x": 2243.38,
+      "world_y": 427.42,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2248.1_397.5",
+      "class_name": "human",
+      "conf": 0.53,
+      "world_x": 2248.12,
+      "world_y": 397.5,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2137.7_750.6",
+      "class_name": "human",
+      "conf": 0.485,
+      "world_x": 2137.69,
+      "world_y": 750.62,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2263.3_420.6",
+      "class_name": "human",
+      "conf": 0.48,
+      "world_x": 2263.31,
+      "world_y": 420.62,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2294.8_352.7",
+      "class_name": "human",
+      "conf": 0.395,
+      "world_x": 2294.81,
+      "world_y": 352.73,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2327.2_254.8",
+      "class_name": "human",
+      "conf": 0.362,
+      "world_x": 2327.25,
+      "world_y": 254.84,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_1847.8_462.6",
+      "class_name": "human",
+      "conf": 0.344,
+      "world_x": 1847.75,
+      "world_y": 462.58,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_1768.0_687.8",
+      "class_name": "human",
+      "conf": 0.278,
+      "world_x": 1768.0,
+      "world_y": 687.81,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2121.8_754.8",
+      "class_name": "human",
+      "conf": 0.27,
+      "world_x": 2121.75,
+      "world_y": 754.77,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2388.1_105.9",
+      "class_name": "human",
+      "conf": 0.216,
+      "world_x": 2388.06,
+      "world_y": 105.94,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2156.0_631.7",
+      "class_name": "human",
+      "conf": 0.216,
+      "world_x": 2156.0,
+      "world_y": 631.72,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2258.8_360.6",
+      "class_name": "human",
+      "conf": 0.215,
+      "world_x": 2258.75,
+      "world_y": 360.55,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_2_2264.8_552.4",
+      "class_name": "human",
+      "conf": 0.214,
+      "world_x": 2264.81,
+      "world_y": 552.42,
+      "sector_id": 2,
+      "detected_by": "9",
+      "time": 37.0
+    },
+    {
+      "target_key": "TGT_5_455.2_917.9",
+      "class_name": "human",
+      "conf": 0.708,
+      "world_x": 455.25,
+      "world_y": 917.89,
+      "sector_id": 5,
+      "detected_by": "4",
+      "time": 39.0
+    },
+    {
+      "target_key": "TGT_5_589.6_1487.7",
+      "class_name": "human",
+      "conf": 0.293,
+      "world_x": 589.56,
+      "world_y": 1487.73,
+      "sector_id": 5,
+      "detected_by": "4",
+      "time": 39.0
+    },
+    {
+      "target_key": "TGT_5_650.0_1202.8",
+      "class_name": "human",
+      "conf": 0.28,
+      "world_x": 650.0,
+      "world_y": 1202.81,
+      "sector_id": 5,
+      "detected_by": "4",
+      "time": 39.0
+    },
+    {
+      "target_key": "TGT_5_405.4_1369.9",
+      "class_name": "human",
+      "conf": 0.2,
+      "world_x": 405.38,
+      "world_y": 1369.92,
+      "sector_id": 5,
+      "detected_by": "4",
+      "time": 39.0
+    },
+    {
+      "target_key": "TGT_0_88.8_186.6",
+      "class_name": "human",
+      "conf": 0.38,
+      "world_x": 88.75,
+      "world_y": 186.56,
+      "sector_id": 0,
+      "detected_by": "5",
+      "time": 39.0
+    },
+    {
+      "target_key": "TGT_0_543.6_310.1",
+      "class_name": "human",
+      "conf": 0.354,
+      "world_x": 543.62,
+      "world_y": 310.08,
+      "sector_id": 0,
+      "detected_by": "5",
+      "time": 39.0
+    },
+    {
+      "target_key": "TGT_0_98.4_394.1",
+      "class_name": "human",
+      "conf": 0.232,
+      "world_x": 98.44,
+      "world_y": 394.14,
+      "sector_id": 0,
+      "detected_by": "5",
+      "time": 39.0
+    },
+    {
+      "target_key": "TGT_0_88.8_186.6",
+      "class_name": "human",
+      "conf": 0.38,
+      "world_x": 88.75,
+      "world_y": 186.56,
+      "sector_id": 0,
+      "detected_by": "8",
+      "time": 39.0
+    },
+    {
+      "target_key": "TGT_0_543.6_310.1",
+      "class_name": "human",
+      "conf": 0.354,
+      "world_x": 543.62,
+      "world_y": 310.08,
+      "sector_id": 0,
+      "detected_by": "8",
+      "time": 39.0
+    },
+    {
+      "target_key": "TGT_0_98.4_394.1",
+      "class_name": "human",
+      "conf": 0.232,
+      "world_x": 98.44,
+      "world_y": 394.14,
+      "sector_id": 0,
+      "detected_by": "8",
+      "time": 39.0
+    },
+    {
+      "target_key": "TGT_11_1241.6_2238.0",
+      "class_name": "human",
+      "conf": 0.289,
+      "world_x": 1241.56,
+      "world_y": 2237.97,
+      "sector_id": 11,
+      "detected_by": "3",
+      "time": 41.0
+    },
+    {
+      "target_key": "TGT_11_1039.4_2021.6",
+      "class_name": "human",
+      "conf": 0.237,
+      "world_x": 1039.38,
+      "world_y": 2021.64,
+      "sector_id": 11,
+      "detected_by": "3",
+      "time": 41.0
+    },
+    {
+      "target_key": "TGT_6_1230.3_1552.7",
+      "class_name": "human",
+      "conf": 0.78,
+      "world_x": 1230.31,
+      "world_y": 1552.73,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1227.4_1373.6",
+      "class_name": "human",
+      "conf": 0.736,
+      "world_x": 1227.44,
+      "world_y": 1373.59,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1161.0_1537.7",
+      "class_name": "human",
+      "conf": 0.734,
+      "world_x": 1161.0,
+      "world_y": 1537.66,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1542.0_1134.8",
+      "class_name": "human",
+      "conf": 0.711,
+      "world_x": 1542.0,
+      "world_y": 1134.77,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_994.1_1102.8",
+      "class_name": "human",
+      "conf": 0.67,
+      "world_x": 994.12,
+      "world_y": 1102.81,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1359.8_1430.6",
+      "class_name": "human",
+      "conf": 0.641,
+      "world_x": 1359.75,
+      "world_y": 1430.62,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1386.9_1288.3",
+      "class_name": "human",
+      "conf": 0.613,
+      "world_x": 1386.88,
+      "world_y": 1288.28,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1369.6_1398.0",
+      "class_name": "human",
+      "conf": 0.599,
+      "world_x": 1369.56,
+      "world_y": 1397.97,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1370.3_1292.1",
+      "class_name": "human",
+      "conf": 0.585,
+      "world_x": 1370.31,
+      "world_y": 1292.11,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1520.1_1155.5",
+      "class_name": "human",
+      "conf": 0.567,
+      "world_x": 1520.06,
+      "world_y": 1155.55,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1099.8_1246.6",
+      "class_name": "human",
+      "conf": 0.489,
+      "world_x": 1099.75,
+      "world_y": 1246.64,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1040.9_1313.4",
+      "class_name": "human",
+      "conf": 0.411,
+      "world_x": 1040.88,
+      "world_y": 1313.36,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1048.9_1302.7",
+      "class_name": "human",
+      "conf": 0.382,
+      "world_x": 1048.88,
+      "world_y": 1302.66,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1045.6_1307.5",
+      "class_name": "human",
+      "conf": 0.352,
+      "world_x": 1045.56,
+      "world_y": 1307.5,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1588.9_842.7",
+      "class_name": "human",
+      "conf": 0.334,
+      "world_x": 1588.94,
+      "world_y": 842.66,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1486.9_813.1",
+      "class_name": "human",
+      "conf": 0.306,
+      "world_x": 1486.88,
+      "world_y": 813.12,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1571.3_1181.8",
+      "class_name": "human",
+      "conf": 0.268,
+      "world_x": 1571.31,
+      "world_y": 1181.8,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1477.6_808.8",
+      "class_name": "human",
+      "conf": 0.264,
+      "world_x": 1477.62,
+      "world_y": 808.83,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1517.5_1134.1",
+      "class_name": "human",
+      "conf": 0.249,
+      "world_x": 1517.5,
+      "world_y": 1134.14,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1530.9_808.5",
+      "class_name": "human",
+      "conf": 0.231,
+      "world_x": 1530.94,
+      "world_y": 808.52,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1520.2_1131.1",
+      "class_name": "human",
+      "conf": 0.2,
+      "world_x": 1520.25,
+      "world_y": 1131.09,
+      "sector_id": 6,
+      "detected_by": "6",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_1_891.4_175.6",
+      "class_name": "human",
+      "conf": 0.572,
+      "world_x": 891.38,
+      "world_y": 175.62,
+      "sector_id": 1,
+      "detected_by": "9",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_1_1033.4_728.2",
+      "class_name": "human",
+      "conf": 0.33,
+      "world_x": 1033.38,
+      "world_y": 728.2,
+      "sector_id": 1,
+      "detected_by": "9",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_1_1529.1_696.7",
+      "class_name": "human",
+      "conf": 0.324,
+      "world_x": 1529.12,
+      "world_y": 696.72,
+      "sector_id": 1,
+      "detected_by": "9",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_1_1078.4_217.1",
+      "class_name": "human",
+      "conf": 0.302,
+      "world_x": 1078.44,
+      "world_y": 217.11,
+      "sector_id": 1,
+      "detected_by": "9",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_1_1062.2_275.0",
+      "class_name": "human",
+      "conf": 0.276,
+      "world_x": 1062.19,
+      "world_y": 275.0,
+      "sector_id": 1,
+      "detected_by": "9",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_1_890.2_767.0",
+      "class_name": "human",
+      "conf": 0.274,
+      "world_x": 890.19,
+      "world_y": 767.03,
+      "sector_id": 1,
+      "detected_by": "9",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_1_853.5_669.1",
+      "class_name": "human",
+      "conf": 0.205,
+      "world_x": 853.5,
+      "world_y": 669.14,
+      "sector_id": 1,
+      "detected_by": "9",
+      "time": 43.0
+    },
+    {
+      "target_key": "TGT_6_1230.3_1552.7",
+      "class_name": "human",
+      "conf": 0.78,
+      "world_x": 1230.31,
+      "world_y": 1552.73,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1227.4_1373.6",
+      "class_name": "human",
+      "conf": 0.736,
+      "world_x": 1227.44,
+      "world_y": 1373.59,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1161.0_1537.7",
+      "class_name": "human",
+      "conf": 0.734,
+      "world_x": 1161.0,
+      "world_y": 1537.66,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1542.0_1134.8",
+      "class_name": "human",
+      "conf": 0.711,
+      "world_x": 1542.0,
+      "world_y": 1134.77,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_994.1_1102.8",
+      "class_name": "human",
+      "conf": 0.67,
+      "world_x": 994.12,
+      "world_y": 1102.81,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1359.8_1430.6",
+      "class_name": "human",
+      "conf": 0.641,
+      "world_x": 1359.75,
+      "world_y": 1430.62,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1386.9_1288.3",
+      "class_name": "human",
+      "conf": 0.613,
+      "world_x": 1386.88,
+      "world_y": 1288.28,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1369.6_1398.0",
+      "class_name": "human",
+      "conf": 0.599,
+      "world_x": 1369.56,
+      "world_y": 1397.97,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1370.3_1292.1",
+      "class_name": "human",
+      "conf": 0.585,
+      "world_x": 1370.31,
+      "world_y": 1292.11,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1520.1_1155.5",
+      "class_name": "human",
+      "conf": 0.567,
+      "world_x": 1520.06,
+      "world_y": 1155.55,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1099.8_1246.6",
+      "class_name": "human",
+      "conf": 0.489,
+      "world_x": 1099.75,
+      "world_y": 1246.64,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1040.9_1313.4",
+      "class_name": "human",
+      "conf": 0.411,
+      "world_x": 1040.88,
+      "world_y": 1313.36,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1048.9_1302.7",
+      "class_name": "human",
+      "conf": 0.382,
+      "world_x": 1048.88,
+      "world_y": 1302.66,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1045.6_1307.5",
+      "class_name": "human",
+      "conf": 0.352,
+      "world_x": 1045.56,
+      "world_y": 1307.5,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1588.9_842.7",
+      "class_name": "human",
+      "conf": 0.334,
+      "world_x": 1588.94,
+      "world_y": 842.66,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1486.9_813.1",
+      "class_name": "human",
+      "conf": 0.306,
+      "world_x": 1486.88,
+      "world_y": 813.12,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1571.3_1181.8",
+      "class_name": "human",
+      "conf": 0.268,
+      "world_x": 1571.31,
+      "world_y": 1181.8,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1477.6_808.8",
+      "class_name": "human",
+      "conf": 0.264,
+      "world_x": 1477.62,
+      "world_y": 808.83,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1517.5_1134.1",
+      "class_name": "human",
+      "conf": 0.249,
+      "world_x": 1517.5,
+      "world_y": 1134.14,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1530.9_808.5",
+      "class_name": "human",
+      "conf": 0.231,
+      "world_x": 1530.94,
+      "world_y": 808.52,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_6_1520.2_1131.1",
+      "class_name": "human",
+      "conf": 0.2,
+      "world_x": 1520.25,
+      "world_y": 1131.09,
+      "sector_id": 6,
+      "detected_by": "0",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_10_530.4_2246.3",
+      "class_name": "human",
+      "conf": 0.509,
+      "world_x": 530.44,
+      "world_y": 2246.33,
+      "sector_id": 10,
+      "detected_by": "3",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_10_547.1_2242.9",
+      "class_name": "human",
+      "conf": 0.501,
+      "world_x": 547.12,
+      "world_y": 2242.89,
+      "sector_id": 10,
+      "detected_by": "3",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_10_573.6_2298.4",
+      "class_name": "human",
+      "conf": 0.476,
+      "world_x": 573.56,
+      "world_y": 2298.44,
+      "sector_id": 10,
+      "detected_by": "3",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_10_565.1_2215.9",
+      "class_name": "human",
+      "conf": 0.473,
+      "world_x": 565.06,
+      "world_y": 2215.86,
+      "sector_id": 10,
+      "detected_by": "3",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_10_572.2_2244.5",
+      "class_name": "human",
+      "conf": 0.287,
+      "world_x": 572.19,
+      "world_y": 2244.53,
+      "sector_id": 10,
+      "detected_by": "3",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_10_520.5_2273.0",
+      "class_name": "human",
+      "conf": 0.252,
+      "world_x": 520.5,
+      "world_y": 2272.97,
+      "sector_id": 10,
+      "detected_by": "3",
+      "time": 47.0
+    },
+    {
+      "target_key": "TGT_13_2778.8_1926.5",
+      "class_name": "human",
+      "conf": 0.737,
+      "world_x": 2778.75,
+      "world_y": 1926.48,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2794.9_1939.3",
+      "class_name": "human",
+      "conf": 0.675,
+      "world_x": 2794.88,
+      "world_y": 1939.3,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2630.8_1837.0",
+      "class_name": "human",
+      "conf": 0.61,
+      "world_x": 2630.75,
+      "world_y": 1837.03,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2581.0_1872.0",
+      "class_name": "human",
+      "conf": 0.586,
+      "world_x": 2581.0,
+      "world_y": 1871.95,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2674.2_1874.3",
+      "class_name": "human",
+      "conf": 0.563,
+      "world_x": 2674.19,
+      "world_y": 1874.3,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_3049.9_2046.3",
+      "class_name": "human",
+      "conf": 0.561,
+      "world_x": 3049.88,
+      "world_y": 2046.33,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2574.0_1891.2",
+      "class_name": "human",
+      "conf": 0.517,
+      "world_x": 2574.0,
+      "world_y": 1891.25,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_3075.7_1630.4",
+      "class_name": "human",
+      "conf": 0.503,
+      "world_x": 3075.69,
+      "world_y": 1630.39,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2646.2_1825.3",
+      "class_name": "human",
+      "conf": 0.459,
+      "world_x": 2646.19,
+      "world_y": 1825.31,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2488.3_1783.7",
+      "class_name": "human",
+      "conf": 0.429,
+      "world_x": 2488.31,
+      "world_y": 1783.67,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2561.5_1831.9",
+      "class_name": "human",
+      "conf": 0.387,
+      "world_x": 2561.5,
+      "world_y": 1831.88,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_3165.2_1990.0",
+      "class_name": "human",
+      "conf": 0.367,
+      "world_x": 3165.25,
+      "world_y": 1990.0,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2531.6_1886.4",
+      "class_name": "human",
+      "conf": 0.364,
+      "world_x": 2531.62,
+      "world_y": 1886.41,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2645.4_1818.5",
+      "class_name": "human",
+      "conf": 0.284,
+      "world_x": 2645.44,
+      "world_y": 1818.52,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2950.1_2010.5",
+      "class_name": "human",
+      "conf": 0.283,
+      "world_x": 2950.06,
+      "world_y": 2010.55,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2792.6_1813.9",
+      "class_name": "human",
+      "conf": 0.253,
+      "world_x": 2792.56,
+      "world_y": 1813.91,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2810.3_1969.3",
+      "class_name": "human",
+      "conf": 0.244,
+      "world_x": 2810.31,
+      "world_y": 1969.3,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2415.0_1629.0",
+      "class_name": "human",
+      "conf": 0.231,
+      "world_x": 2415.0,
+      "world_y": 1628.98,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_3054.1_1613.4",
+      "class_name": "human",
+      "conf": 0.227,
+      "world_x": 3054.06,
+      "world_y": 1613.36,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2620.2_1814.6",
+      "class_name": "human",
+      "conf": 0.218,
+      "world_x": 2620.19,
+      "world_y": 1814.61,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_13_2792.8_1825.6",
+      "class_name": "human",
+      "conf": 0.202,
+      "world_x": 2792.81,
+      "world_y": 1825.62,
+      "sector_id": 13,
+      "detected_by": "1",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_11_1241.6_2238.0",
+      "class_name": "human",
+      "conf": 0.289,
+      "world_x": 1241.56,
+      "world_y": 2237.97,
+      "sector_id": 11,
+      "detected_by": "2",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_11_1039.4_2021.6",
+      "class_name": "human",
+      "conf": 0.237,
+      "world_x": 1039.38,
+      "world_y": 2021.64,
+      "sector_id": 11,
+      "detected_by": "2",
+      "time": 73.0
+    },
+    {
+      "target_key": "TGT_8_2421.2_1087.0",
+      "class_name": "human",
+      "conf": 0.495,
+      "world_x": 2421.25,
+      "world_y": 1087.03,
+      "sector_id": 8,
+      "detected_by": "0",
+      "time": 79.0
+    },
+    {
+      "target_key": "TGT_8_2686.4_1301.9",
+      "class_name": "human",
+      "conf": 0.392,
+      "world_x": 2686.44,
+      "world_y": 1301.88,
+      "sector_id": 8,
+      "detected_by": "0",
+      "time": 79.0
+    },
+    {
+      "target_key": "TGT_11_1241.6_2238.0",
+      "class_name": "human",
+      "conf": 0.289,
+      "world_x": 1241.56,
+      "world_y": 2237.97,
+      "sector_id": 11,
+      "detected_by": "4",
+      "time": 81.0
+    },
+    {
+      "target_key": "TGT_11_1039.4_2021.6",
+      "class_name": "human",
+      "conf": 0.237,
+      "world_x": 1039.38,
+      "world_y": 2021.64,
+      "sector_id": 11,
+      "detected_by": "4",
+      "time": 81.0
+    },
+    {
+      "target_key": "TGT_6_1230.3_1552.7",
+      "class_name": "human",
+      "conf": 0.78,
+      "world_x": 1230.31,
+      "world_y": 1552.73,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1227.4_1373.6",
+      "class_name": "human",
+      "conf": 0.736,
+      "world_x": 1227.44,
+      "world_y": 1373.59,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1161.0_1537.7",
+      "class_name": "human",
+      "conf": 0.734,
+      "world_x": 1161.0,
+      "world_y": 1537.66,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1542.0_1134.8",
+      "class_name": "human",
+      "conf": 0.711,
+      "world_x": 1542.0,
+      "world_y": 1134.77,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_994.1_1102.8",
+      "class_name": "human",
+      "conf": 0.67,
+      "world_x": 994.12,
+      "world_y": 1102.81,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1359.8_1430.6",
+      "class_name": "human",
+      "conf": 0.641,
+      "world_x": 1359.75,
+      "world_y": 1430.62,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1386.9_1288.3",
+      "class_name": "human",
+      "conf": 0.613,
+      "world_x": 1386.88,
+      "world_y": 1288.28,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1369.6_1398.0",
+      "class_name": "human",
+      "conf": 0.599,
+      "world_x": 1369.56,
+      "world_y": 1397.97,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1370.3_1292.1",
+      "class_name": "human",
+      "conf": 0.585,
+      "world_x": 1370.31,
+      "world_y": 1292.11,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1520.1_1155.5",
+      "class_name": "human",
+      "conf": 0.567,
+      "world_x": 1520.06,
+      "world_y": 1155.55,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1099.8_1246.6",
+      "class_name": "human",
+      "conf": 0.489,
+      "world_x": 1099.75,
+      "world_y": 1246.64,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1040.9_1313.4",
+      "class_name": "human",
+      "conf": 0.411,
+      "world_x": 1040.88,
+      "world_y": 1313.36,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1048.9_1302.7",
+      "class_name": "human",
+      "conf": 0.382,
+      "world_x": 1048.88,
+      "world_y": 1302.66,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1045.6_1307.5",
+      "class_name": "human",
+      "conf": 0.352,
+      "world_x": 1045.56,
+      "world_y": 1307.5,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1588.9_842.7",
+      "class_name": "human",
+      "conf": 0.334,
+      "world_x": 1588.94,
+      "world_y": 842.66,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1486.9_813.1",
+      "class_name": "human",
+      "conf": 0.306,
+      "world_x": 1486.88,
+      "world_y": 813.12,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1571.3_1181.8",
+      "class_name": "human",
+      "conf": 0.268,
+      "world_x": 1571.31,
+      "world_y": 1181.8,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1477.6_808.8",
+      "class_name": "human",
+      "conf": 0.264,
+      "world_x": 1477.62,
+      "world_y": 808.83,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1517.5_1134.1",
+      "class_name": "human",
+      "conf": 0.249,
+      "world_x": 1517.5,
+      "world_y": 1134.14,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1530.9_808.5",
+      "class_name": "human",
+      "conf": 0.231,
+      "world_x": 1530.94,
+      "world_y": 808.52,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_6_1520.2_1131.1",
+      "class_name": "human",
+      "conf": 0.2,
+      "world_x": 1520.25,
+      "world_y": 1131.09,
+      "sector_id": 6,
+      "detected_by": "5",
+      "time": 83.0
+    },
+    {
+      "target_key": "TGT_16_1044.6_2736.7",
+      "class_name": "human",
+      "conf": 0.762,
+      "world_x": 1044.62,
+      "world_y": 2736.72,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_1273.6_2969.3",
+      "class_name": "human",
+      "conf": 0.734,
+      "world_x": 1273.56,
+      "world_y": 2969.3,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_1242.1_2908.0",
+      "class_name": "human",
+      "conf": 0.721,
+      "world_x": 1242.12,
+      "world_y": 2907.97,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_923.9_2430.4",
+      "class_name": "human",
+      "conf": 0.647,
+      "world_x": 923.88,
+      "world_y": 2430.39,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_992.9_2595.6",
+      "class_name": "human",
+      "conf": 0.631,
+      "world_x": 992.94,
+      "world_y": 2595.62,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_991.2_2484.8",
+      "class_name": "human",
+      "conf": 0.62,
+      "world_x": 991.19,
+      "world_y": 2484.77,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_988.4_2520.9",
+      "class_name": "human",
+      "conf": 0.62,
+      "world_x": 988.44,
+      "world_y": 2520.86,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_1061.9_2737.7",
+      "class_name": "human",
+      "conf": 0.586,
+      "world_x": 1061.94,
+      "world_y": 2737.73,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_1134.2_2872.9",
+      "class_name": "human",
+      "conf": 0.572,
+      "world_x": 1134.25,
+      "world_y": 2872.89,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_1003.7_2591.9",
+      "class_name": "human",
+      "conf": 0.545,
+      "world_x": 1003.69,
+      "world_y": 2591.95,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_999.0_2530.5",
+      "class_name": "human",
+      "conf": 0.404,
+      "world_x": 999.0,
+      "world_y": 2530.47,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_934.6_2408.9",
+      "class_name": "human",
+      "conf": 0.376,
+      "world_x": 934.62,
+      "world_y": 2408.91,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_1006.9_2531.1",
+      "class_name": "human",
+      "conf": 0.339,
+      "world_x": 1006.88,
+      "world_y": 2531.09,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_1008.8_2531.2",
+      "class_name": "human",
+      "conf": 0.331,
+      "world_x": 1008.75,
+      "world_y": 2531.17,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_889.4_2407.2",
+      "class_name": "human",
+      "conf": 0.299,
+      "world_x": 889.38,
+      "world_y": 2407.19,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_930.8_2408.1",
+      "class_name": "human",
+      "conf": 0.26,
+      "world_x": 930.75,
+      "world_y": 2408.05,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_1535.8_2692.7",
+      "class_name": "human",
+      "conf": 0.248,
+      "world_x": 1535.81,
+      "world_y": 2692.73,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_998.9_2594.2",
+      "class_name": "human",
+      "conf": 0.238,
+      "world_x": 998.94,
+      "world_y": 2594.22,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_875.9_2766.0",
+      "class_name": "human",
+      "conf": 0.237,
+      "world_x": 875.94,
+      "world_y": 2766.02,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_16_1442.2_2746.6",
+      "class_name": "human",
+      "conf": 0.204,
+      "world_x": 1442.25,
+      "world_y": 2746.56,
+      "sector_id": 16,
+      "detected_by": "4",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_11_1241.6_2238.0",
+      "class_name": "human",
+      "conf": 0.289,
+      "world_x": 1241.56,
+      "world_y": 2237.97,
+      "sector_id": 11,
+      "detected_by": "5",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_11_1039.4_2021.6",
+      "class_name": "human",
+      "conf": 0.237,
+      "world_x": 1039.38,
+      "world_y": 2021.64,
+      "sector_id": 11,
+      "detected_by": "5",
+      "time": 91.0
+    },
+    {
+      "target_key": "TGT_22_2029.1_3568.6",
+      "class_name": "human",
+      "conf": 0.744,
+      "world_x": 2029.12,
+      "world_y": 3568.59,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_2111.6_3444.3",
+      "class_name": "human",
+      "conf": 0.648,
+      "world_x": 2111.56,
+      "world_y": 3444.3,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_1966.8_3470.1",
+      "class_name": "human",
+      "conf": 0.645,
+      "world_x": 1966.75,
+      "world_y": 3470.08,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_2020.1_3537.0",
+      "class_name": "human",
+      "conf": 0.624,
+      "world_x": 2020.06,
+      "world_y": 3537.03,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_2025.2_3417.6",
+      "class_name": "human",
+      "conf": 0.543,
+      "world_x": 2025.19,
+      "world_y": 3417.58,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_2082.7_3440.5",
+      "class_name": "human",
+      "conf": 0.504,
+      "world_x": 2082.69,
+      "world_y": 3440.47,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_2087.8_3466.2",
+      "class_name": "human",
+      "conf": 0.432,
+      "world_x": 2087.81,
+      "world_y": 3466.25,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_2069.5_3469.2",
+      "class_name": "human",
+      "conf": 0.427,
+      "world_x": 2069.5,
+      "world_y": 3469.22,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_2044.8_3287.9",
+      "class_name": "human",
+      "conf": 0.413,
+      "world_x": 2044.75,
+      "world_y": 3287.89,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_1958.9_3802.3",
+      "class_name": "human",
+      "conf": 0.41,
+      "world_x": 1958.88,
+      "world_y": 3802.27,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_1928.9_3668.0",
+      "class_name": "human",
+      "conf": 0.405,
+      "world_x": 1928.94,
+      "world_y": 3667.97,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_1983.1_3670.2",
+      "class_name": "human",
+      "conf": 0.403,
+      "world_x": 1983.12,
+      "world_y": 3670.23,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_2141.8_3490.6",
+      "class_name": "human",
+      "conf": 0.401,
+      "world_x": 2141.75,
+      "world_y": 3490.62,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_1925.6_3962.3",
+      "class_name": "human",
+      "conf": 0.4,
+      "world_x": 1925.62,
+      "world_y": 3962.34,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_1993.4_3943.1",
+      "class_name": "human",
+      "conf": 0.379,
+      "world_x": 1993.44,
+      "world_y": 3943.05,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_1954.1_3777.5",
+      "class_name": "human",
+      "conf": 0.323,
+      "world_x": 1954.06,
+      "world_y": 3777.5,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_1965.2_3697.6",
+      "class_name": "human",
+      "conf": 0.32,
+      "world_x": 1965.25,
+      "world_y": 3697.58,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_1843.4_3617.6",
+      "class_name": "human",
+      "conf": 0.288,
+      "world_x": 1843.38,
+      "world_y": 3617.58,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_22_2040.8_3254.1",
+      "class_name": "human",
+      "conf": 0.218,
+      "world_x": 2040.81,
+      "world_y": 3254.06,
+      "sector_id": 22,
+      "detected_by": "3",
+      "time": 93.0
+    },
+    {
+      "target_key": "TGT_19_3461.2_2509.1",
+      "class_name": "human",
+      "conf": 0.812,
+      "world_x": 3461.25,
+      "world_y": 2509.06,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3556.4_2836.2",
+      "class_name": "human",
+      "conf": 0.618,
+      "world_x": 3556.44,
+      "world_y": 2836.17,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3523.3_2899.9",
+      "class_name": "human",
+      "conf": 0.561,
+      "world_x": 3523.31,
+      "world_y": 2899.92,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3593.3_2720.3",
+      "class_name": "human",
+      "conf": 0.531,
+      "world_x": 3593.31,
+      "world_y": 2720.31,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3622.8_2898.2",
+      "class_name": "human",
+      "conf": 0.518,
+      "world_x": 3622.81,
+      "world_y": 2898.2,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3526.7_2435.6",
+      "class_name": "human",
+      "conf": 0.486,
+      "world_x": 3526.69,
+      "world_y": 2435.55,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3259.9_2808.0",
+      "class_name": "human",
+      "conf": 0.475,
+      "world_x": 3259.88,
+      "world_y": 2807.97,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3270.1_2788.7",
+      "class_name": "human",
+      "conf": 0.467,
+      "world_x": 3270.06,
+      "world_y": 2788.67,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3620.7_2732.9",
+      "class_name": "human",
+      "conf": 0.467,
+      "world_x": 3620.69,
+      "world_y": 2732.89,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3523.4_2733.7",
+      "class_name": "human",
+      "conf": 0.463,
+      "world_x": 3523.38,
+      "world_y": 2733.67,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3236.2_2727.1",
+      "class_name": "human",
+      "conf": 0.452,
+      "world_x": 3236.19,
+      "world_y": 2727.11,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3232.2_2758.5",
+      "class_name": "human",
+      "conf": 0.43,
+      "world_x": 3232.25,
+      "world_y": 2758.52,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3273.1_2806.4",
+      "class_name": "human",
+      "conf": 0.413,
+      "world_x": 3273.12,
+      "world_y": 2806.41,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3338.2_2531.7",
+      "class_name": "human",
+      "conf": 0.394,
+      "world_x": 3338.19,
+      "world_y": 2531.72,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3550.4_2544.0",
+      "class_name": "human",
+      "conf": 0.387,
+      "world_x": 3550.44,
+      "world_y": 2543.98,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3227.2_2694.7",
+      "class_name": "human",
+      "conf": 0.332,
+      "world_x": 3227.19,
+      "world_y": 2694.69,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3852.1_2739.1",
+      "class_name": "human",
+      "conf": 0.32,
+      "world_x": 3852.12,
+      "world_y": 2739.06,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3839.9_2821.9",
+      "class_name": "human",
+      "conf": 0.299,
+      "world_x": 3839.94,
+      "world_y": 2821.95,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3379.1_2451.2",
+      "class_name": "human",
+      "conf": 0.259,
+      "world_x": 3379.06,
+      "world_y": 2451.25,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3924.1_2438.8",
+      "class_name": "human",
+      "conf": 0.24,
+      "world_x": 3924.06,
+      "world_y": 2438.75,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3246.0_2740.4",
+      "class_name": "human",
+      "conf": 0.226,
+      "world_x": 3246.0,
+      "world_y": 2740.39,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3233.5_2718.8",
+      "class_name": "human",
+      "conf": 0.222,
+      "world_x": 3233.5,
+      "world_y": 2718.75,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_19_3228.6_2701.1",
+      "class_name": "human",
+      "conf": 0.207,
+      "world_x": 3228.56,
+      "world_y": 2701.09,
+      "sector_id": 19,
+      "detected_by": "1",
+      "time": 101.0
+    },
+    {
+      "target_key": "TGT_14_3535.2_1985.9",
+      "class_name": "human",
+      "conf": 0.269,
+      "world_x": 3535.19,
+      "world_y": 1985.94,
+      "sector_id": 14,
+      "detected_by": "0",
+      "time": 107.0
+    },
+    {
+      "target_key": "TGT_20_376.3_3562.2",
+      "class_name": "human",
+      "conf": 0.229,
+      "world_x": 376.31,
+      "world_y": 3562.19,
+      "sector_id": 20,
+      "detected_by": "4",
+      "time": 107.0
+    },
+    {
+      "target_key": "TGT_20_661.3_3223.4",
+      "class_name": "human",
+      "conf": 0.212,
+      "world_x": 661.31,
+      "world_y": 3223.44,
+      "sector_id": 20,
+      "detected_by": "4",
+      "time": 107.0
+    },
+    {
+      "target_key": "TGT_20_438.2_3262.8",
+      "class_name": "human",
+      "conf": 0.205,
+      "world_x": 438.19,
+      "world_y": 3262.81,
+      "sector_id": 20,
+      "detected_by": "4",
+      "time": 107.0
+    },
+    {
+      "target_key": "TGT_9_3582.6_1430.8",
+      "class_name": "human",
+      "conf": 0.71,
+      "world_x": 3582.62,
+      "world_y": 1430.78,
+      "sector_id": 9,
+      "detected_by": "9",
+      "time": 107.0
+    },
+    {
+      "target_key": "TGT_9_3539.6_1401.4",
+      "class_name": "human",
+      "conf": 0.552,
+      "world_x": 3539.56,
+      "world_y": 1401.41,
+      "sector_id": 9,
+      "detected_by": "9",
+      "time": 107.0
+    },
+    {
+      "target_key": "TGT_9_3876.1_1404.5",
+      "class_name": "human",
+      "conf": 0.39,
+      "world_x": 3876.06,
+      "world_y": 1404.45,
+      "sector_id": 9,
+      "detected_by": "9",
+      "time": 107.0
+    },
+    {
+      "target_key": "TGT_9_3763.4_1360.0",
+      "class_name": "human",
+      "conf": 0.287,
+      "world_x": 3763.38,
+      "world_y": 1360.0,
+      "sector_id": 9,
+      "detected_by": "9",
+      "time": 107.0
+    },
+    {
+      "target_key": "TGT_9_3923.6_1192.5",
+      "class_name": "human",
+      "conf": 0.277,
+      "world_x": 3923.62,
+      "world_y": 1192.5,
+      "sector_id": 9,
+      "detected_by": "9",
+      "time": 107.0
+    },
+    {
+      "target_key": "TGT_9_3710.2_1355.9",
+      "class_name": "human",
+      "conf": 0.222,
+      "world_x": 3710.19,
+      "world_y": 1355.94,
+      "sector_id": 9,
+      "detected_by": "9",
+      "time": 107.0
+    },
+    {
+      "target_key": "TGT_9_3879.8_1404.7",
+      "class_name": "human",
+      "conf": 0.204,
+      "world_x": 3879.75,
+      "world_y": 1404.69,
+      "sector_id": 9,
+      "detected_by": "9",
+      "time": 107.0
+    },
+    {
+      "target_key": "TGT_3_2997.8_435.6",
+      "class_name": "human",
+      "conf": 0.619,
+      "world_x": 2997.81,
+      "world_y": 435.55,
+      "sector_id": 3,
+      "detected_by": "8",
+      "time": 111.0
+    },
+    {
+      "target_key": "TGT_3_2674.0_437.3",
+      "class_name": "human",
+      "conf": 0.618,
+      "world_x": 2674.0,
+      "world_y": 437.34,
+      "sector_id": 3,
+      "detected_by": "8",
+      "time": 111.0
+    },
+    {
+      "target_key": "TGT_3_2891.3_245.5",
+      "class_name": "human",
+      "conf": 0.583,
+      "world_x": 2891.31,
+      "world_y": 245.47,
+      "sector_id": 3,
+      "detected_by": "8",
+      "time": 111.0
+    },
+    {
+      "target_key": "TGT_3_2816.0_472.2",
+      "class_name": "human",
+      "conf": 0.371,
+      "world_x": 2816.0,
+      "world_y": 472.19,
+      "sector_id": 3,
+      "detected_by": "8",
+      "time": 111.0
+    },
+    {
+      "target_key": "TGT_3_2681.5_460.2",
+      "class_name": "human",
+      "conf": 0.32,
+      "world_x": 2681.5,
+      "world_y": 460.23,
+      "sector_id": 3,
+      "detected_by": "8",
+      "time": 111.0
+    },
+    {
+      "target_key": "TGT_3_2700.8_423.0",
+      "class_name": "human",
+      "conf": 0.262,
+      "world_x": 2700.75,
+      "world_y": 422.97,
+      "sector_id": 3,
+      "detected_by": "8",
+      "time": 111.0
+    },
+    {
+      "target_key": "TGT_3_2897.6_450.3",
+      "class_name": "human",
+      "conf": 0.233,
+      "world_x": 2897.62,
+      "world_y": 450.31,
+      "sector_id": 3,
+      "detected_by": "8",
+      "time": 111.0
+    },
+    {
+      "target_key": "TGT_24_3342.7_3728.0",
+      "class_name": "human",
+      "conf": 0.41,
+      "world_x": 3342.69,
+      "world_y": 3727.97,
+      "sector_id": 24,
+      "detected_by": "1",
+      "time": 117.0
+    },
+    {
+      "target_key": "TGT_24_3735.9_3426.8",
+      "class_name": "human",
+      "conf": 0.286,
+      "world_x": 3735.94,
+      "world_y": 3426.8,
+      "sector_id": 24,
+      "detected_by": "1",
+      "time": 117.0
+    },
+    {
+      "target_key": "TGT_24_3262.0_3254.2",
+      "class_name": "human",
+      "conf": 0.28,
+      "world_x": 3262.0,
+      "world_y": 3254.22,
+      "sector_id": 24,
+      "detected_by": "1",
+      "time": 117.0
+    },
+    {
+      "target_key": "TGT_4_3493.9_246.5",
+      "class_name": "human",
+      "conf": 0.671,
+      "world_x": 3493.94,
+      "world_y": 246.48,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3508.8_211.6",
+      "class_name": "human",
+      "conf": 0.637,
+      "world_x": 3508.75,
+      "world_y": 211.64,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3459.5_130.5",
+      "class_name": "human",
+      "conf": 0.595,
+      "world_x": 3459.5,
+      "world_y": 130.47,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3450.8_158.0",
+      "class_name": "human",
+      "conf": 0.592,
+      "world_x": 3450.81,
+      "world_y": 157.97,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3473.1_127.2",
+      "class_name": "human",
+      "conf": 0.592,
+      "world_x": 3473.12,
+      "world_y": 127.19,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3439.8_383.1",
+      "class_name": "human",
+      "conf": 0.592,
+      "world_x": 3439.75,
+      "world_y": 383.12,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3480.1_198.1",
+      "class_name": "human",
+      "conf": 0.589,
+      "world_x": 3480.12,
+      "world_y": 198.12,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3435.9_294.4",
+      "class_name": "human",
+      "conf": 0.584,
+      "world_x": 3435.94,
+      "world_y": 294.38,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3479.8_334.7",
+      "class_name": "human",
+      "conf": 0.579,
+      "world_x": 3479.81,
+      "world_y": 334.69,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3496.2_194.2",
+      "class_name": "human",
+      "conf": 0.565,
+      "world_x": 3496.25,
+      "world_y": 194.22,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3490.2_135.0",
+      "class_name": "human",
+      "conf": 0.551,
+      "world_x": 3490.19,
+      "world_y": 135.0,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3453.0_351.3",
+      "class_name": "human",
+      "conf": 0.547,
+      "world_x": 3453.0,
+      "world_y": 351.33,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3488.2_45.4",
+      "class_name": "human",
+      "conf": 0.534,
+      "world_x": 3488.25,
+      "world_y": 45.39,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3473.3_172.8",
+      "class_name": "human",
+      "conf": 0.533,
+      "world_x": 3473.31,
+      "world_y": 172.81,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3501.6_16.0",
+      "class_name": "human",
+      "conf": 0.528,
+      "world_x": 3501.56,
+      "world_y": 16.02,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3611.6_119.1",
+      "class_name": "human",
+      "conf": 0.518,
+      "world_x": 3611.62,
+      "world_y": 119.14,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3624.3_411.6",
+      "class_name": "human",
+      "conf": 0.504,
+      "world_x": 3624.31,
+      "world_y": 411.64,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3445.4_362.7",
+      "class_name": "human",
+      "conf": 0.488,
+      "world_x": 3445.38,
+      "world_y": 362.66,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3612.9_174.3",
+      "class_name": "human",
+      "conf": 0.483,
+      "world_x": 3612.94,
+      "world_y": 174.3,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3474.6_576.0",
+      "class_name": "human",
+      "conf": 0.476,
+      "world_x": 3474.56,
+      "world_y": 576.02,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3495.0_108.0",
+      "class_name": "human",
+      "conf": 0.463,
+      "world_x": 3495.0,
+      "world_y": 108.05,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3421.8_298.1",
+      "class_name": "human",
+      "conf": 0.457,
+      "world_x": 3421.81,
+      "world_y": 298.12,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3777.1_484.1",
+      "class_name": "human",
+      "conf": 0.455,
+      "world_x": 3777.12,
+      "world_y": 484.14,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3455.1_107.5",
+      "class_name": "human",
+      "conf": 0.443,
+      "world_x": 3455.12,
+      "world_y": 107.5,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3489.7_312.5",
+      "class_name": "human",
+      "conf": 0.404,
+      "world_x": 3489.69,
+      "world_y": 312.5,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3614.2_227.9",
+      "class_name": "human",
+      "conf": 0.4,
+      "world_x": 3614.19,
+      "world_y": 227.89,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3442.6_442.1",
+      "class_name": "human",
+      "conf": 0.399,
+      "world_x": 3442.56,
+      "world_y": 442.11,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3509.7_570.1",
+      "class_name": "human",
+      "conf": 0.398,
+      "world_x": 3509.69,
+      "world_y": 570.08,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3779.5_514.1",
+      "class_name": "human",
+      "conf": 0.393,
+      "world_x": 3779.5,
+      "world_y": 514.14,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3380.7_361.7",
+      "class_name": "human",
+      "conf": 0.371,
+      "world_x": 3380.69,
+      "world_y": 361.72,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3514.6_186.2",
+      "class_name": "human",
+      "conf": 0.367,
+      "world_x": 3514.56,
+      "world_y": 186.17,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3854.6_313.9",
+      "class_name": "human",
+      "conf": 0.352,
+      "world_x": 3854.56,
+      "world_y": 313.91,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3447.6_129.0",
+      "class_name": "human",
+      "conf": 0.342,
+      "world_x": 3447.62,
+      "world_y": 128.98,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3449.6_104.5",
+      "class_name": "human",
+      "conf": 0.323,
+      "world_x": 3449.62,
+      "world_y": 104.53,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3456.4_19.4",
+      "class_name": "human",
+      "conf": 0.311,
+      "world_x": 3456.38,
+      "world_y": 19.38,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3450.0_356.5",
+      "class_name": "human",
+      "conf": 0.303,
+      "world_x": 3450.0,
+      "world_y": 356.48,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3463.1_160.8",
+      "class_name": "human",
+      "conf": 0.287,
+      "world_x": 3463.12,
+      "world_y": 160.78,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3497.4_564.8",
+      "class_name": "human",
+      "conf": 0.283,
+      "world_x": 3497.38,
+      "world_y": 564.84,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3607.9_32.3",
+      "class_name": "human",
+      "conf": 0.276,
+      "world_x": 3607.94,
+      "world_y": 32.34,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3585.9_194.9",
+      "class_name": "human",
+      "conf": 0.269,
+      "world_x": 3585.94,
+      "world_y": 194.92,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3583.0_206.2",
+      "class_name": "human",
+      "conf": 0.268,
+      "world_x": 3583.0,
+      "world_y": 206.17,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3582.1_216.9",
+      "class_name": "human",
+      "conf": 0.267,
+      "world_x": 3582.06,
+      "world_y": 216.88,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3460.9_96.1",
+      "class_name": "human",
+      "conf": 0.265,
+      "world_x": 3460.94,
+      "world_y": 96.09,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3662.9_363.1",
+      "class_name": "human",
+      "conf": 0.252,
+      "world_x": 3662.88,
+      "world_y": 363.05,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3447.2_278.9",
+      "class_name": "human",
+      "conf": 0.247,
+      "world_x": 3447.19,
+      "world_y": 278.91,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3620.4_471.2",
+      "class_name": "human",
+      "conf": 0.247,
+      "world_x": 3620.38,
+      "world_y": 471.25,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3502.6_43.5",
+      "class_name": "human",
+      "conf": 0.246,
+      "world_x": 3502.56,
+      "world_y": 43.52,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3423.9_305.1",
+      "class_name": "human",
+      "conf": 0.24,
+      "world_x": 3423.88,
+      "world_y": 305.08,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3588.4_568.3",
+      "class_name": "human",
+      "conf": 0.238,
+      "world_x": 3588.38,
+      "world_y": 568.28,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3418.6_466.6",
+      "class_name": "human",
+      "conf": 0.234,
+      "world_x": 3418.62,
+      "world_y": 466.56,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3671.6_397.1",
+      "class_name": "human",
+      "conf": 0.233,
+      "world_x": 3671.62,
+      "world_y": 397.11,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_4_3437.4_30.8",
+      "class_name": "human",
+      "conf": 0.217,
+      "world_x": 3437.44,
+      "world_y": 30.78,
+      "sector_id": 4,
+      "detected_by": "9",
+      "time": 121.0
+    },
+    {
+      "target_key": "TGT_7_1953.1_1251.6",
+      "class_name": "human",
+      "conf": 0.702,
+      "world_x": 1953.06,
+      "world_y": 1251.64,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1950.8_885.9",
+      "class_name": "human",
+      "conf": 0.699,
+      "world_x": 1950.81,
+      "world_y": 885.94,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_2024.1_1134.4",
+      "class_name": "human",
+      "conf": 0.64,
+      "world_x": 2024.12,
+      "world_y": 1134.38,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1963.0_1559.4",
+      "class_name": "human",
+      "conf": 0.607,
+      "world_x": 1963.0,
+      "world_y": 1559.38,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1924.2_1287.1",
+      "class_name": "human",
+      "conf": 0.555,
+      "world_x": 1924.19,
+      "world_y": 1287.11,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1887.5_950.0",
+      "class_name": "human",
+      "conf": 0.548,
+      "world_x": 1887.5,
+      "world_y": 950.0,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1676.1_1188.9",
+      "class_name": "human",
+      "conf": 0.508,
+      "world_x": 1676.12,
+      "world_y": 1188.91,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1644.1_1127.7",
+      "class_name": "human",
+      "conf": 0.505,
+      "world_x": 1644.12,
+      "world_y": 1127.73,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1945.4_1070.7",
+      "class_name": "human",
+      "conf": 0.5,
+      "world_x": 1945.44,
+      "world_y": 1070.7,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1997.2_1122.1",
+      "class_name": "human",
+      "conf": 0.498,
+      "world_x": 1997.25,
+      "world_y": 1122.11,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1985.6_1253.3",
+      "class_name": "human",
+      "conf": 0.485,
+      "world_x": 1985.56,
+      "world_y": 1253.28,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1950.7_1089.0",
+      "class_name": "human",
+      "conf": 0.48,
+      "world_x": 1950.69,
+      "world_y": 1088.98,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1973.9_1247.8",
+      "class_name": "human",
+      "conf": 0.444,
+      "world_x": 1973.94,
+      "world_y": 1247.81,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1679.1_1206.4",
+      "class_name": "human",
+      "conf": 0.386,
+      "world_x": 1679.06,
+      "world_y": 1206.41,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_2327.8_842.9",
+      "class_name": "human",
+      "conf": 0.376,
+      "world_x": 2327.81,
+      "world_y": 842.89,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1742.6_932.0",
+      "class_name": "human",
+      "conf": 0.372,
+      "world_x": 1742.62,
+      "world_y": 931.95,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_2242.1_1224.7",
+      "class_name": "human",
+      "conf": 0.363,
+      "world_x": 2242.06,
+      "world_y": 1224.69,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1665.6_1207.6",
+      "class_name": "human",
+      "conf": 0.347,
+      "world_x": 1665.56,
+      "world_y": 1207.58,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1723.2_916.8",
+      "class_name": "human",
+      "conf": 0.283,
+      "world_x": 1723.25,
+      "world_y": 916.8,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1638.9_1159.1",
+      "class_name": "human",
+      "conf": 0.269,
+      "world_x": 1638.94,
+      "world_y": 1159.14,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1978.1_1250.1",
+      "class_name": "human",
+      "conf": 0.248,
+      "world_x": 1978.12,
+      "world_y": 1250.08,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1640.0_1115.1",
+      "class_name": "human",
+      "conf": 0.236,
+      "world_x": 1640.0,
+      "world_y": 1115.08,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1946.2_1078.2",
+      "class_name": "human",
+      "conf": 0.232,
+      "world_x": 1946.19,
+      "world_y": 1078.2,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1652.4_1141.5",
+      "class_name": "human",
+      "conf": 0.224,
+      "world_x": 1652.44,
+      "world_y": 1141.48,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_7_1784.3_853.5",
+      "class_name": "human",
+      "conf": 0.21,
+      "world_x": 1784.31,
+      "world_y": 853.52,
+      "sector_id": 7,
+      "detected_by": "8",
+      "time": 123.0
+    },
+    {
+      "target_key": "TGT_23_2848.4_3571.2",
+      "class_name": "human",
+      "conf": 0.405,
+      "world_x": 2848.44,
+      "world_y": 3571.25,
+      "sector_id": 23,
+      "detected_by": "1",
+      "time": 139.0
+    },
+    {
+      "target_key": "TGT_23_2691.1_3519.0",
+      "class_name": "human",
+      "conf": 0.263,
+      "world_x": 2691.06,
+      "world_y": 3518.98,
+      "sector_id": 23,
+      "detected_by": "1",
+      "time": 139.0
+    },
+    {
+      "target_key": "TGT_23_2940.2_3672.4",
+      "class_name": "human",
+      "conf": 0.249,
+      "world_x": 2940.19,
+      "world_y": 3672.42,
+      "sector_id": 23,
+      "detected_by": "1",
+      "time": 139.0
     }
   ]
 }
