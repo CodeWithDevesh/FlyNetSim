@@ -108,6 +108,52 @@ Evaluates decentralized swarm coordination, spatial dispersion, victim discovery
 * **Battery / Energy Depletion per Victim Found ($E_{\text{victim}}$)**:
   $$\text{Joules or } \% \Delta \text{Battery consumed per confirmed target discovery}.$$
 
+### 4.3 Dual-Threshold Hysteresis Loop for Anti-Chattering Dynamic Partitioning
+
+In dynamic Energy-Weighted Centroidal Voronoi Tessellations (EW-CVT), partition generator weights $w_i(t)$ scale with residual battery levels to balance workload. However, continuous computational tick updates subject to ADC voltage sensor jitter, ESC noise, and infinitesimal centroid drifts drive UAV flight controllers into a high-frequency oscillatory state (**chattering**). In this state, excessive yaw, pitch, and roll corrections squander rotor propulsion energy without expanding sensor coverage.
+
+To guarantee that trajectory corrections occur only when coverage optimization benefits strictly offset the aerodynamic turning cost, a **Dual-Threshold Hysteresis Loop** is integrated into each UAV's flight controller.
+
+#### 1. Battery Decay Hysteresis (Temporal & Energy Threshold $\tau_\epsilon$)
+Rather than continuously updating generator weights $w_i(t)$, the system locks the weight until residual battery capacity drops by a discrete threshold margin:
+
+$$w_i(t) = \begin{cases} \left( \frac{B_i(t)}{B_{\text{max}}} \right)^\alpha, & \text{if } B_i(t_k) - B_i(t) \ge \tau_\epsilon \\ w_i(t_k), & \text{otherwise} \end{cases}$$
+
+* **$\tau_\epsilon = 0.02 \times B_{\text{max}}$**: Discrete 2% discharge threshold. Eliminates millivolt sensor noise from perturbing Voronoi cell boundaries every millisecond.
+* **$\alpha$**: Non-linear battery weighting exponent (default $\alpha = 1.0$).
+
+#### 2. Spatial Centroid Hysteresis (Kinetic Threshold $\tau_\delta$)
+Even after a battery weight update, adjacent boundary adjustments may shift the mass centroid target $C_i^*$ by only a few centimeters. Forcing the UAV to alter yaw and roll for micro-shifts is aerodynamically wasteful:
+
+$$C_i(t) = \begin{cases} C_i^*, & \text{if } \|C_i^* - C_i(t_k)\| \ge \tau_\delta \\ C_i(t_k), & \text{otherwise} \end{cases}$$
+
+* **$\tau_\delta = 5.0\text{ meters}$**: Spatial hysteresis margin, calibrated against UAV minimum turning radius and optical sensor field-of-view (FOV).
+
+#### 3. Forced-Override Condition (Node Failure & Topology Mutation)
+While hysteresis operates during steady-state cruising, catastrophic events (e.g. UAV motor failure or packet loss partitioning) require instantaneous partition reassignment to prevent coverage blindspots.
+
+Evaluating the active network topology $\mathcal{N}(t)$ via Data Link Layer (DLL) heartbeats, the comprehensive update trigger $\mathcal{U}_i(t)$ evaluates as:
+
+$$\mathcal{U}_i(t) = \left( (B_i(t_k) - B_i(t) \ge \tau_\epsilon) \land (\|C_i^* - C_i(t_k)\| \ge \tau_\delta) \right) \lor (\mathcal{N}(t) \ne \mathcal{N}(t_k))$$
+
+When $\mathcal{N}(t) \ne \mathcal{N}(t_k)$ (e.g., node loss $n \to n-1$), the right-hand term forces an immediate hard update, instantaneously overriding $\tau_\epsilon$ and $\tau_\delta$ thresholds.
+
+#### 4. Aerodynamic Power Model & Kinetic Energy Savings Formulation
+The total rotor propulsion power $P_{\text{propulsion}}(v)$ required for level cruise at airspeed $v$ is modeled as:
+
+$$P_{\text{propulsion}}(v) = P_0 \left(1 + \frac{3 v^2}{v_{\text{tip}}^2}\right) + P_i \left( \sqrt{1 + \frac{v^4}{4 v_0^4}} - \frac{v^2}{2 v_0^2} \right)^{1/2} + \frac{1}{2} d_0 \rho s A v^3$$
+
+where $P_0$ is blade profile power, $P_i$ is induced hover power, $v_{\text{tip}}$ is rotor tip speed, $v_0$ is mean rotor induced velocity in hover, $d_0$ is fuselage drag ratio, and $s$ is rotor solidity.
+
+For every chattering oscillation suppressed by spatial threshold $\tau_\delta$, the kinetic turning energy saved is:
+
+$$E_{\text{turn}} = \frac{1}{2} I_{\text{yaw}} \omega_{\text{yaw}}^2 + \int_0^{\Delta t_{\text{turn}}} P_{\text{propulsion}}(v) \, dt$$
+
+The cumulative kinetic energy preserved across the swarm mission is tracked directly in `swarm_mission_output.json`.
+
+#### 5. Methodological Paper Justification Excerpt
+> *"To mitigate continuous boundary chattering and excessive flight path corrections inherent in dynamic Voronoi partitioning, a dual-threshold hysteresis loop was introduced. By establishing discrete energy decay ($\tau_{\epsilon}$) and spatial shift ($\tau_{\delta}$) thresholds, the proposed architecture guarantees that propulsion energy is expended on trajectory corrections only when the aerodynamic cost is strictly offset by coverage optimization gains, except during topology degradation events which trigger instantaneous hard-updates via the Data Link layer."*
+
 ---
 
 ## 5. Layer 4: Cross-Layer Coupled Metrics

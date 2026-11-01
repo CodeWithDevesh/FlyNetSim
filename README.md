@@ -107,6 +107,10 @@ flowchart TD
    - Matches detected target coordinates against exact ground-truth coordinates via spatial association thresholding.
    - Calculates Precision, Recall, F1-Score, Root Mean Squared Error (RMSE) localization distance, Time-to-First-Detection (TTFD), and Packet Delivery Ratio (PDR).
 
+7. **Dual-Threshold Anti-Chattering Hysteresis Loop**:
+   - Introduces coupled energy decay ($\tau_\epsilon = 0.02 \times B_{\text{max}}$) and spatial displacement ($\tau_\delta = 5.0\text{m}$) hysteresis thresholds to prevent high-frequency trajectory chattering caused by sensor noise and minor centroid shifts.
+   - Conserves substantial kinetic rotor propulsion power while maintaining a hard-override condition ($\mathcal{N}(t) \ne \mathcal{N}(t_k)$) for instantaneous failover upon drone loss.
+
 ---
 
 ## Directory Layout
@@ -134,6 +138,7 @@ FlyNetSim/
 │   └── ...                             # Standalone verification scripts
 │
 ├── FlySim/                             # Flight simulation & networking components
+│   ├── hysteresis_controller.py        # Dual-threshold hysteresis controller & EW-CVT partitioning
 │   ├── swarm_network.py                # EdgeBroker, RF physics engine, QoS 1 buffers
 │   ├── uav_pubsub.py                   # ArduPilot SITL / DroneKit flight control loop
 │   └── FlyNetSim.py                    # Original multi-UAV SITL launcher
@@ -212,7 +217,7 @@ Outputs generated:
 ```bash
 python -m unittest tests/test_sar_system.py
 ```
-Runs 10 unit and integration tests covering spatial world geometry, 4-channel tensor permutations, RF physics, and swarm streaming failover.
+Runs 15 unit and integration tests covering spatial world geometry, 4-channel tensor permutations, RF physics, dual-threshold hysteresis anti-chattering control, and swarm streaming failover.
 
 ---
 
@@ -220,6 +225,19 @@ Runs 10 unit and integration tests covering spatial world geometry, 4-channel te
 
 ### Operational Flight Envelope
 $$\mathbf{v}(t) = \begin{cases} 50.0\text{ m/s} & \text{state} \in \{\text{TRANSIT, RETURNING}\} \\ 32.0\text{ m/s} & \text{state} = \text{SEARCHING} \\ 0.0\text{ m/s} & \text{state} \in \{\text{LANDED, CRASHED}\} \end{cases}$$
+
+### Dual-Threshold Hysteresis Formulation (EW-CVT Anti-Chattering)
+To prevent continuous flight path oscillation caused by millivolt battery fluctuations and sub-meter centroid micro-shifts, partition weights and flight commands are governed by:
+
+1. **Battery Decay Threshold ($\tau_\epsilon = 0.02 \times B_{\text{max}}$)**:
+   $$w_i(t) = \begin{cases} \left(\frac{B_i(t)}{B_{\text{max}}}\right)^\alpha, & \text{if } B_i(t_k) - B_i(t) \ge \tau_\epsilon \\ w_i(t_k), & \text{otherwise} \end{cases}$$
+
+2. **Spatial Centroid Threshold ($\tau_\delta = 5.0\text{ meters}$)**:
+   $$C_i(t) = \begin{cases} C_i^*, & \text{if } \|C_i^* - C_i(t_k)\| \ge \tau_\delta \\ C_i(t_k), & \text{otherwise} \end{cases}$$
+
+3. **Topology Override Trigger**:
+   $$\mathcal{U}_i(t) = \left( (B_i(t_k) - B_i(t) \ge \tau_\epsilon) \land (\|C_i^* - C_i(t_k)\| \ge \tau_\delta) \right) \lor (\mathcal{N}(t) \ne \mathcal{N}(t_k))$$
+   Any change in the active node vector $\mathcal{N}(t)$ (e.g., node failure) triggers an immediate hard partition update, overriding the hysteresis thresholds.
 
 ### Delay-Tolerant Consensus Model
 In wide-area disaster environments ($5000\text{m} \times 5000\text{m}$), drones disperse beyond point-to-point RF transmission range ($d_{ij} > 3.5\text{ km}$). Unsent target alerts are queued in localized QoS 1 FIFO buffers:

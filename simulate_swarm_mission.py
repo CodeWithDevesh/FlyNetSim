@@ -26,10 +26,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "FlySim"
 from sar_world import SARWorld
 from rgbt_detector import RGBTDetector
 import swarm_network
+from hysteresis_controller import DualThresholdHysteresisController
 
 
 class SimulatedUAV:
-    def __init__(self, uav_id, start_x, start_y, altitude, transit_speed, search_speed, assigned_sectors, physics_engine):
+    def __init__(self, uav_id, start_x, start_y, altitude, transit_speed, search_speed, assigned_sectors, physics_engine, initial_topology=None):
         self.uav_id = str(uav_id)
         self.home_x = float(start_x)
         self.home_y = float(start_y)
@@ -43,6 +44,20 @@ class SimulatedUAV:
         self.current_waypoint_idx = 0
         self.waypoints = []
         self.state = "TRANSIT"  # "TRANSIT", "SEARCHING", "RETURNING", "LANDED", "CRASHED"
+        
+        # Battery state and Dual-Threshold Hysteresis Controller
+        self.battery_max = 100.0  # nominal % or Wh
+        self.battery = 100.0
+        self.hysteresis = DualThresholdHysteresisController(
+            uav_id=self.uav_id,
+            initial_pos=(self.x, self.y),
+            b_max=self.battery_max,
+            tau_epsilon_ratio=0.02, # 2% discharge threshold
+            tau_delta=5.0,          # 5m spatial centroid threshold
+            alpha=1.0,
+            initial_battery=self.battery,
+            initial_topology=initial_topology
+        )
         
         # RF & EdgeBroker
         self.broker = swarm_network.EdgeBroker(self.uav_id, physics_engine)
@@ -64,8 +79,8 @@ class SimulatedUAV:
         scale = 1.113195e5
         return {'lat': self.y / scale, 'lon': self.x / scale}
 
-    def update_position(self, dt):
-        """Moves the UAV toward the current target waypoint and transitions flight states"""
+    def update_position(self, dt, current_time=0.0, active_topology=None):
+        """Moves the UAV toward the commanded target waypoint with dual-threshold hysteresis locking"""
         if not self.is_alive:
             self.state = "CRASHED"
             return True  # Crashed drone ceases movement
@@ -83,9 +98,26 @@ class SimulatedUAV:
         else:
             self.speed = self.search_speed
 
+        # Kinetic battery decay & sensor micro-fluctuation modeling
+        drain_rate = 0.07 if self.speed > 40.0 else 0.04
+        sensor_jitter = random.gauss(0.0, 0.002)
+        self.battery = max(0.0, min(self.battery_max, self.battery - drain_rate * dt + sensor_jitter))
+
         target_x, target_y = self.waypoints[self.current_waypoint_idx]
-        dx = target_x - self.x
-        dy = target_y - self.y
+
+        # Evaluate Dual-Threshold Hysteresis Loop
+        topo = active_topology if active_topology is not None else [self.uav_id]
+        hyst_eval = self.hysteresis.evaluate(
+            current_time=current_time,
+            current_battery=self.battery,
+            theoretical_centroid=(target_x, target_y),
+            current_topology=topo,
+            current_speed=self.speed
+        )
+        cmd_x, cmd_y = hyst_eval["commanded_pos"]
+
+        dx = cmd_x - self.x
+        dy = cmd_y - self.y
         dist = math.hypot(dx, dy)
 
         step = self.speed * dt
@@ -231,6 +263,8 @@ class SwarmSimulation:
         # Optimal optical sensor search cruise speed (up to 32 m/s)
         search_speed = min(32.0, 12.0 * max(1.0, arena_size / 800.0))
 
+        initial_topology = [str(i) for i in range(self.num_drones)]
+
         for uav_idx in range(self.num_drones):
             assigned = sectors_per_drone[uav_idx]
             if not assigned:
@@ -244,7 +278,8 @@ class SwarmSimulation:
 
             drone = SimulatedUAV(uav_id=uav_idx, start_x=start_x, start_y=start_y,
                                  altitude=25.0, transit_speed=transit_speed, search_speed=search_speed,
-                                 assigned_sectors=assigned, physics_engine=self.physics_engine)
+                                 assigned_sectors=assigned, physics_engine=self.physics_engine,
+                                 initial_topology=initial_topology)
 
             # Order waypoints using greedy nearest-neighbor from the Base Station outward
             remaining = list(assigned)
@@ -313,14 +348,15 @@ class SwarmSimulation:
                         print(f"Sector {s_id} reassigned to UAV {nearest_peer.uav_id}")
                 print("=" * 55 + "\n")
 
-        # 1. Update UAV spatial positions
+        # 1. Update UAV spatial positions with active network topology
+        active_topology = [d.uav_id for d in self.drones if d.is_alive]
         swarm_locations = {d.uav_id: d.get_location_dict() for d in self.drones if d.is_alive}
 
         for drone in self.drones:
             if not drone.is_alive:
                 continue
 
-            done = drone.update_position(dt)
+            done = drone.update_position(dt, current_time=self.sim_time, active_topology=active_topology)
             if not done:
                 all_done = False
 
@@ -541,14 +577,21 @@ class SwarmSimulation:
                     "uav_id": d.uav_id,
                     "is_alive": d.is_alive,
                     "crash_pos": d.crash_pos,
+                    "remaining_battery_pct": round(d.battery, 2),
                     "total_distance_m": round(d.total_distance_flown, 2),
                     "sectors_scanned": list(d.scanned_sectors),
                     "targets_discovered_count": len(d.discovered_targets),
                     "consensus_targets_count": len(d.consensus_registry),
+                    "hysteresis_metrics": d.hysteresis.get_status_summary(),
                     "trajectory": d.trajectory_history[::5] # Subsample trajectory for compact storage
                 }
                 for d in self.drones
             ],
+            "hysteresis_summary": {
+                "total_chattering_events_suppressed": sum(d.hysteresis.chattering_events_suppressed for d in self.drones),
+                "total_forced_overrides": sum(d.hysteresis.forced_overrides for d in self.drones),
+                "total_energy_saved_joules": round(sum(d.hysteresis.cumulative_energy_saved_joules for d in self.drones), 2)
+            },
             "reported_targets": self.all_reported_targets
         }
 

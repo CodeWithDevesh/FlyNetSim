@@ -85,6 +85,7 @@ Simulates a swarm of autonomous drones sweeping the disaster arena. As each dron
 3. It broadcasts discovered victim alerts over a peer-to-peer ZeroMQ mesh network.
 4. The `EdgeBroker` applies realistic RF physics (Free Space Path Loss at 5 GHz, Log-Distance Shadow Fading with $\sigma = 7.5\text{ dB}$, and dynamic SNR-to-PER conversion).
 5. Dropped packets are queued in QoS 1 Store-and-Forward buffers and flushed when drones re-enter RF range.
+6. The `DualThresholdHysteresisController` suppresses flight controller chattering by enforcing discrete battery decay ($\tau_\epsilon = 0.02 \times B_{\text{max}}$) and spatial centroid shift ($\tau_\delta = 5.0\text{m}$) gates, while permitting immediate override upon node failure.
 
 ### How to Run:
 ```bash
@@ -216,6 +217,7 @@ python training/train.py \
 | [`best.pt`](file:///home/devesh/Projects/FlyNetSim/best.pt) | Trained 4-channel YOLOv8n-P2 model weights. |
 | [`training/`](file:///home/devesh/Projects/FlyNetSim/training) | Dedicated directory containing dataset converter, training CLI, GPU notebook, and model configs. |
 | [`tests/`](file:///home/devesh/Projects/FlyNetSim/tests) | Automated unit and integration test suite (`test_sar_system.py`) and verification scripts. |
+| [`FlySim/hysteresis_controller.py`](file:///home/devesh/Projects/FlyNetSim/FlySim/hysteresis_controller.py) | Dual-threshold hysteresis controller for anti-chattering flight control and EW-CVT partitioning. |
 | [`FlySim/swarm_network.py`](file:///home/devesh/Projects/FlyNetSim/FlySim/swarm_network.py) | Decentralized `EdgeBroker` with DMLT routing, QoS 1 Store-and-Forward queues, and `RFPhysicsEngine`. |
 | [`FlySim/uav_pubsub.py`](file:///home/devesh/Projects/FlyNetSim/FlySim/uav_pubsub.py) | ArduPilot SITL / DroneKit autonomous autopilot flight loop with vision and swarm communication. |
 | [`PAPER_METRICS_AND_EXPERIMENTS.md`](file:///home/devesh/Projects/FlyNetSim/PAPER_METRICS_AND_EXPERIMENTS.md) | Academic paper specification: mathematical formulas, variables, and publication figure blueprints. |

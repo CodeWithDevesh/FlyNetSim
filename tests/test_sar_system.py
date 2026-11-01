@@ -26,6 +26,7 @@ from rgbt_detector import RGBTDetector
 from simulate_swarm_mission import SwarmSimulation
 from validate_swarm_mission import run_validation
 from FlySim import swarm_network
+from FlySim.hysteresis_controller import DualThresholdHysteresisController, compute_ew_cvt_centroids
 
 
 class TestSARWorld(unittest.TestCase):
@@ -165,6 +166,92 @@ class TestSwarmSimulation(unittest.TestCase):
         self.assertFalse(dead_drone.is_alive, "UAV 1 must be marked as crashed/stopped.")
         self.assertIsNotNone(dead_drone.crash_pos)
         self.assertEqual(final_snap["active_drones"], 2)
+
+
+class TestDualThresholdHysteresis(unittest.TestCase):
+    def setUp(self):
+        self.controller = DualThresholdHysteresisController(
+            uav_id="0",
+            initial_pos=(100.0, 100.0),
+            b_max=100.0,
+            tau_epsilon_ratio=0.02, # 2.0%
+            tau_delta=5.0,          # 5.0m
+            alpha=1.0,
+            initial_battery=100.0,
+            initial_topology=["0", "1", "2"]
+        )
+
+    def test_battery_micro_fluctuation_locking(self):
+        # Drop battery by 0.5% (less than 2% threshold)
+        res = self.controller.evaluate(
+            current_time=1.0,
+            current_battery=99.5,
+            theoretical_centroid=(120.0, 120.0), # Even with larger spatial shift, steady state requires both
+            current_topology=["0", "1", "2"]
+        )
+        self.assertFalse(res["trigger_u_t"], "Small battery drop < tau_epsilon must hold update.")
+        self.assertEqual(res["reason"], "HYSTERESIS_LOCKED_CHATTERING_SUPPRESSED")
+        self.assertEqual(res["effective_weight"], 1.0, "Weight must stay locked to w_i(t_k).")
+        self.assertEqual(res["commanded_pos"], (100.0, 100.0), "Waypoint must stay locked to C_i(t_k).")
+
+    def test_spatial_centroid_chattering_suppression(self):
+        # Drop battery by 3.0% (>= tau_epsilon), but centroid shift is only 2.0m (< tau_delta)
+        res = self.controller.evaluate(
+            current_time=2.0,
+            current_battery=97.0,
+            theoretical_centroid=(101.5, 101.0), # distance = sqrt(1.5^2 + 1^2) = 1.8m < 5.0m
+            current_topology=["0", "1", "2"]
+        )
+        self.assertFalse(res["trigger_u_t"], "Sub-threshold spatial shift must suppress chattering.")
+        self.assertEqual(res["reason"], "HYSTERESIS_LOCKED_CHATTERING_SUPPRESSED")
+        self.assertEqual(res["commanded_pos"], (100.0, 100.0))
+        self.assertGreater(self.controller.chattering_events_suppressed, 0)
+
+    def test_steady_state_dual_threshold_update(self):
+        # Battery drop >= 2.0% AND spatial shift >= 5.0m
+        res = self.controller.evaluate(
+            current_time=5.0,
+            current_battery=96.0, # delta_b = 4.0% >= 2.0%
+            theoretical_centroid=(110.0, 110.0), # shift = 14.14m >= 5.0m
+            current_topology=["0", "1", "2"]
+        )
+        self.assertTrue(res["trigger_u_t"], "Dual threshold satisfaction must trigger partition update.")
+        self.assertEqual(res["reason"], "STEADY_STATE_DUAL_THRESHOLD_MET")
+        self.assertEqual(res["commanded_pos"], (110.0, 110.0))
+        self.assertAlmostEqual(res["effective_weight"], 0.96)
+        self.assertEqual(self.controller.updates_executed, 1)
+
+    def test_forced_override_on_node_failure(self):
+        # Micro fluctuations only: battery dropped by only 0.2%, centroid shifted by 0.5m
+        # BUT peer '1' crashed: topology changed from ['0', '1', '2'] to ['0', '2']
+        res = self.controller.evaluate(
+            current_time=10.0,
+            current_battery=99.8,
+            theoretical_centroid=(100.3, 100.4), # shift = 0.5m
+            current_topology=["0", "2"] # Node 1 removed from DLL heartbeats
+        )
+        self.assertTrue(res["trigger_u_t"], "Topology change N(t) != N(t_k) must force immediate hard override.")
+        self.assertEqual(res["reason"], "FORCED_OVERRIDE_TOPOLOGY_CHANGE")
+        self.assertEqual(res["commanded_pos"], (100.3, 100.4))
+        self.assertEqual(self.controller.forced_overrides, 1)
+
+    def test_ew_cvt_centroid_computation(self):
+        generators = {
+            "0": (100.0, 100.0),
+            "1": (300.0, 300.0)
+        }
+        weights = {
+            "0": 1.0,
+            "1": 0.5  # UAV 1 has depleted battery, so UAV 0 expands its Voronoi cell
+        }
+        centroids = compute_ew_cvt_centroids(generators, weights, arena_width=400.0, arena_height=400.0, grid_res=30)
+        self.assertIn("0", centroids)
+        self.assertIn("1", centroids)
+        # UAV 0 has twice the weight of UAV 1, so UAV 0's centroid shifts toward the center
+        c0 = centroids["0"]
+        c1 = centroids["1"]
+        self.assertTrue(0.0 <= c0[0] <= 400.0 and 0.0 <= c0[1] <= 400.0)
+        self.assertTrue(0.0 <= c1[0] <= 400.0 and 0.0 <= c1[1] <= 400.0)
 
 
 if __name__ == "__main__":

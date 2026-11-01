@@ -10,12 +10,11 @@
   "failed_uav_info": {
     "uav_id": "1",
     "crash_pos": [
-      113.77,
-      35.7
+      384.11,
+      57.15
     ],
     "time": 5.0,
     "abandoned_sectors": [
-      3,
       4,
       8,
       9,
@@ -27,35 +26,47 @@
     ]
   },
   "network_stats": {
-    "sent": 13,
-    "delivered": 11,
-    "dropped": 2,
-    "buffered": 2
+    "sent": 52,
+    "delivered": 12,
+    "dropped": 40,
+    "buffered": 40
   },
   "drones": [
     {
       "uav_id": "0",
       "is_alive": true,
       "crash_pos": null,
-      "total_distance_m": 138.0,
+      "remaining_battery_pct": 99.53,
+      "total_distance_m": 132.0,
       "sectors_scanned": [
         0,
         1
       ],
-      "targets_discovered_count": 10,
-      "consensus_targets_count": 0,
+      "targets_discovered_count": 3,
+      "consensus_targets_count": 12,
+      "hysteresis_metrics": {
+        "uav_id": "0",
+        "total_evaluations": 12,
+        "updates_executed": 1,
+        "chattering_events_suppressed": 11,
+        "suppression_rate_pct": 91.67,
+        "forced_overrides": 1,
+        "battery_holds": 11,
+        "spatial_holds": 7,
+        "energy_saved_joules": 29.77
+      },
       "trajectory": [
         [
           30.0,
           30.0
         ],
         [
-          72.0,
-          60.0
+          46.36,
+          36.61
         ],
         [
-          132.0,
-          60.0
+          105.47,
+          46.96
         ]
       ]
     },
@@ -63,13 +74,27 @@
       "uav_id": "1",
       "is_alive": false,
       "crash_pos": [
-        113.77,
-        35.7
+        384.11,
+        57.15
       ],
-      "total_distance_m": 72.0,
-      "sectors_scanned": [],
-      "targets_discovered_count": 0,
+      "remaining_battery_pct": 99.84,
+      "total_distance_m": 36.0,
+      "sectors_scanned": [
+        3
+      ],
+      "targets_discovered_count": 7,
       "consensus_targets_count": 3,
+      "hysteresis_metrics": {
+        "uav_id": "1",
+        "total_evaluations": 4,
+        "updates_executed": 0,
+        "chattering_events_suppressed": 4,
+        "suppression_rate_pct": 100.0,
+        "forced_overrides": 0,
+        "battery_holds": 4,
+        "spatial_holds": 0,
+        "energy_saved_joules": 12.76
+      },
       "trajectory": [
         [
           42.0,
@@ -81,26 +106,46 @@
       "uav_id": "2",
       "is_alive": true,
       "crash_pos": null,
-      "total_distance_m": 216.0,
-      "sectors_scanned": [],
-      "targets_discovered_count": 0,
-      "consensus_targets_count": 10,
+      "remaining_battery_pct": 99.53,
+      "total_distance_m": 132.0,
+      "sectors_scanned": [
+        16,
+        15
+      ],
+      "targets_discovered_count": 26,
+      "consensus_targets_count": 3,
+      "hysteresis_metrics": {
+        "uav_id": "2",
+        "total_evaluations": 12,
+        "updates_executed": 1,
+        "chattering_events_suppressed": 11,
+        "suppression_rate_pct": 91.67,
+        "forced_overrides": 1,
+        "battery_holds": 11,
+        "spatial_holds": 7,
+        "energy_saved_joules": 29.77
+      },
       "trajectory": [
         [
           54.0,
           30.0
         ],
         [
-          55.38,
-          119.99
+          70.94,
+          387.44
         ],
         [
-          56.77,
-          209.98
+          128.44,
+          404.6
         ]
       ]
     }
   ],
+  "hysteresis_summary": {
+    "total_chattering_events_suppressed": 26,
+    "total_forced_overrides": 2,
+    "total_energy_saved_joules": 72.29
+  },
   "reported_targets": [
     {
       "target_key": "TGT_0_13.3_28.0",
@@ -133,74 +178,334 @@
       "time": 1.0
     },
     {
-      "target_key": "TGT_1_133.7_26.3",
+      "target_key": "TGT_3_449.7_65.3",
+      "class_name": "human",
+      "conf": 0.619,
+      "world_x": 449.67,
+      "world_y": 65.33,
+      "sector_id": 3,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_3_401.1_65.6",
+      "class_name": "human",
+      "conf": 0.618,
+      "world_x": 401.1,
+      "world_y": 65.6,
+      "sector_id": 3,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_3_433.7_36.8",
+      "class_name": "human",
+      "conf": 0.583,
+      "world_x": 433.7,
+      "world_y": 36.82,
+      "sector_id": 3,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_3_422.4_70.8",
+      "class_name": "human",
+      "conf": 0.371,
+      "world_x": 422.4,
+      "world_y": 70.83,
+      "sector_id": 3,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_3_402.2_69.0",
+      "class_name": "human",
+      "conf": 0.32,
+      "world_x": 402.23,
+      "world_y": 69.04,
+      "sector_id": 3,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_3_405.1_63.5",
+      "class_name": "human",
+      "conf": 0.262,
+      "world_x": 405.11,
+      "world_y": 63.45,
+      "sector_id": 3,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_3_434.6_67.5",
+      "class_name": "human",
+      "conf": 0.233,
+      "world_x": 434.64,
+      "world_y": 67.55,
+      "sector_id": 3,
+      "detected_by": "1",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_15_14.6_405.3",
+      "class_name": "human",
+      "conf": 0.665,
+      "world_x": 14.59,
+      "world_y": 405.34,
+      "sector_id": 15,
+      "detected_by": "2",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_15_12.6_404.6",
+      "class_name": "human",
+      "conf": 0.574,
+      "world_x": 12.63,
+      "world_y": 404.61,
+      "sector_id": 15,
+      "detected_by": "2",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_15_22.9_377.7",
+      "class_name": "human",
+      "conf": 0.268,
+      "world_x": 22.9,
+      "world_y": 377.74,
+      "sector_id": 15,
+      "detected_by": "2",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_15_68.3_441.8",
+      "class_name": "human",
+      "conf": 0.237,
+      "world_x": 68.28,
+      "world_y": 441.8,
+      "sector_id": 15,
+      "detected_by": "2",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_15_22.0_378.0",
+      "class_name": "human",
+      "conf": 0.225,
+      "world_x": 22.02,
+      "world_y": 377.98,
+      "sector_id": 15,
+      "detected_by": "2",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_15_110.1_440.1",
+      "class_name": "human",
+      "conf": 0.223,
+      "world_x": 110.08,
+      "world_y": 440.14,
+      "sector_id": 15,
+      "detected_by": "2",
+      "time": 1.0
+    },
+    {
+      "target_key": "TGT_16_156.7_410.5",
+      "class_name": "human",
+      "conf": 0.762,
+      "world_x": 156.69,
+      "world_y": 410.51,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_191.0_445.4",
+      "class_name": "human",
+      "conf": 0.734,
+      "world_x": 191.03,
+      "world_y": 445.39,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_186.3_436.2",
+      "class_name": "human",
+      "conf": 0.721,
+      "world_x": 186.32,
+      "world_y": 436.2,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_138.6_364.6",
+      "class_name": "human",
+      "conf": 0.647,
+      "world_x": 138.58,
+      "world_y": 364.56,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_148.9_389.3",
+      "class_name": "human",
+      "conf": 0.631,
+      "world_x": 148.94,
+      "world_y": 389.34,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_148.7_372.7",
+      "class_name": "human",
+      "conf": 0.62,
+      "world_x": 148.68,
+      "world_y": 372.71,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_148.3_378.1",
+      "class_name": "human",
+      "conf": 0.62,
+      "world_x": 148.27,
+      "world_y": 378.13,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_159.3_410.7",
+      "class_name": "human",
+      "conf": 0.586,
+      "world_x": 159.29,
+      "world_y": 410.66,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_170.1_430.9",
       "class_name": "human",
       "conf": 0.572,
-      "world_x": 133.71,
-      "world_y": 26.34,
-      "sector_id": 1,
-      "detected_by": "0",
-      "time": 9.0
+      "world_x": 170.14,
+      "world_y": 430.93,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
     },
     {
-      "target_key": "TGT_1_155.0_109.2",
+      "target_key": "TGT_16_150.6_388.8",
       "class_name": "human",
-      "conf": 0.33,
-      "world_x": 155.01,
-      "world_y": 109.23,
-      "sector_id": 1,
-      "detected_by": "0",
-      "time": 9.0
+      "conf": 0.545,
+      "world_x": 150.55,
+      "world_y": 388.79,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
     },
     {
-      "target_key": "TGT_1_229.4_104.5",
+      "target_key": "TGT_16_149.8_379.6",
       "class_name": "human",
-      "conf": 0.324,
-      "world_x": 229.37,
-      "world_y": 104.51,
-      "sector_id": 1,
-      "detected_by": "0",
-      "time": 9.0
+      "conf": 0.404,
+      "world_x": 149.85,
+      "world_y": 379.57,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
     },
     {
-      "target_key": "TGT_1_161.8_32.6",
+      "target_key": "TGT_16_140.2_361.3",
       "class_name": "human",
-      "conf": 0.302,
-      "world_x": 161.77,
-      "world_y": 32.57,
-      "sector_id": 1,
-      "detected_by": "0",
-      "time": 9.0
+      "conf": 0.376,
+      "world_x": 140.19,
+      "world_y": 361.34,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
     },
     {
-      "target_key": "TGT_1_159.3_41.2",
+      "target_key": "TGT_16_151.0_379.7",
       "class_name": "human",
-      "conf": 0.276,
-      "world_x": 159.33,
-      "world_y": 41.25,
-      "sector_id": 1,
-      "detected_by": "0",
-      "time": 9.0
+      "conf": 0.339,
+      "world_x": 151.03,
+      "world_y": 379.66,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
     },
     {
-      "target_key": "TGT_1_133.5_115.0",
+      "target_key": "TGT_16_151.3_379.7",
       "class_name": "human",
-      "conf": 0.274,
-      "world_x": 133.53,
-      "world_y": 115.05,
-      "sector_id": 1,
-      "detected_by": "0",
-      "time": 9.0
+      "conf": 0.331,
+      "world_x": 151.31,
+      "world_y": 379.68,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
     },
     {
-      "target_key": "TGT_1_128.0_100.4",
+      "target_key": "TGT_16_133.4_361.1",
       "class_name": "human",
-      "conf": 0.205,
-      "world_x": 128.03,
-      "world_y": 100.37,
-      "sector_id": 1,
-      "detected_by": "0",
-      "time": 9.0
+      "conf": 0.299,
+      "world_x": 133.41,
+      "world_y": 361.08,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_139.6_361.2",
+      "class_name": "human",
+      "conf": 0.26,
+      "world_x": 139.61,
+      "world_y": 361.21,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_230.4_403.9",
+      "class_name": "human",
+      "conf": 0.248,
+      "world_x": 230.37,
+      "world_y": 403.91,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_149.8_389.1",
+      "class_name": "human",
+      "conf": 0.238,
+      "world_x": 149.84,
+      "world_y": 389.13,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_131.4_414.9",
+      "class_name": "human",
+      "conf": 0.237,
+      "world_x": 131.39,
+      "world_y": 414.9,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
+    },
+    {
+      "target_key": "TGT_16_216.3_412.0",
+      "class_name": "human",
+      "conf": 0.204,
+      "world_x": 216.34,
+      "world_y": 411.98,
+      "sector_id": 16,
+      "detected_by": "2",
+      "time": 11.0
     }
   ]
 }
