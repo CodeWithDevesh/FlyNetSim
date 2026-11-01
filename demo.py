@@ -61,6 +61,11 @@ def load_validation_summary_html():
     pdr = s.get("pdr_pct", 0)
     consensus = s.get("swarm_consensus_pct", 0)
 
+    ewcvt_info = rep.get("ewcvt_summary") or s.get("ewcvt_summary") or {}
+    jains_val = ewcvt_info.get("jains_energy_fairness_index", 1.0) * 100.0
+    spread_val = ewcvt_info.get("battery_spread_delta_pct", 0.0)
+    min_batt = ewcvt_info.get("min_remaining_battery_pct", 100.0)
+
     fail_html = ""
     failed_uav_info = rep.get("failed_uav_info")
     if failed_uav_info:
@@ -70,13 +75,13 @@ def load_validation_summary_html():
         aband = failed_uav_info.get("abandoned_sectors", [])
         fail_html = f"""
         <div style="background: #252528; border-left: 3px solid #b54747; padding: 10px 14px; margin-bottom: 16px; border-radius: 4px; font-size: 0.9em; color: #ccc;">
-            <strong>Drone {uav_id} stopped at {t_fail}s</strong> at coordinates ({c_pos[0]:.0f}m, {c_pos[1]:.0f}m). Remaining sectors {aband} were transferred to Drone 3.
+            <strong>Drone {uav_id} stopped at {t_fail}s</strong> at coordinates ({c_pos[0]:.0f}m, {c_pos[1]:.0f}m). Remaining unsearched sectors {aband} were reallocated via EW-CVT power distance to surviving peers.
         </div>
         """
 
     html = f"""
     {fail_html}
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 18px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 18px;">
         <div style="background: #18181b; border: 1px solid #27272a; padding: 12px; border-radius: 6px;">
             <div style="color: #71717a; font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.04em;">Area Covered</div>
             <div style="font-size: 1.5em; font-weight: 600; color: #f4f4f5; margin-top: 4px;">{coverage}%</div>
@@ -100,6 +105,14 @@ def load_validation_summary_html():
         <div style="background: #18181b; border: 1px solid #27272a; padding: 12px; border-radius: 6px;">
             <div style="color: #71717a; font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.04em;">Swarm Sync</div>
             <div style="font-size: 1.5em; font-weight: 600; color: #f4f4f5; margin-top: 4px;">{consensus:.1f}%</div>
+        </div>
+        <div style="background: #18181b; border: 1px solid #27272a; padding: 12px; border-radius: 6px;">
+            <div style="color: #71717a; font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.04em;">Energy Balance</div>
+            <div style="font-size: 1.5em; font-weight: 600; color: #10b981; margin-top: 4px;">{jains_val:.1f}%</div>
+        </div>
+        <div style="background: #18181b; border: 1px solid #27272a; padding: 12px; border-radius: 6px;">
+            <div style="color: #71717a; font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.04em;">Battery Spread</div>
+            <div style="font-size: 1.5em; font-weight: 600; color: #f4f4f5; margin-top: 4px;">{spread_val:.1f}%</div>
         </div>
     </div>
     """

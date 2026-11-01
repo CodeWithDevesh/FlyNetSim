@@ -145,6 +145,16 @@ def run_validation(world_json="ground_truth_world.json",
     print(f"   - Packets Sent / Delivered:      {sent} / {delivered}")
     print(f"   - Packet Delivery Ratio (PDR):   {pdr}%")
     print(f"   - Swarm Consensus Spread:        {avg_consensus_pct}%")
+
+    # EW-CVT Energy Balance Metrics
+    ewcvt_summary = swarm_out.get("ewcvt_summary", {})
+    if ewcvt_summary:
+        print(f"EW-CVT Energy Balance Metrics:")
+        print(f"   - Partitioning Mode:             {ewcvt_summary.get('mode', 'N/A')}")
+        print(f"   - Jain's Energy Fairness Index:  {ewcvt_summary.get('jains_energy_fairness_index', 'N/A'):.4f} / 1.0000")
+        print(f"   - Fleet Battery Spread (Delta):  {ewcvt_summary.get('battery_spread_delta_pct', 'N/A')}%")
+        print(f"   - Fleet Battery Std Dev (sigma): {ewcvt_summary.get('battery_std_pct', 'N/A')}%")
+        print(f"   - Min Remaining Battery:         {ewcvt_summary.get('min_remaining_battery_pct', 'N/A')}% (Safety Margin: +{ewcvt_summary.get('fleet_endurance_safety_margin_pct', 'N/A')}%)")
     print("=" * 65)
 
     # Print failure info if present
@@ -173,8 +183,13 @@ def run_validation(world_json="ground_truth_world.json",
             "mean_localization_error_m": mean_loc_error,
             "rmse_localization_error_m": rmse_loc_error,
             "pdr_pct": pdr,
-            "swarm_consensus_pct": avg_consensus_pct
+            "swarm_consensus_pct": avg_consensus_pct,
+            "ewcvt_summary": ewcvt_summary,
+            "jains_energy_fairness_index": ewcvt_summary.get("jains_energy_fairness_index", 1.0),
+            "battery_spread_delta_pct": ewcvt_summary.get("battery_spread_delta_pct", 0.0),
+            "min_remaining_battery_pct": ewcvt_summary.get("min_remaining_battery_pct", 100.0)
         },
+        "ewcvt_summary": ewcvt_summary,
         "failed_uav_info": failed_uav_info,
         "matches": tp_matches[:50],  # Sample of matches
         "false_alarms": fp_false_alarms[:20]

@@ -577,12 +577,43 @@ class SwarmSimulation:
             print(f"[T={snap['sim_time']:.0f}s] Area Coverage: {snap['coverage_pct']}% | Targets: {snap['targets_count']} | Consensus: {snap['avg_consensus']*100:.1f}%")
 
     def _export_mission_output(self):
+        active_drones = [d for d in self.drones if d.is_alive]
+        if active_drones:
+            batteries = [float(d.battery) for d in active_drones]
+            n_act = len(batteries)
+            mean_b = float(np.mean(batteries))
+            std_b = float(np.std(batteries))
+            var_b = float(np.var(batteries))
+            min_b = float(np.min(batteries))
+            max_b = float(np.max(batteries))
+            spread_b = round(max_b - min_b, 2)
+            sum_b = sum(batteries)
+            sum_b_sq = sum(b * b for b in batteries)
+            jains_fairness = round(float((sum_b ** 2) / (n_act * sum_b_sq)), 4) if sum_b_sq > 0 else 1.0
+
+            ewcvt_summary = {
+                "alpha": self.ewcvt_alpha,
+                "mode": "Standard CVT (Unweighted)" if self.ewcvt_alpha == 0.0 else f"Energy-Weighted CVT (alpha={self.ewcvt_alpha})",
+                "jains_energy_fairness_index": jains_fairness,
+                "battery_spread_delta_pct": spread_b,
+                "battery_std_pct": round(std_b, 2),
+                "battery_variance_pct2": round(var_b, 2),
+                "min_remaining_battery_pct": round(min_b, 2),
+                "max_remaining_battery_pct": round(max_b, 2),
+                "mean_remaining_battery_pct": round(mean_b, 2),
+                "fleet_endurance_safety_margin_pct": round(min_b - 15.0, 2),
+                "active_uav_count": n_act
+            }
+        else:
+            ewcvt_summary = {}
+
         output = {
             "mission_duration_sec": round(self.sim_time, 2),
             "ttfd_sec": self.ttfd,
             "swarm_size": self.num_drones,
             "arena_size": self.arena_size,
             "ewcvt_alpha": self.ewcvt_alpha,
+            "ewcvt_summary": ewcvt_summary,
             "base_station": self.base_station,
             "failed_uav_info": self.failed_uav_info,
             "network_stats": self.network_stats,
@@ -615,6 +646,15 @@ class SwarmSimulation:
         print("\n" + "=" * 65)
         print("MISSION COMPLETED & EXPORTED")
         print(f"Summary saved to: swarm_mission_output.json")
+        if ewcvt_summary:
+            print("=" * 65)
+            print("EW-CVT ENERGY BALANCE & WORKLOAD EQUILIBRIUM")
+            print("=" * 65)
+            print(f"EW-CVT Metric:                  {ewcvt_summary['mode']}")
+            print(f"Jain's Energy Fairness Index:   {ewcvt_summary['jains_energy_fairness_index']:.4f} / 1.0000")
+            print(f"Fleet Battery Spread (Delta):   {ewcvt_summary['battery_spread_delta_pct']}% (Min: {ewcvt_summary['min_remaining_battery_pct']}%, Max: {ewcvt_summary['max_remaining_battery_pct']}%)")
+            print(f"Fleet Battery Std Dev (sigma):  {ewcvt_summary['battery_std_pct']}%")
+            print(f"Fleet Endurance Safety Margin:  +{ewcvt_summary['fleet_endurance_safety_margin_pct']}% (above 15% RTL reserve)")
         print(f"Vision log:       {self.vision_log_file}")
         print(f"Network log:      {self.network_log_file}")
         print(f"Mission log:      {self.mission_log_file}")
