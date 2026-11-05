@@ -1,0 +1,274 @@
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[top=0.85in, bottom=0.85in, left=0.75in, right=0.75in]{geometry}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\usepackage{titlesec}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    citecolor=blue!70!black,
+    urlcolor=blue!70!black,
+    pdftitle={FlyNetSim: Core Source Code Listings and Architecture Manual},
+    pdfauthor={Devesh Agarwal, Naman Chaudhary, Sankalp Mittal}
+}
+
+% Page styling
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\footnotesize\sffamily\bfseries FlyNetSim: Post-Disaster Autonomous UAV Swarm Framework}
+\rhead{\footnotesize\sffamily Page \thepage}
+\lfoot{\footnotesize\sffamily Department of Information Technology, National Institute of Technology}
+\rfoot{\footnotesize\sffamily Agarwal, Chaudhary, Mittal}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Color definitions
+\definecolor{codebg}{rgb}{0.98,0.98,0.98}
+\definecolor{codeborder}{rgb}{0.85,0.85,0.85}
+\definecolor{keywordblue}{rgb}{0.0,0.2,0.6}
+\definecolor{commentgreen}{rgb}{0.1,0.5,0.2}
+\definecolor{stringred}{rgb}{0.7,0.15,0.1}
+\definecolor{numbergray}{rgb}{0.5,0.5,0.5}
+\definecolor{calloutbg}{rgb}{0.94,0.96,0.99}
+\definecolor{calloutborder}{rgb}{0.4,0.6,0.85}
+
+% Listings setup
+\lstset{
+    basicstyle=\ttfamily\scriptsize,
+    breaklines=true,
+    breakatwhitespace=false,
+    numbers=left,
+    numberstyle=\tiny\color{numbergray},
+    stepnumber=1,
+    numbersep=8pt,
+    backgroundcolor=\color{codebg},
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    frame=single,
+    rulecolor=\color{codeborder},
+    tabsize=4,
+    captionpos=t,
+    keywordstyle=\color{keywordblue}\bfseries,
+    commentstyle=\color{commentgreen}\itshape,
+    stringstyle=\color{stringred},
+    keepspaces=true,
+    columns=flexible
+}
+
+% YAML language definition for listings
+\lstdefinelanguage{yaml}{
+  keywords={true,false,null,yolo,nc,depth_multiple,width_multiple,backbone,head},
+  keywordstyle=\color{keywordblue}\bfseries,
+  sensitive=false,
+  comment=[l]{\#},
+  commentstyle=\color{commentgreen}\itshape,
+  stringstyle=\color{stringred},
+  morestring=[b]',
+  morestring=[b]"
+}
+
+% Clean callout box macro
+\newcommand{\codecallout}[3]{%
+  \noindent\fcolorbox{calloutborder}{calloutbg}{%
+    \parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule}{%
+      {\bfseries\color{keywordblue} #1} \hfill {\footnotesize\itshape #2}\\[4pt]
+      \small #3
+    }%
+  }\vspace{8pt}%
+}
+
+\titleformat{\section}{\large\sffamily\bfseries\color{keywordblue}}{\thesection}{1em}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\sffamily\bfseries}{\thesubsection}{1em}{}
+
+\begin{document}
+
+% -------------------------------------------------------------
+% Title / Header Page
+% -------------------------------------------------------------
+\begin{center}
+    {\huge\sffamily\bfseries FlyNetSim: Autonomous Multispectral UAV Swarms for Post-Disaster Search and Rescue}\\[8pt]
+    {\Large\sffamily\color{gray!80!black} Core Architectural Implementation \& Source Code Listings}\\[12pt]
+    
+    {\large\bfseries Devesh Agarwal, Naman Chaudhary, Sankalp Mittal}\\[4pt]
+    {\normalsize Department of Information Technology}\\
+    {\normalsize National Institute of Technology}\\[8pt]
+    {\small November 2026}
+\end{center}
+
+\vspace{8pt}
+\hrule height 1pt
+\vspace{12pt}
+
+% -------------------------------------------------------------
+% Executive Architectural Mapping Table
+% -------------------------------------------------------------
+\section*{Executive Codebase Guide for Academic Review}
+This document aggregates the primary source code files implementing the multi-disciplinary algorithms presented in our research paper. The codebase is organized across four tightly coupled layers:
+\begin{enumerate}
+    \item \textbf{Perception Layer}: High-resolution 4-channel ($[T, B, G, R]$, $640 \times 512 \times 4$) early-fusion detector featuring a stride-4 P2 feature pyramid head ($160 \times 128$) specialized for tiny human victim discovery ($<32^2\,\text{px}$) from $25\text{--}50\,\text{m}$ altitude.
+    \item \textbf{Communication Layer}: Decentralized peer-to-peer FANET mesh governed by physical RF propagation laws (log-distance path loss, $\sigma = 7.5\,\text{dB}$ shadow fading, $15\,\text{dB}$ NLoS obstacle loss) and a broker-per-node EdgeBroker with Distributed Multi-Level Topic (DMLT) filtering and QoS~1 Delay-Tolerant Networking (DTN) store-and-forward queues.
+    \item \textbf{Control \& Aerodynamics Layer}: Anti-chattering Dual-Threshold Hysteresis Loop ($\tau_\epsilon = 0.02 \times B_{\text{max}}$, $\tau_\delta = 5.0\,\text{m}$) coupled with Energy-Weighted Centroidal Voronoi Tessellations (EW-CVT), Data Link Layer failure forced-override, and blade-element rotor propulsion modeling.
+    \item \textbf{Swarm Mission Layer}: Synchronous Ground Control Station (GCS) radial dash corridors ($50\,\text{m/s}$), optimal search cruise ($32\,\text{m/s}$), automatic Return-to-Launch (RTL), and real-time Jain's Energy Fairness Index ($\mathcal{J}$) computation.
+\end{enumerate}
+
+\vspace{6pt}
+
+\begin{table}[htbp]
+\centering
+\caption{System Mapping: Research Paper Formulations to Source Code Modules}
+\label{tab:code_map}
+\footnotesize
+\renewcommand{\arraystretch}{1.2}
+\begin{tabularx}{\textwidth}{l>{\raggedright\arraybackslash}p{4.8cm}>{\raggedright\arraybackslash}p{4.5cm}X}
+\toprule
+\textbf{Subsystem} & \textbf{Source File} & \textbf{Key Classes / Functions} & \textbf{Mathematical Formulation} \\
+\midrule
+Perception (Model) & \texttt{training/}\newline\texttt{yolov8n-p2-1cls-4ch.yaml} & Model Architecture Spec & Stride-4 P2 skip connection (Eq.~1) \\
+Perception (Dataset) & \texttt{training/}\newline\texttt{prepare\_dataset.py} & \texttt{process\_split},\newline\texttt{convert\_bbox} & 4-Channel RGBA fusion, VOC to YOLO bbox normalization \\
+Perception (Train) & \texttt{training/train.py} & \texttt{setup\_ultralytics\_imread},\newline\texttt{train\_model} & 4th channel RGB-mean weight transfer, AdamW optimization \\
+Perception (Inference) & \texttt{rgbt\_detector.py} & \texttt{RGBTDetector} & Early tensor fusion, Pinhole projection (Eq.~2, 3) \\
+Communications & \texttt{FlySim/swarm\_network.py} & \texttt{RFPhysicsEngine},\newline\texttt{EdgeBroker} & Log-distance path loss (Eq.~5), SNR (Eq.~6), PER (Eq.~7), DMLT (Eq.~4), QoS 1 (Eq.~8) \\
+Control & \texttt{FlySim/}\newline\texttt{hysteresis\_controller.py} & \texttt{DualThresholdHysteresis-}\newline\texttt{Controller}, \texttt{compute\_ew\_}\newline\texttt{cvt\_centroids} & Power distance (Eq.~10), $\tau_\epsilon$ (Eq.~12), $\tau_\delta$ (Eq.~13), Forced override (Eq.~14), Aero power (Eq.~16, 17) \\
+World Modeling & \texttt{sar\_world.py} & \texttt{SARWorld} & $4000\,\text{m} \times 4000\,\text{m}$ grid, victim spatial density \\
+Swarm Mission & \texttt{simulate\_swarm\_mission.py} & \texttt{SimulatedUAV},\newline\texttt{SwarmSimulation} & Dual-speed envelope (Eq.~9), Failover cost (Eq.~15), Jain's Index \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\vspace{8pt}
+\tableofcontents
+\newpage
+
+% -------------------------------------------------------------
+% Section 1: Perception & Training Subsystem
+% -------------------------------------------------------------
+\section{Multispectral Perception \& Training Subsystem}
+
+\subsection{Neural Backbone Specification: yolov8n-p2-1cls-4ch.yaml}
+\codecallout{Architectural Specification: 4-Channel YOLOv8n-P2}{Path: \texttt{training/yolov8n-p2-1cls-4ch.yaml} (52 lines)}{
+Defines the modified neural network ingesting aligned 4-channel tensors ($[T, B, G, R]$). 
+Crucially, standard YOLOv8 utilizes downsampled heads at strides 8 (P3), 16 (P4), and 32 (P5). This specification introduces an early lateral skip connection directly from backbone Layer 2 (Conv stride 4) into detection Head 1, creating a high-resolution P2 receptive field ($160 \times 128$) that preserves small occluded victims ($<32^2\,\text{px}$) that are otherwise lost in standard pyramids.
+}
+
+\lstinputlisting[language=yaml, caption={4-Channel YOLOv8n-P2 Neural Architecture Definition (\texttt{yolov8n-p2-1cls-4ch.yaml})}]{../training/yolov8n-p2-1cls-4ch.yaml}
+
+\vspace{14pt}
+\subsection{Dataset Configuration: dataset\_1cls\_4ch.yaml}
+\codecallout{Dataset Configuration YAML}{Path: \texttt{training/dataset\_1cls\_4ch.yaml} (7 lines)}{
+Specifies training and validation image split paths, 4-channel input configuration, and single-class target metadata ('human').
+}
+
+\lstinputlisting[language=yaml, caption={4-Channel RGBT Human Detection Dataset Configuration (\texttt{dataset\_1cls\_4ch.yaml})}]{../training/dataset_1cls_4ch.yaml}
+
+\vspace{14pt}
+\subsection{Dataset Preparation \& Annotation Normalization: prepare\_dataset.py}
+\codecallout{Multispectral Data Fusion \& Label Pipeline}{Path: \texttt{training/prepare\_dataset.py} (177 lines)}{
+Automates the post-disaster multispectral dataset preparation:
+\begin{enumerate}
+    \item \textbf{4-Channel Image Fusion}: Synchronously merges visible RGB frames with Long-Wave Infrared (LWIR) thermal grayscale frames into single 4-channel RGBA PNG images.
+    \item \textbf{Pascal VOC to YOLO Annotation Conversion}: Parses bounding boxes from VOC XML, computes normalized bounding box coordinates $(x_{\text{center}}, y_{\text{center}}, w, h)$, filters out ambiguous/uncertain tags, and remaps all valid human entities (\texttt{person}, \texttt{crowd}, \texttt{rider}) to a unified single target class: 0 (\texttt{human}).
+\end{enumerate}
+}
+
+\lstinputlisting[language=Python, caption={Multispectral RGBT Dataset Preparation and Label Normalization (\texttt{prepare\_dataset.py})}]{../training/prepare_dataset.py}
+
+\vspace{14pt}
+\subsection{4-Channel Early-Fusion Neural Training Engine: train.py}
+\codecallout{Multispectral Neural Network Training Script}{Path: \texttt{training/train.py} (129 lines)}{
+Implements the model training workflow:
+\begin{enumerate}
+    \item \textbf{Ultralytics Dynamic Patching}: Monkey-patches \texttt{ultralytics.data.base.imread} to seamlessly load 4-channel PNGs and reorder channels to $[T, B, G, R]$ for the P2 model backbone.
+    \item \textbf{Pretrained Weight Transfer}: Expands the stem convolution kernel $\mathbf{W}_{\text{stem}} \in \mathbb{R}^{64 \times 4 \times 3 \times 3}$, initializing the first 3 channels with COCO-pretrained weights and setting the 4th channel (LWIR thermal) to the channel-averaged mean: $\mathbf{W}[:, 3:] = \text{mean}(\mathbf{W}[:, :3])$.
+    \item \textbf{SAR-Optimized Hyperparameters}: Trains with AdamW ($\text{lr}=0.002$), close mosaic at epoch 35, multiscale augmentations, and dual-GPU DDP support.
+\end{enumerate}
+}
+
+\lstinputlisting[language=Python, caption={4-Channel Early-Fusion YOLOv8-P2 Training Script with Weight Transfer (\texttt{train.py})}]{../training/train.py}
+
+\vspace{14pt}
+\subsection{Inference \& Coordinate Projection: rgbt\_detector.py}
+\codecallout{Multispectral Inference Engine}{Path: \texttt{rgbt\_detector.py} (212 lines)}{
+Implements the operational \texttt{RGBTDetector} class executed onboard each UAV. 
+Contains: (1) 4-channel normalization and tensor channel alignment; (2) TorchScript/PyTorch forward pass with confidence thresholding ($\tau_{\text{conf}} = 0.20$); and (3) Inverse pinhole camera projection transforming image bounding box coordinates $(x_{\text{norm}}, y_{\text{norm}})$ into global spatial world coordinates $(X_{\text{world}}, Y_{\text{world}})$ based on UAV GPS position, flight altitude, and sector boundaries.
+}
+
+\lstinputlisting[language=Python, caption={4-Channel Early-Fusion Vision Detector and Pinhole Projector (\texttt{rgbt\_detector.py})}]{../rgbt_detector.py}
+
+\newpage
+% -------------------------------------------------------------
+% Section 2: Communication Subsystem
+% -------------------------------------------------------------
+\section{Wireless FANET Communication Subsystem}
+
+\subsection{RF Channel Physics \& Decentralized EdgeBroker: FlySim/swarm\_network.py}
+\codecallout{RF Physics \& Decentralized EdgeBroker}{Path: \texttt{FlySim/swarm\_network.py} (155 lines)}{
+Implements the telecommunication backbone of the swarm. 
+\begin{itemize}
+    \item \texttt{RFPhysicsEngine}: Evaluates 3D Euclidean distances between UAVs, computing free-space path loss at carrier frequency $f = 5.0\,\text{GHz}$, log-normal Gaussian shadow fading ($\sigma = 7.5\,\text{dB}$ for disaster rubble clutter), and non-line-of-sight concrete building attenuation ($15.0\,\text{dB}$). Maps the received Signal-to-Noise Ratio (SNR) into dynamic Packet Error Rate (PER) via a generalized logistic link.
+    \item \texttt{EdgeBroker}: A fully decentralized, broker-per-node pub/sub engine replacing centralized MQTT servers. Implements Distributed Multi-Level Topic (DMLT) interest filtering, UUID-based cyclic message suppression, and peer-specific FIFO QoS~1 store-and-forward queues that buffer undelivered packets during multi-kilometer path drops and flush opportunistically during proximity encounters.
+\end{itemize}
+}
+
+\lstinputlisting[language=Python, caption={RF Physical Channel Engine and Decentralized EdgeBroker Pub/Sub (\texttt{FlySim/swarm\_network.py})}]{../FlySim/swarm_network.py}
+
+\newpage
+% -------------------------------------------------------------
+% Section 3: Control & Flight Dynamics Subsystem
+% -------------------------------------------------------------
+\section{Control \& Flight Dynamics Subsystem}
+
+\subsection{Dual-Threshold Hysteresis \& EW-CVT: FlySim/hysteresis\_controller.py}
+\codecallout{Anti-Chattering Hysteresis Controller \& Energy-Weighted Voronoi}{Path: \texttt{FlySim/hysteresis\_controller.py} (266 lines)}{
+Resolves high-frequency flight path instability (chattering) induced by continuous Voronoi partition recalculations and sensor noise.
+\begin{itemize}
+    \item \texttt{compute\_ew\_cvt\_centroids}: Solves discrete grid mass centroids $C_i^*$ weighted by residual battery power distance $d_w(\mathbf{p}, \mathbf{x}_i) = \|\mathbf{p} - \mathbf{x}_i\|^2 / w_i(t)$.
+    \item \texttt{DualThresholdHysteresisController}: Enforces a discrete 2\% battery decay lock ($\tau_\epsilon = 0.02 \times B_{\text{max}}$) and a 5-meter spatial threshold ($\tau_\delta = 5.0\,\text{m}$) before passing waypoint updates to autopilots.
+    \item \textbf{Forced Override on Node Failure}: Automatically detects Data Link Layer heartbeat loss ($\mathcal{N}(t) \ne \mathcal{N}(t_k)$) to bypass steady-state hysteresis and instantaneously reallocate abandoned sectors.
+    \item \textbf{Aerodynamic Kinetic Energy Model}: Calculates rotor propulsion power $P_{\text{propulsion}}(v)$ and quantifies the exact kinetic energy saved across the fleet ($29.49\,\text{kJ}$) by suppressing chattering yaw/roll maneuvers.
+\end{itemize}
+}
+
+\lstinputlisting[language=Python, caption={Dual-Threshold Hysteresis Controller and Aerodynamic Propulsion Energy Model (\texttt{FlySim/hysteresis\_controller.py})}]{../FlySim/hysteresis_controller.py}
+
+\newpage
+% -------------------------------------------------------------
+% Section 4: Disaster Arena Environment Modeling
+% -------------------------------------------------------------
+\section{Environment Spatial Modeling Subsystem}
+
+\subsection{Disaster Arena Geometry: sar\_world.py}
+\codecallout{Post-Disaster SARWorld Environment}{Path: \texttt{sar\_world.py} (161 lines)}{
+Models the wide-area disaster operations footprint ($4000\,\text{m} \times 4000\,\text{m} = 16.0\,\text{km}^2$), structured into a $5 \times 5$ grid of 25 search sectors ($800\,\text{m} \times 800\,\text{m}$ each). 
+Simulates realistic victim distributions (259 ground-truth victims) with varying bounding box dimensions, aspect ratios, human thermal profiles, and obstacle blockage zones.
+}
+
+\lstinputlisting[language=Python, caption={Post-Disaster SARWorld Environment and Victim Spatial Model (\texttt{sar\_world.py})}]{../sar_world.py}
+
+\newpage
+% -------------------------------------------------------------
+% Section 5: Swarm Mission Orchestration
+% -------------------------------------------------------------
+\section{Swarm Mission Orchestration Subsystem}
+
+\subsection{Autonomous Swarm Mission Orchestrator: simulate\_swarm\_mission.py}
+\codecallout{End-to-End Swarm Mission Simulator}{Path: \texttt{simulate\_swarm\_mission.py} (687 lines)}{
+The master coordination engine driving the full-scale SAR simulation:
+\begin{itemize}
+    \item \texttt{SimulatedUAV}: Implements individual flight state machines (TRANSIT dash at $50\,\text{m/s}$, SEARCH cruise at $32\,\text{m/s}$, and Return-to-Launch RTL at $50\,\text{m/s}$), kinetic battery discharge, and onboard hysteresis tracking.
+    \item \texttt{SwarmSimulation}: Manages synchronous Base Station corridor launches from $(200\,\text{m}, 200\,\text{m})$, distributed area sweeping, real-time in-flight motor failure injection on UAV~2 at $T=75.0\,\text{s}$, autonomous failover re-assignment of abandoned sectors [17, 23] via minimum power-distance cost, DTN proximity buffer flushes, and mathematical calculation of Jain's Energy Fairness Index ($\mathcal{J} = 0.9991$).
+\end{itemize}
+}
+
+\lstinputlisting[language=Python, caption={Autonomous Swarm SAR Mission Simulator and Dynamic Failover Orchestrator (\texttt{simulate\_swarm\_mission.py})}]{../simulate_swarm_mission.py}
+
+\end{document}
