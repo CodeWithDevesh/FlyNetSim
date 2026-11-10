@@ -1,0 +1,321 @@
+# System Architecture: Diagram Proposal
+
+Proposed set of architecture diagrams for the UAV-swarm SAR system. Each one answers a single question a
+reviewer is likely to ask, and each is drawn from the **current code** (not from the earlier paper figure).
+The diagrams are Mermaid so they render on GitHub; once the set is agreed they can be redrawn in TikZ for the paper.
+
+| # | Diagram | The question it answers | Priority |
+|---|---|---|---|
+| D1 | System overview | What are the parts and how do they relate? | **Core** (one-slide architecture) |
+| D2 | Per-UAV pipeline | What runs on each aircraft, from pixels to alert? | **Core** |
+| D3 | Swarm control loop | How does EW-CVT + hysteresis decide who searches where? | **Core** |
+| D4 | Hysteresis gate | When exactly does the controller change its mind? | Supporting |
+| D5 | Alert dissemination and DTN | How does a victim alert reach the operator when links are down? | **Core** |
+| D6 | UAV state machine | What states can a UAV be in and what moves it between them? | Supporting |
+| D7 | Failure and failover | What happens when a UAV is lost or runs low on battery? | Supporting |
+| D8 | Software module map | Where does each idea live in the code? | Appendix |
+| D9 | Evaluation architecture | How do the ablation switches map to the measured results? | **Core** (bridges to results) |
+
+Suggested presentation order: D1 → D2 → D3 (with D4 as a zoom) → D5 → D9, with D6, D7 and D8 as backup slides.
+
+---
+
+## D1. System overview
+
+Three contributions sit inside every UAV; the mission layer and the operator sit around them.
+
+```mermaid
+flowchart TB
+  ARENA["Search arena<br/>N x N sectors, one multispectral frame per sector"]
+  GCS["Ground Control Station<br/>base station and launch pads"]
+
+  subgraph UAV["Every UAV (x N)"]
+    PERC["1. Perception<br/>4-channel RGB + thermal YOLO"]
+    COMM["2. Mesh comms<br/>RF link, relay, store-and-forward"]
+    CTRL["3. Swarm control<br/>EW-CVT + hysteresis + failover"]
+    FLT["Flight and battery"]
+    PERC -- "victim alerts" --> COMM
+    CTRL -- "sector route" --> FLT
+    FLT -- "position, battery" --> CTRL
+    FLT -- "position" --> COMM
+  end
+
+  PEERS["Peer UAVs"]
+
+  ARENA -- "frames" --> PERC
+  GCS -- "launch" --> FLT
+  COMM -- "alerts (most arrive on return to base)" --> GCS
+  COMM <-->|"alerts, buffered until link is good"| PEERS
+  PEERS -. "alive set N(t)" .-> CTRL
+```
+
+**Say:** each UAV carries a perception stack, a comms stack and a control stack. They interact through
+three narrow interfaces: alerts (perception to comms), a sector route (control to flight), and the alive set (comms to control).
+
+---
+
+## D2. Per-UAV pipeline
+
+From sensor to operator, on one aircraft.
+
+```mermaid
+flowchart LR
+  subgraph SENSE["Sensing"]
+    RGB["Visible camera<br/>RGB"]
+    THM["Thermal camera<br/>LWIR"]
+  end
+  subgraph VISION["Perception"]
+    FUSE["Early fusion<br/>stack to 4-channel tensor,<br/>model-specific channel order"]
+    DET["YOLO11 detector<br/>conf threshold 0.20"]
+    GEO["Georeference<br/>box centre to sector coordinates"]
+    DEDUP["Local and swarm-wide<br/>target de-duplication"]
+  end
+  subgraph NET["Comms"]
+    ALERT["Alert<br/>key, class, conf, x, y"]
+    SEND["Send to peers and GCS<br/>direct, else one relay hop"]
+    BUF["QoS-1 buffer<br/>per recipient"]
+  end
+  RGB --> FUSE
+  THM --> FUSE
+  FUSE --> DET --> GEO --> DEDUP --> ALERT --> SEND
+  SEND -- "failed" --> BUF
+  BUF -. "flush when link PER < 0.2" .-> SEND
+```
+
+**Notes for accuracy:** georeferencing is a linear map from the box centre in the frame to the sector's bounds
+(each sector is represented by one frame); it is **not** a pinhole camera model.
+
+---
+
+## D3. Swarm control loop (EW-CVT + hysteresis)
+
+Runs every 5 s of mission time. The hysteresis gate decides whether each UAV's territory parameters change.
+
+```mermaid
+flowchart TD
+  TICK["Replan tick, every 5 s"] --> MEAS["Read battery B_i<br/>(with sensor noise)"]
+  MEAS --> WGT["Fresh weight<br/>w*_i = (B_i / Bmax)^alpha"]
+  WGT --> CENT["EW-CVT centroid C*_i of cell i<br/>power distance d = dist^2(p, g_i) / w_i"]
+  CENT --> GATE{"Hysteresis gate<br/>(see D4)"}
+  GATE -- "locked" --> KEEP["Keep committed g_i and w_i"]
+  GATE -- "commit" --> NEW["g_i = C*_i,  w_i = w*_i"]
+  KEEP --> ASSIGN
+  NEW --> ASSIGN["Assign each unscanned sector to<br/>argmin of dist^2(c_s, g_i) / w_i"]
+  ASSIGN --> CHG{"UAV's pending<br/>sector set changed?"}
+  CHG -- "yes" --> ROUTE["Rebuild route:<br/>nearest-neighbour tour, then return to pad"]
+  CHG -- "no" --> FLY["Keep flying current route"]
+  ROUTE --> FLY
+```
+
+**Say:** alpha = 0 gives ordinary Voronoi; larger alpha shrinks low-battery UAVs' territories.
+Because assignment uses only *committed* values, a locked gate means no ownership flips and no re-routing.
+
+---
+
+## D4. Hysteresis gate
+
+The dual-threshold rule with the topology override.
+
+```mermaid
+flowchart TD
+  IN["Inputs: battery B_i(t), centroid C*_i(t), alive set N(t)"] --> Q1{"N(t) differs from<br/>N(t_k)?"}
+  Q1 -- "yes" --> FORCE["FORCED OVERRIDE<br/>commit immediately"]
+  Q1 -- "no" --> Q2{"Battery down >= 2% of Bmax<br/>since last commit?"}
+  Q2 -- "no" --> LOCK["LOCK<br/>keep g_i, w_i<br/>(chattering suppressed)"]
+  Q2 -- "yes" --> Q3{"Centroid moved >= 5 m<br/>since last commit?"}
+  Q3 -- "no" --> LOCK
+  Q3 -- "yes" --> COMMIT["COMMIT<br/>g_i = C*_i, w_i = w*_i<br/>reset baseline t_k"]
+```
+
+---
+
+## D5. Alert dissemination and delay-tolerant delivery
+
+Why the operator still learns about victims when the swarm is mostly out of radio range.
+
+```mermaid
+sequenceDiagram
+  participant U as Detecting UAV
+  participant P as Peer UAVs
+  participant G as GCS (at base)
+
+  U->>U: detect, georeference, de-duplicate
+  par to every peer and the GCS
+    U->>P: alert over direct RF link (succeeds with probability 1 - PER)
+  and
+    U->>G: alert over direct RF link
+  end
+  opt direct link failed and multi-hop enabled
+    U->>P: retry through one relay UAV (must be closer to both ends)
+  end
+  alt still undelivered and DTN enabled
+    U->>U: store message in QoS-1 buffer for that recipient
+  else DTN disabled
+    Note over U: message is lost
+  end
+  Note over U,G: later, the UAV returns to base
+  U->>G: flush buffered alerts once link PER < 0.2
+  G->>G: record first-known time (alert latency)
+```
+
+**RF model behind PER:** log-distance path loss (exponent 2.5), 4 dB shadow fading, 15 dB obstruction penalty,
+SNR mapped to PER over 5 to 25 dB; 33 dBm at 2.4 GHz for arenas of 2 km or more, otherwise 30 dBm at 5 GHz.
+
+---
+
+## D6. UAV state machine
+
+```mermaid
+stateDiagram-v2
+  [*] --> TRANSIT: launch from pad
+  TRANSIT --> SEARCHING: first sector reached, scan
+  SEARCHING --> SEARCHING: next sector reached, scan
+  SEARCHING --> RETURNING: no sectors pending
+  RETURNING --> SEARCHING: failover assigns new sectors
+  TRANSIT --> RETURNING: battery at or below 15%
+  SEARCHING --> RETURNING: battery at or below 15%
+  RETURNING --> LANDED: reached pad
+  TRANSIT --> CRASHED: motor failure or battery 0%
+  SEARCHING --> CRASHED: motor failure or battery 0%
+  RETURNING --> CRASHED: motor failure or battery 0%
+  LANDED --> [*]
+  CRASHED --> [*]
+```
+
+Speeds: transit and return up to 50 m/s; search cruise up to 32 m/s. Battery drains faster in transit than in search.
+
+---
+
+## D7. Failure and failover
+
+```mermaid
+sequenceDiagram
+  participant E as Event
+  participant S as Swarm controller
+  participant H as Hysteresis gate (each survivor)
+  participant D as Surviving UAVs
+
+  E->>S: UAV lost (motor failure or 0% battery), or UAV aborts at 15%
+  S->>S: alive set N(t) changes
+  S->>H: evaluate with new topology
+  H-->>S: FORCED OVERRIDE, thresholds bypassed
+  S->>S: re-partition remaining unscanned sectors among survivors
+  alt failover enabled
+    S->>D: abandoned sectors assigned, routes rebuilt
+  else failover disabled
+    S->>S: abandoned sectors stay unsearched
+  end
+```
+
+---
+
+## D8. Software module map
+
+Where each idea lives. The ArduPilot / ns-3 path is a separate, hardware-in-the-loop route and does not run in the Python mission simulator.
+
+```mermaid
+flowchart LR
+  subgraph ENTRY["Entry points"]
+    DEMO["demo.py<br/>Gradio console"]
+    CLI["simulate_swarm_mission.py<br/>CLI"]
+    VAL["validate_swarm_mission.py<br/>validator and figures"]
+    ABL["ablation/<br/>perception_eval, run_ablation,<br/>make_report, make_readme"]
+  end
+
+  subgraph CORE["Mission simulator"]
+    SIM["SwarmSimulation<br/>SimulatedUAV"]
+  end
+
+  subgraph SERVICES["Components under study"]
+    DETM["rgbt_detector.py<br/>RGBTDetector"]
+    CTRLM["FlySim/hysteresis_controller.py<br/>EW-CVT + dual-threshold gate"]
+    NETM["FlySim/swarm_network.py<br/>RF physics, EdgeBroker"]
+    WORLD["sar_world.py<br/>SARWorld"]
+  end
+
+  subgraph DATA["Data and models"]
+    FR["NII-CU frames and labels"]
+    W["best.pt<br/>4-channel YOLO11"]
+  end
+
+  subgraph OUT["Outputs"]
+    LOGS["metrics CSVs, mission JSON"]
+    RES["results/<br/>README, report, figures"]
+  end
+
+  subgraph SITL["Separate path: hardware-in-the-loop"]
+    FN["FlySim/FlyNetSim.py<br/>uav_pubsub.py"]
+    AP["ArduPilot SITL + ns-3"]
+  end
+
+  DEMO --> SIM
+  CLI --> SIM
+  ABL --> SIM
+  SIM --> DETM
+  SIM --> CTRLM
+  SIM --> NETM
+  SIM --> WORLD
+  WORLD --> FR
+  DETM --> W
+  SIM --> LOGS
+  LOGS --> VAL
+  ABL --> RES
+  FN --> AP
+  FN -. "uses" .-> CTRLM
+```
+
+---
+
+## D9. Evaluation architecture
+
+How each switch removes one component and which measurements change. This links the architecture to the results.
+
+```mermaid
+flowchart LR
+  subgraph KNOBS["Ablation switches"]
+    K1["Input masking<br/>fused / RGB only / thermal only"]
+    K2["DTN buffer on or off<br/>multi-hop on or off"]
+    K3["EW weighting alpha<br/>hysteresis on or off<br/>failover on or off<br/>dynamic replanning on or off"]
+    SC["Scenario<br/>swarm size, arena, battery spread,<br/>sensor noise, UAV loss"]
+  end
+
+  K1 --> EVAL["Detector evaluation<br/>held-out frames, day / night / washout"]
+  K2 --> SIMX["Mission simulator<br/>paired seeds"]
+  K3 --> SIMX
+  SC --> SIMX
+
+  EVAL --> M1["AP50, precision, recall, F1"]
+  SIMX --> M2["Coverage, recall over whole arena,<br/>mission time, distance"]
+  SIMX --> M3["Min battery, aborts,<br/>sector flips, route changes, commits"]
+  SIMX --> M4["Operator recall, alert latency,<br/>consensus, messages lost"]
+
+  M1 --> REP["Final report"]
+  M2 --> REP
+  M3 --> REP
+  M4 --> REP
+```
+
+---
+
+## Corrections needed in the existing figure (`paper/system_architecture.tex`)
+
+The earlier TikZ figure should not be reused as is. These items do not match the code:
+
+| Figure says | Code does | Suggested fix |
+|---|---|---|
+| 4-channel **YOLOv8-P2**, 640 x 512 input | Detector supports YOLO11 and YOLOv8-P2; the shipped model is YOLO11 (trained at 1280 px, frames about 1280 x 937) | Name the shipped model and its input size |
+| Shadow fading sigma = **7.5 dB** | `swarm_network.py` uses **4 dB** | Use 4 dB, or change the code deliberately |
+| **Blade-element propulsion model** | Linear battery drain (0.07 %/s in transit, 0.04 %/s in search) | Remove, or describe the drain model honestly |
+| **Pinhole georeferencing** | Linear map from box centre to the sector's bounds | Call it sector-based georeferencing |
+| **DLL heartbeat watchdog** | Alive set is read directly from simulator state; no heartbeat protocol | Say "topology change detected" without a heartbeat claim |
+| **ZeroMQ P2P brokers on ports 6000+i** | In the Python simulator brokers are in-process objects; ZeroMQ is only in the SITL path (`uav_pubsub.py`) | Put ZeroMQ under the SITL path only |
+| **16 km2 arena**, 800 m sectors | Results use 5 km x 5 km (25 km2), 1 km sectors | Match the arena used in the results |
+| Failure on UAV 2 at **75 s** | Ablation scenario uses 80 s | Match the results |
+| **Victim recall 71.04 %** (184/259) | Superseded; current whole-arena recall is about 0.98 (nominal) | Remove, or replace with the report's numbers |
+
+## Decisions needed before drawing
+
+1. **Scope of "the system":** present only the Python mission simulator (what the results measure), or also the ArduPilot/ns-3 SITL path as a deployment route? Proposal: simulator in D1 to D7, SITL only in D8.
+2. **Format:** keep Mermaid for GitHub and rebuild D1, D3 and D5 in TikZ for the paper, or produce one set only?
+3. **Detail level for the professor:** D1 on its own may be enough for the main slide, with D3 and D5 as the two "how it works" slides. Say if you want fewer or more.
+4. **Numbers on the diagrams:** which thresholds to show (2 %, 5 m, 5 s replan, 15 % reserve, RF parameters)? Proposal: show them only on D3, D4 and D5.
