@@ -1,12 +1,24 @@
 #!/usr/bin/env python3
 """
 Autonomous Multi-UAV Swarm SAR Simulation Engine.
-Runs decentralized drone agents over an in-memory multispectral world, executing:
-  - Trajectory navigation & sector search
-  - 4-Channel Early-Fusion YOLOv8 neural inference
-  - P2P Swarm communication via EdgeBroker with RF path loss & shadow fading
-  - Store-and-forward QoS 1 buffering under RF link degradation
-  - Target consensus mapping & multi-layer metrics logging
+
+Three contributions are modelled and can each be switched off for ablation:
+
+  1. Perception   - 4-channel RGB+Thermal early-fusion YOLO detector (rgbt_detector.py)
+  2. Networking   - FANET mesh with RF physics, QoS-1 store-and-forward (DTN) buffers,
+                    multi-hop relaying and a Ground Control Station (GCS) sink
+  3. Swarm control- Energy-Weighted Centroidal Voronoi Tessellation (EW-CVT) territory
+                    partitioning, gated by a dual-threshold hysteresis controller, with
+                    autonomous failover when a UAV is lost
+
+Control loop (per replan tick):
+    measured battery -> fresh weights w*_i = (B_i/Bmax)^alpha
+                     -> theoretical EW-CVT centroid C*_i of each UAV's cell
+                     -> hysteresis controller decides whether (g_i, w_i) are *committed*
+                     -> sectors that are still unscanned are re-assigned by power distance
+                        d(s, i) = ||c_s - g_i||^2 / w_i   using committed g_i, w_i only
+Without hysteresis every tick commits, so battery-sensor noise moves the partition borders
+and sectors flip owners ("churn"); UAVs then re-route and waste energy.
 """
 
 import os
@@ -16,21 +28,47 @@ import json
 import math
 import random
 import csv
+import pickle
 import numpy as np
 from collections import defaultdict
 
-# Add FlySim and root to path
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "FlySim")))
 
 from sar_world import SARWorld
 from rgbt_detector import RGBTDetector
 import swarm_network
-from hysteresis_controller import DualThresholdHysteresisController
+from hysteresis_controller import DualThresholdHysteresisController, compute_ew_cvt_centroids
+
+BATTERY_RESERVE_PCT = 15.0     # RTL reserve used by the safety-margin metric
+GCS_ID = "GCS"
+CVT_GRID_RES = 100             # sampling resolution of the EW-CVT centroid integral
+
+# ---------------------------------------------------------------------------
+# Detection cache: every sector shows one static frame, so detections are deterministic.
+# Caching them makes ablation sweeps (hundreds of missions) tractable on CPU.
+# ---------------------------------------------------------------------------
+_DET_CACHE = {}
+
+
+def load_detection_cache(path):
+    global _DET_CACHE
+    if path and os.path.exists(path):
+        with open(path, "rb") as f:
+            _DET_CACHE.update(pickle.load(f))
+    return len(_DET_CACHE)
+
+
+def save_detection_cache(path):
+    os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
+    with open(path, "wb") as f:
+        pickle.dump(_DET_CACHE, f)
 
 
 class SimulatedUAV:
-    def __init__(self, uav_id, start_x, start_y, altitude, transit_speed, search_speed, assigned_sectors, physics_engine, initial_topology=None, ewcvt_alpha=1.0):
+    def __init__(self, uav_id, start_x, start_y, altitude, transit_speed, search_speed, assigned_sectors,
+                 physics_engine, initial_topology=None, ewcvt_alpha=1.0, initial_battery=100.0,
+                 tau_epsilon_ratio=0.02, tau_delta=5.0):
         self.uav_id = str(uav_id)
         self.home_x = float(start_x)
         self.home_y = float(start_y)
@@ -40,99 +78,93 @@ class SimulatedUAV:
         self.transit_speed = float(transit_speed)
         self.search_speed = float(search_speed)
         self.speed = float(transit_speed)
-        self.assigned_sectors = list(assigned_sectors)  # List of sector IDs to survey
+        self.assigned_sectors = list(assigned_sectors)   # scanned + pending sector ids
+        self.pending = list(assigned_sectors)            # sectors still to survey
         self.current_waypoint_idx = 0
         self.waypoints = []
-        self.state = "TRANSIT"  # "TRANSIT", "SEARCHING", "RETURNING", "LANDED", "CRASHED"
+        self.state = "TRANSIT"   # TRANSIT, SEARCHING, RETURNING, LANDED, CRASHED
         self.ewcvt_alpha = float(ewcvt_alpha)
-        
-        # Battery state and Dual-Threshold Hysteresis Controller
-        self.battery_max = 100.0  # nominal % or Wh
-        self.battery = 100.0
-        self.hysteresis = DualThresholdHysteresisController(
-            uav_id=self.uav_id,
-            initial_pos=(self.x, self.y),
-            b_max=self.battery_max,
-            tau_epsilon_ratio=0.02, # 2% discharge threshold
-            tau_delta=5.0,          # 5m spatial centroid threshold
-            alpha=self.ewcvt_alpha,
-            initial_battery=self.battery,
-            initial_topology=initial_topology
-        )
-        
-        # RF & EdgeBroker
+        self.tau_epsilon_ratio = tau_epsilon_ratio
+        self.tau_delta = tau_delta
+        self.rtl = False                 # low-battery abort: return to base, take no new sectors
+        self.reached_first_sector = False
+        self.arrived_at_sector = False   # set when a sector-centre waypoint is reached
+
+        self.battery_max = 100.0
+        self.battery = float(initial_battery)
+        self.initial_battery = float(initial_battery)
+        self.b_meas = self.battery
+        self.gen = (self.x, self.y)      # committed EW-CVT generator g_i
+        self.weight = (self.battery / self.battery_max) ** self.ewcvt_alpha
+        self.route_changes = 0
+        self.nohyst_commits = 0
+        self.hysteresis = None
+        self.reset_hysteresis(self.gen, initial_topology)
+
         self.broker = swarm_network.EdgeBroker(self.uav_id, physics_engine)
-        self.discovered_targets = {}  # Local target registry: {target_id: target_dict}
-        self.consensus_registry = {}  # Targets learned from swarm peers: {target_id: {from: ..., data: ...}}
-        
+        self.discovered_targets = {}
+        self.consensus_registry = {}
+
         self.trajectory_history = [(round(self.x, 2), round(self.y, 2))]
         self.total_distance_flown = 0.0
         self.scanned_sectors = set()
         self.is_alive = True
         self.crash_pos = None
 
+    def reset_hysteresis(self, gen0, topology):
+        """(Re)build the dual-threshold controller around the committed generator g_i(t_0)."""
+        self.gen = (float(gen0[0]), float(gen0[1]))
+        self.weight = (max(0.0, self.battery) / self.battery_max) ** self.ewcvt_alpha
+        self.hysteresis = DualThresholdHysteresisController(
+            uav_id=self.uav_id, initial_pos=self.gen, b_max=self.battery_max,
+            tau_epsilon_ratio=self.tau_epsilon_ratio, tau_delta=self.tau_delta,
+            alpha=self.ewcvt_alpha, initial_battery=self.battery, initial_topology=topology)
+
     def set_waypoints(self, waypoints):
         self.waypoints = waypoints
         self.current_waypoint_idx = 0
 
     def get_location_dict(self):
-        # Scale meters to mock coordinates so physics_engine.calculate_euclidean_distance works directly in meters
         scale = 1.113195e5
         return {'lat': self.y / scale, 'lon': self.x / scale}
 
     def update_position(self, dt, current_time=0.0, active_topology=None):
-        """Moves the UAV toward the commanded target waypoint with dual-threshold hysteresis locking"""
+        """Physical flight toward the current waypoint. Returns True when the UAV is finished."""
         if not self.is_alive:
             self.state = "CRASHED"
-            return True  # Crashed drone ceases movement
-
+            return True
         if not self.waypoints or self.current_waypoint_idx >= len(self.waypoints):
             self.state = "LANDED"
-            return True  # Completed assigned route and returned to base
+            return True
 
-        # Are we heading back to base? (Last waypoint is home base)
-        if self.current_waypoint_idx == len(self.waypoints) - 1:
+        last_idx = len(self.waypoints) - 1
+        if self.current_waypoint_idx == last_idx:
             self.state = "RETURNING"
             self.speed = self.transit_speed
-        elif self.state == "TRANSIT":
+        elif not self.reached_first_sector:
+            self.state = "TRANSIT"
             self.speed = self.transit_speed
         else:
+            self.state = "SEARCHING"
             self.speed = self.search_speed
 
-        # Kinetic battery decay & sensor micro-fluctuation modeling
+        # Kinetic battery drain (faster in high-speed transit)
         drain_rate = 0.07 if self.speed > 40.0 else 0.04
-        sensor_jitter = random.gauss(0.0, 0.002)
-        self.battery = max(0.0, min(self.battery_max, self.battery - drain_rate * dt + sensor_jitter))
+        self.battery = max(0.0, min(self.battery_max, self.battery - drain_rate * dt))
 
-        target_x, target_y = self.waypoints[self.current_waypoint_idx]
-
-        # Evaluate Dual-Threshold Hysteresis Loop
-        topo = active_topology if active_topology is not None else [self.uav_id]
-        hyst_eval = self.hysteresis.evaluate(
-            current_time=current_time,
-            current_battery=self.battery,
-            theoretical_centroid=(target_x, target_y),
-            current_topology=topo,
-            current_speed=self.speed
-        )
-        cmd_x, cmd_y = hyst_eval["commanded_pos"]
-
-        dx = cmd_x - self.x
-        dy = cmd_y - self.y
-        dist = math.hypot(dx, dy)
-
+        tx, ty = self.waypoints[self.current_waypoint_idx]
+        dist = math.hypot(tx - self.x, ty - self.y)
         step = self.speed * dt
-        if dist <= step or dist < 2.0:
-            self.x = target_x
-            self.y = target_y
+        if dist <= step:
+            self.x, self.y = tx, ty
+            self.total_distance_flown += dist
+            if self.current_waypoint_idx < last_idx:
+                self.arrived_at_sector = True
+                self.reached_first_sector = True
             self.current_waypoint_idx += 1
-            # Once we reach our first search sector, transition from high-speed TRANSIT to SEARCHING
-            if self.current_waypoint_idx >= 1 and self.current_waypoint_idx < len(self.waypoints) - 1:
-                self.state = "SEARCHING"
-                self.speed = self.search_speed
         else:
-            self.x += (dx / dist) * step
-            self.y += (dy / dist) * step
+            self.x += (tx - self.x) / dist * step
+            self.y += (ty - self.y) / dist * step
             self.total_distance_flown += step
 
         self.trajectory_history.append((round(self.x, 2), round(self.y, 2)))
@@ -144,406 +176,493 @@ class SwarmSimulation:
                  model_path="best.pt", conf_thresh=0.20,
                  sim_speed_multiplier=5.0, seed=42,
                  fail_drone_id=None, fail_time=None,
-                 base_x=None, base_y=None, ewcvt_alpha=1.0):
-        
+                 base_x=None, base_y=None, ewcvt_alpha=1.0,
+                 # ---- ablation switches -------------------------------------------------
+                 hysteresis_enabled=True,      # dual-threshold gate on partition commits
+                 failover_enabled=True,        # re-assign a lost UAV's sectors to survivors
+                 dynamic_repartition=True,     # periodic EW-CVT replanning during the mission
+                 dtn_enabled=True,             # QoS-1 store-and-forward buffering
+                 multihop_enabled=True,        # relay via an intermediate UAV
+                 # ---- scenario knobs ----------------------------------------------------
+                 initial_battery_range=(100.0, 100.0),   # per-UAV start charge ~ U(lo, hi) [%]
+                 battery_noise_std=0.0,        # std-dev of battery *measurement* noise [% points]
+                 replan_interval=5.0,          # seconds between EW-CVT replans
+                 tau_epsilon_ratio=0.02, tau_delta=5.0,
+                 out_dir=".", write_logs=True, verbose=True, detector=None):
+
         random.seed(seed)
+        self.seed = seed
+        self.rng = random.Random(seed + 1337)
         self.arena_size = arena_size
         self.grid_dim = grid_dim
         self.num_drones = num_drones
         self.conf_thresh = conf_thresh
+        self.model_path = model_path
         self.sim_speed_multiplier = sim_speed_multiplier
         self.ewcvt_alpha = float(ewcvt_alpha)
+        self.hysteresis_enabled = hysteresis_enabled
+        self.failover_enabled = failover_enabled
+        self.dynamic_repartition = dynamic_repartition
+        self.dtn_enabled = dtn_enabled
+        self.multihop_enabled = multihop_enabled
+        self.initial_battery_range = initial_battery_range
+        self.battery_noise_std = float(battery_noise_std)
+        self.replan_interval = float(replan_interval)
+        self.tau_epsilon_ratio = tau_epsilon_ratio
+        self.tau_delta = tau_delta
+        self.out_dir = out_dir
+        self.write_logs = write_logs
+        self.verbose = verbose
+        self._detector = detector
+        if write_logs or out_dir != ".":
+            os.makedirs(out_dir, exist_ok=True)
 
-        # Unified Ground Control Station (GCS) / Base Station Staging Area (Default: South-West Corner at 5% of arena)
         bx = float(base_x) if base_x is not None else round(arena_size * 0.05, 1)
         by = float(base_y) if base_y is not None else round(arena_size * 0.05, 1)
         self.base_station = [bx, by]
+        self.gcs_loc = {'lat': by / 1.113195e5, 'lon': bx / 1.113195e5}
 
         self.fail_drone_id = int(fail_drone_id) if fail_drone_id is not None and str(fail_drone_id) != "None" else None
         self.fail_time = float(fail_time) if fail_time is not None else None
         self.failure_triggered = False
         self.failed_uav_info = None
 
-        print("\n" + "=" * 65)
-        print("INITIALIZING AUTONOMOUS SWARM SAR SIMULATION")
-        print(f"Swarm Size: {num_drones} UAVs | Arena: {arena_size}m x {arena_size}m ({grid_dim}x{grid_dim} sectors)")
-        print(f"Base Station Launch Pad: X={self.base_station[0]}m, Y={self.base_station[1]}m")
-        print(f"Detector Weights: {model_path} (Conf Threshold: {conf_thresh})")
-        mode_str = "Standard Unweighted CVT (alpha=0.0)" if self.ewcvt_alpha == 0.0 else f"Energy-Weighted CVT (alpha={self.ewcvt_alpha})"
-        print(f"Partitioning Metric: {mode_str}")
-        if self.fail_drone_id is not None:
-            print(f"Injected Failure: UAV {self.fail_drone_id} will fail at T={self.fail_time}s")
-        print("=" * 65)
+        if verbose:
+            print("\n" + "=" * 65)
+            print("INITIALIZING AUTONOMOUS SWARM SAR SIMULATION")
+            print(f"Swarm Size: {num_drones} UAVs | Arena: {arena_size}m x {arena_size}m ({grid_dim}x{grid_dim} sectors)")
+            print(f"Base Station Launch Pad: X={self.base_station[0]}m, Y={self.base_station[1]}m")
+            print(f"Detector Weights: {model_path} (Conf Threshold: {conf_thresh})")
+            mode_str = "Standard Unweighted CVT (alpha=0.0)" if self.ewcvt_alpha == 0.0 else f"Energy-Weighted CVT (alpha={self.ewcvt_alpha})"
+            print(f"Partitioning Metric: {mode_str}")
+            print(f"Switches: hysteresis={hysteresis_enabled} failover={failover_enabled} dynamic={dynamic_repartition} "
+                  f"dtn={dtn_enabled} multihop={multihop_enabled}")
+            if self.fail_drone_id is not None:
+                print(f"Injected Failure: UAV {self.fail_drone_id} will fail at T={self.fail_time}s")
+            print("=" * 65)
 
-        # 1. Initialize In-Memory World
+        # 1. World
         self.world = SARWorld(arena_width=arena_size, arena_height=arena_size,
                               grid_cols=grid_dim, grid_rows=grid_dim, seed=seed)
         self.world.base_station = self.base_station
-        self.world.save_ground_truth("ground_truth_world.json")
+        self.ground_truth_path = os.path.join(out_dir, "ground_truth_world.json")
+        if write_logs:
+            self.world.save_ground_truth(self.ground_truth_path)
 
-        # 2. Initialize Multispectral Vision Detector
-        self.detector = RGBTDetector(model_path=model_path, conf_thresh=conf_thresh, device="cpu")
-
-        # 3. Initialize RF Physics Engine (Adaptive for Wide-Area Operations)
+        # 2. RF physics
         if arena_size >= 2000.0:
-            # Multi-kilometer tactical UAV radio (2.4GHz C2 mesh / 2W transmit power)
             self.physics_engine = swarm_network.RFPhysicsEngine(tx_power_dbm=33, frequency_ghz=2.4)
         else:
             self.physics_engine = swarm_network.RFPhysicsEngine(tx_power_dbm=30, frequency_ghz=5)
 
-        # 4. Partition World Sectors across Swarm
+        # 3. Swarm state
+        self.owner = {}        # sector_id -> uav_id (current owner of every unscanned sector)
+        self.stats_control = {"replan_ticks": 0, "sector_flips": 0, "failover_reassigned": 0,
+                              "route_changes": 0, "commits": 0, "rtl_aborts": 0, "energy_crashes": 0}
         self.drones = self._spawn_drones()
 
-        # 5. Output Data Logs
-        self.vision_log_file = "metrics_vision.csv"
-        self.network_log_file = "metrics_network.csv"
-        self.mission_log_file = "metrics_mission.csv"
-        self._init_csv_logs()
+        # 4. Logs
+        self.vision_log_file = os.path.join(out_dir, "metrics_vision.csv")
+        self.network_log_file = os.path.join(out_dir, "metrics_network.csv")
+        self.mission_log_file = os.path.join(out_dir, "metrics_mission.csv")
+        if write_logs:
+            self._init_csv_logs()
 
         self.sim_time = 0.0
+        self._next_replan = self.replan_interval
         self.msg_counter = 0
-        self.scan_cooldown = {d.uav_id: 0.0 for d in self.drones}
         self.ttfd = None
         self.first_victim_id = None
         self.obstacle_mask = True
         self.all_reported_targets = []
-        self.network_stats = {"sent": 0, "delivered": 0, "dropped": 0, "buffered": 0}
+        self._reported_target_keys = set()
+        self.gcs_known = {}         # target_key -> sim time the GCS (operator) first learned of it
+        self.sector_scan_time = {}  # sector_id -> first scan time
+        self.last_consensus = 0.0
+        self.timeseries = []
+        self.makespan = None
+        self.network_stats = {"sent": 0, "delivered": 0, "dropped": 0, "buffered": 0,
+                              "delivered_late": 0, "lost": 0, "gcs_sent": 0, "gcs_delivered": 0}
 
+    # ------------------------------------------------------------------ detector
+    @property
+    def detector(self):
+        if self._detector is None:
+            self._detector = RGBTDetector(model_path=self.model_path, conf_thresh=self.conf_thresh, device="cpu")
+        return self._detector
+
+    def _detect(self, img_path):
+        key = (os.path.basename(self.model_path), img_path, round(float(self.conf_thresh), 4))
+        hit = _DET_CACHE.get(key)
+        if hit is None:
+            t0 = time.time()
+            dets, frame = self.detector.detect(img_path, conf=self.conf_thresh)
+            hit = {"dets": dets, "h": int(frame.shape[0]), "w": int(frame.shape[1]),
+                   "lat": (time.time() - t0) * 1000}
+            _DET_CACHE[key] = hit
+        return hit
+
+    # ------------------------------------------------------------------ logs
     def _init_csv_logs(self):
         with open(self.vision_log_file, "w", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow(["sim_time", "uav_id", "sector_id", "image_file", "targets_found", "class_name", "conf", "world_x", "world_y", "latency_ms"])
-
+            csv.writer(f).writerow(["sim_time", "uav_id", "sector_id", "image_file", "targets_found", "class_name", "conf", "world_x", "world_y", "latency_ms"])
         with open(self.network_log_file, "w", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow(["sim_time", "src_uav", "dst_uav", "topic", "msg_id", "distance_m", "snr_db", "per", "delivered", "buffered"])
-
+            csv.writer(f).writerow(["sim_time", "src_uav", "dst_uav", "topic", "msg_id", "distance_m", "snr_db", "per", "delivered", "buffered"])
         with open(self.mission_log_file, "w", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow(["sim_time", "area_covered_pct", "unique_targets_found", "total_alert_broadcasts", "avg_consensus_ratio", "min_peer_dist_m"])
+            csv.writer(f).writerow(["sim_time", "area_covered_pct", "unique_targets_found", "total_alert_broadcasts", "avg_consensus_ratio", "min_peer_dist_m"])
+
+    def _log(self, path, row):
+        if self.write_logs:
+            with open(path, "a", newline="") as f:
+                csv.writer(f).writerow(row)
+
+    # ------------------------------------------------------------------ partitioning
+    def _anchors(self):
+        n, a = self.num_drones, self.arena_size
+        if n == 1:
+            return np.array([[a / 2.0, a / 2.0]])
+        if n <= 4:
+            off = a * 0.25
+            return np.array([[off, off], [a - off, off], [off, a - off], [a - off, a - off]])[:n]
+        c, r = a / 2.0, a * 0.35
+        ang = np.linspace(0, 2 * np.pi, n, endpoint=False)
+        return np.array([[c + r * np.cos(t), c + r * np.sin(t)] for t in ang])
+
+    def _assign_by_power_distance(self, sector_ids, gens, weights):
+        """owner[s] = argmin_i ||c_s - g_i||^2 / max(0.01, w_i)."""
+        out = {}
+        for s in sector_ids:
+            cx, cy = self.world.sectors[s]["center"]
+            best, best_id = float("inf"), None
+            for uid, (gx, gy) in gens.items():
+                d = ((cx - gx) ** 2 + (cy - gy) ** 2) / max(0.01, weights[uid])
+                if d < best:
+                    best, best_id = d, uid
+            out[s] = best_id
+        return out
+
+    def _build_route(self, drone):
+        """Greedy nearest-neighbour tour over the UAV's pending sectors, then return to its pad."""
+        remaining = list(drone.pending)
+        cx, cy = drone.x, drone.y
+        wps = []
+        while remaining:
+            s = min(remaining, key=lambda k: math.hypot(cx - self.world.sectors[k]["center"][0],
+                                                        cy - self.world.sectors[k]["center"][1]))
+            remaining.remove(s)
+            cx, cy = self.world.sectors[s]["center"]
+            wps.append((cx, cy))
+        wps.append((drone.home_x, drone.home_y))
+        drone.set_waypoints(wps)
 
     def _spawn_drones(self):
-        drones = []
-        grid_dim = self.grid_dim
-        arena_size = self.arena_size
+        n, a = self.num_drones, self.arena_size
         base_x, base_y = self.base_station
+        lo, hi = self.initial_battery_range
+        batteries = [self.rng.uniform(lo, hi) if hi > lo else float(lo) for _ in range(n)]
 
-        # 1. Geographic Centroid Partitioning (Contiguous Zones - Eliminates Trajectory Crisscrossing)
-        if self.num_drones == 1:
-            anchors = np.array([[arena_size / 2.0, arena_size / 2.0]])
-        elif self.num_drones <= 4:
-            offset = arena_size * 0.25
-            anchors = np.array([
-                [offset, offset],
-                [arena_size - offset, offset],
-                [offset, arena_size - offset],
-                [arena_size - offset, arena_size - offset]
-            ])[:self.num_drones]
-        else:
-            center = arena_size / 2.0
-            radius = arena_size * 0.35
-            angles = np.linspace(0, 2 * np.pi, self.num_drones, endpoint=False)
-            anchors = np.array([[center + radius * np.cos(a), center + radius * np.sin(a)] for a in angles])
+        # Initial EW-CVT: Lloyd iterations from the anchor generators with launch-time weights.
+        ids = [str(i) for i in range(n)]
+        w0 = {ids[i]: (batteries[i] / 100.0) ** self.ewcvt_alpha for i in range(n)}
+        gens = {ids[i]: (float(x), float(y)) for i, (x, y) in enumerate(self._anchors())}
+        for _ in range(15):
+            gens = compute_ew_cvt_centroids(gens, w0, a, a, grid_res=CVT_GRID_RES)
+        owner = self._assign_by_power_distance(list(self.world.sectors.keys()), gens, w0)
+        self.owner = dict(owner)
+        sectors_per = defaultdict(list)
+        for s, uid in owner.items():
+            sectors_per[uid].append(s)
 
-        # Assign each sector to the geographically nearest drone anchor
-        sectors_per_drone = defaultdict(list)
-        for s_id, sec in self.world.sectors.items():
-            cx, cy = sec["center"]
-            dists = [np.hypot(cx - ax, cy - ay) for ax, ay in anchors]
-            best_uav = int(np.argmin(dists))
-            sectors_per_drone[best_uav].append(s_id)
+        transit_speed = min(50.0, 18.0 * max(1.0, a / 600.0))
+        search_speed = min(32.0, 12.0 * max(1.0, a / 800.0))
 
-        # Ensure every drone has at least one sector
-        all_assigned = set()
-        for sec_list in sectors_per_drone.values():
-            all_assigned.update(sec_list)
-        unassigned = [s for s in range(grid_dim * grid_dim) if s not in all_assigned]
-        for s in unassigned:
-            min_uav = min(range(self.num_drones), key=lambda u: len(sectors_per_drone[u]))
-            sectors_per_drone[min_uav].append(s)
-
-        # High-speed transit dash to assigned sectors (up to 50 m/s for wide arenas)
-        transit_speed = min(50.0, 18.0 * max(1.0, arena_size / 600.0))
-        # Optimal optical sensor search cruise speed (up to 32 m/s)
-        search_speed = min(32.0, 12.0 * max(1.0, arena_size / 800.0))
-
-        initial_topology = [str(i) for i in range(self.num_drones)]
-
-        for uav_idx in range(self.num_drones):
-            assigned = sectors_per_drone[uav_idx]
-            if not assigned:
-                assigned = [uav_idx % (grid_dim * grid_dim)]
-
-            # All drones originate from the unified Ground Control Station (GCS) launch pad
-            # Compact staggered grid (12m separation) on launch pad to model distinct launch positions
-            pad_cols = 5
-            start_x = base_x + (uav_idx % pad_cols) * 12.0
-            start_y = base_y + (uav_idx // pad_cols) * 12.0
-
-            drone = SimulatedUAV(uav_id=uav_idx, start_x=start_x, start_y=start_y,
-                                 altitude=25.0, transit_speed=transit_speed, search_speed=search_speed,
-                                 assigned_sectors=assigned, physics_engine=self.physics_engine,
-                                 initial_topology=initial_topology, ewcvt_alpha=self.ewcvt_alpha)
-
-            # Order waypoints using greedy nearest-neighbor from the Base Station outward
-            remaining = list(assigned)
-            curr_x, curr_y = start_x, start_y
-            waypoints = []
-            while remaining:
-                best_s = min(remaining, key=lambda s: np.hypot(curr_x - self.world.sectors[s]["center"][0],
-                                                               curr_y - self.world.sectors[s]["center"][1]))
-                remaining.remove(best_s)
-                sec_center = self.world.sectors[best_s]["center"]
-                waypoints.append((sec_center[0], sec_center[1]))
-                curr_x, curr_y = sec_center
-
-            # Return-to-Base (RTL) back to the drone's individual launch pad at Base Station
-            waypoints.append((start_x, start_y))
-            drone.set_waypoints(waypoints)
-
-            # Set up P2P DMLT subscriptions with peers
-            for peer_idx in range(self.num_drones):
-                if peer_idx != uav_idx:
-                    drone.broker.update_neighbor_subscription(str(peer_idx), set(["telemetry", "target_alert"]))
-
-            drones.append(drone)
-
+        drones = []
+        for i in range(n):
+            start_x = base_x + (i % 5) * 12.0
+            start_y = base_y + (i // 5) * 12.0
+            d = SimulatedUAV(uav_id=i, start_x=start_x, start_y=start_y, altitude=25.0,
+                             transit_speed=transit_speed, search_speed=search_speed,
+                             assigned_sectors=sectors_per[ids[i]], physics_engine=self.physics_engine,
+                             initial_topology=ids, ewcvt_alpha=self.ewcvt_alpha,
+                             initial_battery=batteries[i], tau_epsilon_ratio=self.tau_epsilon_ratio,
+                             tau_delta=self.tau_delta)
+            d.reset_hysteresis(gens[ids[i]], ids)     # baseline = converged EW-CVT generator
+            d.weight = w0[ids[i]]
+            self._build_route(d)
+            for j in range(n):
+                if j != i:
+                    d.broker.update_neighbor_subscription(str(j), set(["telemetry", "target_alert"]))
+            drones.append(d)
         return drones
+
+    def _replan(self, reason="periodic"):
+        """One EW-CVT control tick (see module docstring)."""
+        alive = [d for d in self.drones if d.is_alive and not d.rtl]
+        flying = [d for d in alive if d.state != "LANDED"]
+        if not flying:
+            return
+        self.stats_control["replan_ticks"] += 1
+        alive_ids = tuple(sorted(d.uav_id for d in alive))
+
+        for d in flying:
+            d.b_meas = max(0.0, min(100.0, d.battery + self.rng.gauss(0.0, self.battery_noise_std)))
+        fresh_w = {d.uav_id: (d.b_meas / d.battery_max) ** self.ewcvt_alpha for d in flying}
+        gens = {d.uav_id: d.gen for d in flying}
+        c_star = compute_ew_cvt_centroids(gens, fresh_w, self.arena_size, self.arena_size, grid_res=CVT_GRID_RES)
+
+        for d in flying:
+            if self.hysteresis_enabled:
+                res = d.hysteresis.evaluate(self.sim_time, d.b_meas, c_star[d.uav_id], alive_ids, d.speed)
+                if res["trigger_u_t"]:
+                    self.stats_control["commits"] += 1
+                d.gen = tuple(res["commanded_pos"])
+                d.weight = res["effective_weight"]
+            else:
+                d.gen = tuple(c_star[d.uav_id])
+                d.weight = fresh_w[d.uav_id]
+                self.stats_control["commits"] += 1
+
+        scanned = set().union(*[x.scanned_sectors for x in self.drones])
+        dead_ids = {d.uav_id for d in self.drones if (not d.is_alive) or d.rtl}
+        pool = [s for s in self.world.sectors if s not in scanned]
+        if not self.failover_enabled:
+            pool = [s for s in pool if self.owner.get(s) not in dead_ids]   # lost sectors stay lost
+        new_owner = self._assign_by_power_distance(pool, {d.uav_id: d.gen for d in flying},
+                                                   {d.uav_id: d.weight for d in flying})
+        for s in pool:
+            old, new = self.owner.get(s), new_owner[s]
+            if old != new:
+                if old in dead_ids:
+                    self.stats_control["failover_reassigned"] += 1
+                elif old is not None:
+                    self.stats_control["sector_flips"] += 1
+        self.owner.update(new_owner)
+
+        for d in flying:
+            pend = [s for s in pool if new_owner[s] == d.uav_id]
+            if set(pend) != set(d.pending):
+                d.pending = pend
+                d.assigned_sectors = sorted(set(d.scanned_sectors) | set(pend))
+                d.route_changes += 1
+                self.stats_control["route_changes"] += 1
+                self._build_route(d)
+
+    # ------------------------------------------------------------------ networking
+    def _try_deliver(self, src, dst_id, dst_loc):
+        pe = self.physics_engine
+        my_loc = src.get_location_dict()
+        dist_m = pe.calculate_euclidean_distance(my_loc, dst_loc)
+        snr, per = pe.calculate_snr_per(my_loc, dst_loc, self.obstacle_mask)
+        delivered = (random.random() >= per)
+        if not delivered and self.multihop_enabled:
+            for relay in self.drones:
+                if not relay.is_alive or relay.uav_id in (src.uav_id, dst_id):
+                    continue
+                rl = relay.get_location_dict()
+                d1 = pe.calculate_euclidean_distance(my_loc, rl)
+                d2 = pe.calculate_euclidean_distance(rl, dst_loc)
+                if d1 < dist_m and d2 < dist_m:
+                    _, p1 = pe.calculate_snr_per(my_loc, rl, self.obstacle_mask)
+                    _, p2 = pe.calculate_snr_per(rl, dst_loc, self.obstacle_mask)
+                    if (random.random() >= p1) and (random.random() >= p2):
+                        delivered = True
+                        break
+        return delivered, dist_m, snr, per
+
+    def _broadcast_alert(self, drone, target_key, det, wx, wy):
+        msg_id = f"ALERT_U{drone.uav_id}_{self.msg_counter}"
+        self.msg_counter += 1
+        payload = f"{target_key}:{det['class_name']}:{det['conf']}:{wx}:{wy}"
+        record = drone.discovered_targets[target_key]
+        peers = [p for p in self.drones if p.uav_id != drone.uav_id and p.is_alive]
+        recipients = [(p.uav_id, p.get_location_dict(), p) for p in peers] + [(GCS_ID, self.gcs_loc, None)]
+        for rid, rloc, peer in recipients:
+            is_gcs = peer is None
+            self.network_stats["gcs_sent" if is_gcs else "sent"] += 1
+            delivered, dist_m, snr, per = self._try_deliver(drone, rid, rloc)
+            buffered = (not delivered) and self.dtn_enabled
+            if delivered:
+                self.network_stats["gcs_delivered" if is_gcs else "delivered"] += 1
+                if is_gcs:
+                    self.gcs_known.setdefault(target_key, self.sim_time)
+                else:
+                    peer.consensus_registry[target_key] = record
+            else:
+                if not is_gcs:
+                    self.network_stats["dropped"] += 1
+                if buffered:
+                    if not is_gcs:
+                        self.network_stats["buffered"] += 1
+                    drone.broker.qos1_buffers[rid].append({"topic": "target_alert", "payload": payload,
+                                                           "message_id": msg_id, "timestamp": self.sim_time})
+                else:
+                    self.network_stats["lost"] += 1
+            self._log(self.network_log_file, [round(self.sim_time, 2), drone.uav_id, rid, "target_alert", msg_id,
+                                              round(dist_m, 2), round(snr, 2), round(per, 3), int(delivered), int(buffered)])
+
+    def _flush_buffers(self, swarm_locations):
+        locs = dict(swarm_locations)
+        locs[GCS_ID] = self.gcs_loc
+        for drone in self.drones:
+            if not drone.is_alive:
+                continue
+            flushed = drone.broker.flush_buffers_detailed(drone.get_location_dict(), locs, self.obstacle_mask)
+            for nid, msgs in flushed.items():
+                for m in msgs:
+                    key = m["payload"].split(":")[0]
+                    rec = drone.discovered_targets.get(key)
+                    if rec is None:
+                        continue
+                    self.network_stats["delivered_late"] += 1
+                    if nid == GCS_ID:
+                        self.gcs_known.setdefault(key, self.sim_time)
+                    else:
+                        peer = next((d for d in self.drones if d.uav_id == nid and d.is_alive), None)
+                        if peer is not None:
+                            peer.consensus_registry[key] = rec
+
+    # ------------------------------------------------------------------ vision
+    def _scan_sector(self, drone, sec):
+        sid = sec["sector_id"]
+        drone.scanned_sectors.add(sid)
+        if sid in drone.pending:
+            drone.pending.remove(sid)
+        self.sector_scan_time.setdefault(sid, self.sim_time)
+
+        hit = self._detect(sec["image_path"])
+        detections, img_w, img_h = hit["dets"], float(hit["w"]), float(hit["h"])
+        xmin, xmax, ymin, ymax = sec["bounds"]
+        for det in detections:
+            if self.ttfd is None:
+                self.ttfd = round(self.sim_time, 2)
+                if self.verbose:
+                    print(f"[TTFD] First target at {self.ttfd}s by UAV {drone.uav_id}")
+            x1, y1, x2, y2 = det["box"]
+            wx = round(xmin + (((x1 + x2) / 2.0) / img_w) * (xmax - xmin), 2)
+            wy = round(ymin + (((y1 + y2) / 2.0) / img_h) * (ymax - ymin), 2)
+            key = f"TGT_{sid}_{round(wx, 1)}_{round(wy, 1)}"
+            self._log(self.vision_log_file, [round(self.sim_time, 2), drone.uav_id, sid,
+                                             os.path.basename(sec["image_path"]), len(detections), det["class_name"],
+                                             det["conf"], wx, wy, round(hit["lat"], 2)])
+            if key not in drone.discovered_targets:
+                drone.discovered_targets[key] = {
+                    "target_key": key, "class_name": det["class_name"], "conf": det["conf"],
+                    "world_x": wx, "world_y": wy, "sector_id": sid,
+                    "detected_by": drone.uav_id, "time": round(self.sim_time, 2)}
+                # Swarm-wide dedup: several UAVs can discover the same victim; the mission-level
+                # report lists each unique target once.
+                if key not in self._reported_target_keys:
+                    self._reported_target_keys.add(key)
+                    self.all_reported_targets.append(drone.discovered_targets[key])
+                self._broadcast_alert(drone, key, det, wx, wy)
+
+    # ------------------------------------------------------------------ main loop
+    def _kill(self, dead, injected=True):
+        """UAV loss (injected motor failure, or battery depletion)."""
+        dead.is_alive = False
+        dead.state = "CRASHED"
+        dead.crash_pos = (round(dead.x, 2), round(dead.y, 2))
+        abandoned = list(dead.pending)
+        if injected:
+            self.failed_uav_info = {"uav_id": dead.uav_id, "crash_pos": dead.crash_pos,
+                                    "time": round(self.sim_time, 2), "abandoned_sectors": abandoned}
+        else:
+            self.stats_control["energy_crashes"] += 1
+        if self.verbose:
+            print("\n" + "=" * 55)
+            print(f"[{'FAILURE EVENT' if injected else 'BATTERY DEPLETED'}] UAV {dead.uav_id} lost at T={self.sim_time:.1f}s")
+            print(f"Crash location: ({dead.crash_pos[0]:.1f}m, {dead.crash_pos[1]:.1f}m)")
+            print(f"Abandoned sectors: {abandoned} | failover={'ON' if self.failover_enabled else 'OFF'}")
+            print("=" * 55 + "\n")
+        dead.pending = []
+        if self.failover_enabled:
+            self._replan("failover")     # topology change => controllers take a forced override
+
+    def _trigger_failure(self):
+        self.failure_triggered = True
+        dead = next((d for d in self.drones if str(d.uav_id) == str(self.fail_drone_id)), None)
+        if dead and dead.is_alive:
+            self._kill(dead, injected=True)
+
+    def _check_energy(self, drone):
+        """Reserve rule: at <=15% a UAV aborts and returns to base; at 0% it is lost."""
+        if drone.battery <= 0.0:
+            self._kill(drone, injected=False)
+            return
+        if not drone.rtl and drone.state != "LANDED" and drone.battery <= BATTERY_RESERVE_PCT:
+            drone.rtl = True
+            self.stats_control["rtl_aborts"] += 1
+            drone.pending = []
+            self._build_route(drone)     # route = [home]
+            if self.failover_enabled:
+                self._replan("low_battery")
 
     def step(self, dt=1.0):
         self.sim_time += dt
         all_done = True
 
-        # 0. Check for simulated drone failure mid-mission
         if self.fail_drone_id is not None and not self.failure_triggered and self.sim_time >= self.fail_time:
-            self.failure_triggered = True
-            dead_drone = next((d for d in self.drones if str(d.uav_id) == str(self.fail_drone_id)), None)
-            if dead_drone and dead_drone.is_alive:
-                dead_drone.is_alive = False
-                dead_drone.crash_pos = (round(dead_drone.x, 2), round(dead_drone.y, 2))
-                abandoned = [s for s in dead_drone.assigned_sectors if s not in dead_drone.scanned_sectors]
-                self.failed_uav_info = {
-                    "uav_id": dead_drone.uav_id,
-                    "crash_pos": dead_drone.crash_pos,
-                    "time": round(self.sim_time, 2),
-                    "abandoned_sectors": abandoned
-                }
-                print("\n" + "=" * 55)
-                print(f"[FAILURE EVENT] Motor failure on UAV {dead_drone.uav_id} at T={self.sim_time:.1f}s")
-                print(f"Crash location: ({dead_drone.crash_pos[0]:.1f}m, {dead_drone.crash_pos[1]:.1f}m)")
-                print(f"Reassigning remaining sectors: {abandoned}")
+            self._trigger_failure()
 
-                # Autonomous Swarm Failover: Reallocate abandoned sectors using EW-CVT power distance
-                active_peers = [d for d in self.drones if d.is_alive]
-                if abandoned and active_peers:
-                    for s_id in abandoned:
-                        sec_center = self.world.sectors[s_id]["center"]
-                        # In standard CVT (alpha=0), nearest peer is picked by Euclidean distance.
-                        # In EW-CVT (alpha > 0), nearest peer is picked by power distance weighted by remaining battery!
-                        def peer_allocation_cost(peer):
-                            dist_sq = (peer.x - sec_center[0])**2 + (peer.y - sec_center[1])**2
-                            if self.ewcvt_alpha == 0.0:
-                                return dist_sq
-                            weight = max(0.01, (peer.battery / peer.battery_max) ** self.ewcvt_alpha)
-                            return dist_sq / weight
+        if self.dynamic_repartition and self.sim_time >= self._next_replan:
+            self._next_replan += self.replan_interval
+            self._replan("periodic")
 
-                        nearest_peer = min(active_peers, key=peer_allocation_cost)
-                        nearest_peer.assigned_sectors.append(s_id)
-                        # Insert new sector waypoint before the final return-to-base waypoint
-                        if len(nearest_peer.waypoints) > 1:
-                            nearest_peer.waypoints.insert(-1, (sec_center[0], sec_center[1]))
-                        else:
-                            nearest_peer.waypoints.append((sec_center[0], sec_center[1]))
-                        # Ensure peer continues navigation if it had reached end of previous route
-                        if nearest_peer.current_waypoint_idx >= len(nearest_peer.waypoints) - 1:
-                            nearest_peer.current_waypoint_idx = max(0, len(nearest_peer.waypoints) - 2)
-                            nearest_peer.state = "SEARCHING"
-                        print(f"Sector {s_id} reassigned to UAV {nearest_peer.uav_id} (Battery: {nearest_peer.battery:.1f}%)")
-                print("=" * 55 + "\n")
-
-        # 1. Update UAV spatial positions with active network topology
-        active_topology = [d.uav_id for d in self.drones if d.is_alive]
         swarm_locations = {d.uav_id: d.get_location_dict() for d in self.drones if d.is_alive}
-
         for drone in self.drones:
             if not drone.is_alive:
                 continue
-
-            done = drone.update_position(dt, current_time=self.sim_time, active_topology=active_topology)
-            if not done:
+            self._check_energy(drone)
+            if not drone.is_alive:
+                continue
+            if not drone.update_position(dt, current_time=self.sim_time):
                 all_done = False
+            if drone.arrived_at_sector:
+                drone.arrived_at_sector = False
+                sec = self.world.get_sector_at(drone.x, drone.y)
+                if sec is not None:
+                    self._scan_sector(drone, sec)
 
-            # 2. Check current sector & execute vision scan
-            sec = self.world.get_sector_at(drone.x, drone.y)
-            if sec is not None:
-                # Switch to SEARCHING mode when drone arrives in its assigned patrol territory
-                if sec["sector_id"] in drone.assigned_sectors:
-                    drone.state = "SEARCHING"
+        self._flush_buffers(swarm_locations)
 
-                # Only scan if drone is in SEARCHING state (prevents scanning during high-speed transit from base)
-                if drone.state == "SEARCHING":
-                    drone.scanned_sectors.add(sec["sector_id"])
-
-                    # Run camera detector at 2-second intervals per drone
-                    if self.sim_time >= self.scan_cooldown[drone.uav_id]:
-                        self.scan_cooldown[drone.uav_id] = self.sim_time + 2.0
-                        img_path = sec["image_path"]
-
-                        t0 = time.time()
-                        detections, _ = self.detector.detect(img_path, conf=self.conf_thresh)
-                        latency_ms = (time.time() - t0) * 1000
-
-                        if detections:
-                            for det in detections:
-                                # First detection in entire mission? Record TTFD
-                                if self.ttfd is None:
-                                    self.ttfd = round(self.sim_time, 2)
-                                    print(f"[TTFD] First target at {self.ttfd}s by UAV {drone.uav_id}")
-
-                                # Project normalized bbox center to world coordinates
-                                x1, y1, x2, y2 = det["box"]
-                                img_w, img_h = 640.0, 512.0
-                                xc_norm = ((x1 + x2) / 2.0) / img_w
-                                yc_norm = ((y1 + y2) / 2.0) / img_h
-
-                                xmin, xmax, ymin, ymax = sec["bounds"]
-                                det_world_x = round(xmin + xc_norm * (xmax - xmin), 2)
-                                det_world_y = round(ymin + yc_norm * (ymax - ymin), 2)
-
-                                target_key = f"TGT_{sec['sector_id']}_{round(det_world_x, 1)}_{round(det_world_y, 1)}"
-
-                                # Log vision metric
-                                with open(self.vision_log_file, "a", newline="") as f:
-                                    writer = csv.writer(f)
-                                    writer.writerow([round(self.sim_time, 2), drone.uav_id, sec["sector_id"],
-                                                     os.path.basename(img_path), len(detections), det["class_name"],
-                                                     det["conf"], det_world_x, det_world_y, round(latency_ms, 2)])
-
-                                # 3. P2P Swarm Network Publication (if newly found target)
-                                if target_key not in drone.discovered_targets:
-                                    drone.discovered_targets[target_key] = {
-                                        "target_key": target_key,
-                                        "class_name": det["class_name"],
-                                        "conf": det["conf"],
-                                        "world_x": det_world_x,
-                                        "world_y": det_world_y,
-                                        "sector_id": sec["sector_id"],
-                                        "detected_by": drone.uav_id,
-                                        "time": round(self.sim_time, 2)
-                                    }
-                                    self.all_reported_targets.append(drone.discovered_targets[target_key])
-
-                                    # Broadcast alert via EdgeBroker
-                                    msg_id = f"ALERT_U{drone.uav_id}_{self.msg_counter}"
-                                    self.msg_counter += 1
-                                    payload = f"{target_key}:{det['class_name']}:{det['conf']}:{det_world_x}:{det_world_y}"
-
-                                    active_peers = [p for p in self.drones if p.uav_id != drone.uav_id and p.is_alive]
-                                    self.network_stats["sent"] += len(active_peers)
-
-                                    # Simulate RF transmission to every active peer
-                                    for peer in active_peers:
-                                        my_loc = drone.get_location_dict()
-                                        peer_loc = peer.get_location_dict()
-                                        dist_m = self.physics_engine.calculate_euclidean_distance(my_loc, peer_loc)
-                                        snr, per = self.physics_engine.calculate_snr_per(my_loc, peer_loc, self.obstacle_mask)
-
-                                        # Direct RF transmission roll
-                                        delivered = (random.random() >= per)
-
-                                        # Multi-Hop Mesh Relay: if direct delivery fails over long distances, route via intermediate active UAV
-                                        if not delivered and len(active_peers) > 1:
-                                            for relay in active_peers:
-                                                if relay.uav_id in (drone.uav_id, peer.uav_id) or not relay.is_alive:
-                                                    continue
-                                                relay_loc = relay.get_location_dict()
-                                                d_src_relay = self.physics_engine.calculate_euclidean_distance(my_loc, relay_loc)
-                                                d_relay_dst = self.physics_engine.calculate_euclidean_distance(relay_loc, peer_loc)
-                                                if d_src_relay < dist_m and d_relay_dst < dist_m:
-                                                    _, per1 = self.physics_engine.calculate_snr_per(my_loc, relay_loc, self.obstacle_mask)
-                                                    _, per2 = self.physics_engine.calculate_snr_per(relay_loc, peer_loc, self.obstacle_mask)
-                                                    if (random.random() >= per1) and (random.random() >= per2):
-                                                        delivered = True
-                                                        break
-
-                                        buffered = not delivered
-
-                                        if delivered:
-                                            self.network_stats["delivered"] += 1
-                                            peer.consensus_registry[target_key] = drone.discovered_targets[target_key]
-                                        else:
-                                            self.network_stats["dropped"] += 1
-                                            self.network_stats["buffered"] += 1
-                                            drone.broker.qos1_buffers[peer.uav_id].append({
-                                                "topic": "target_alert",
-                                                "payload": payload,
-                                                "message_id": msg_id,
-                                                "timestamp": self.sim_time
-                                            })
-
-                                        with open(self.network_log_file, "a", newline="") as f:
-                                            writer = csv.writer(f)
-                                            writer.writerow([round(self.sim_time, 2), drone.uav_id, peer.uav_id,
-                                                             "target_alert", msg_id, round(dist_m, 2), round(snr, 2),
-                                                             round(per, 3), int(delivered), int(buffered)])
-
-        # 4. Periodic QoS 1 Buffer Flushing
-        for drone in self.drones:
-            if not drone.is_alive:
-                continue
-            flushed = drone.broker.flush_buffers(drone.get_location_dict(), swarm_locations, self.obstacle_mask)
-            for peer_id in flushed:
-                peer = next((d for d in self.drones if d.uav_id == peer_id and d.is_alive), None)
-                if peer:
-                    for t_key, t_val in drone.discovered_targets.items():
-                        peer.consensus_registry[t_key] = t_val
-
-        # 5. Mission Metrics Logging
         total_sectors = self.grid_dim * self.grid_dim
         all_scanned = set().union(*[d.scanned_sectors for d in self.drones])
         coverage_pct = round((len(all_scanned) / total_sectors) * 100.0, 1)
 
-        active_drones = [d for d in self.drones if d.is_alive]
-        all_unique_targets = set().union(*[set(d.discovered_targets.keys()) for d in self.drones])
-        if all_unique_targets and active_drones:
-            consensus_scores = []
-            for t in all_unique_targets:
-                count_knowing = sum(1 for d in active_drones if (t in d.discovered_targets or t in d.consensus_registry))
-                consensus_scores.append(count_knowing / len(active_drones))
-            avg_consensus = round(float(np.mean(consensus_scores)), 3)
+        active = [d for d in self.drones if d.is_alive]
+        uniq = set().union(*[set(d.discovered_targets.keys()) for d in self.drones])
+        if uniq and active:
+            scores = [sum(1 for d in active if (t in d.discovered_targets or t in d.consensus_registry)) / len(active)
+                      for t in uniq]
+            avg_consensus = round(float(np.mean(scores)), 3)
         else:
             avg_consensus = 0.0
+        self.last_consensus = avg_consensus
 
         min_dist = float("inf")
-        for i in range(len(active_drones)):
-            for j in range(i + 1, len(active_drones)):
-                d = math.hypot(active_drones[i].x - active_drones[j].x, active_drones[i].y - active_drones[j].y)
-                if d < min_dist:
-                    min_dist = d
+        for i in range(len(active)):
+            for j in range(i + 1, len(active)):
+                min_dist = min(min_dist, math.hypot(active[i].x - active[j].x, active[i].y - active[j].y))
         if min_dist == float("inf"):
             min_dist = 0.0
 
-        with open(self.mission_log_file, "a", newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow([round(self.sim_time, 2), coverage_pct, len(all_unique_targets),
-                             self.msg_counter, avg_consensus, round(min_dist, 2)])
+        self._log(self.mission_log_file, [round(self.sim_time, 2), coverage_pct, len(uniq),
+                                          self.msg_counter, avg_consensus, round(min_dist, 2)])
+        self.timeseries.append({"t": self.sim_time, "coverage": coverage_pct, "targets": len(uniq),
+                                "gcs_known": len(self.gcs_known), "consensus": avg_consensus})
+        if all_done and self.makespan is None:
+            self.makespan = self.sim_time
 
         return {
-            "sim_time": self.sim_time,
-            "coverage_pct": coverage_pct,
-            "targets_count": len(all_unique_targets),
-            "targets": list(self.all_reported_targets),
-            "avg_consensus": avg_consensus,
-            "active_drones": len(active_drones),
-            "drones": self.drones,
-            "base_station": self.base_station,
-            "arena_size": self.arena_size,
-            "failed_uav_info": self.failed_uav_info,
-            "all_done": all_done
+            "sim_time": self.sim_time, "coverage_pct": coverage_pct, "targets_count": len(uniq),
+            "targets": list(self.all_reported_targets), "avg_consensus": avg_consensus,
+            "active_drones": len(active), "drones": self.drones, "base_station": self.base_station,
+            "arena_size": self.arena_size, "failed_uav_info": self.failed_uav_info, "all_done": all_done
         }
 
     def run_streaming(self, max_sim_seconds=300, dt=1.0, yield_interval=8):
-        print(f"\nSTARTING SWARM SEARCH MISSION (Simulated Time: {max_sim_seconds}s, step: {dt}s)...")
+        if self.verbose:
+            print(f"\nSTARTING SWARM SEARCH MISSION (Simulated Time: {max_sim_seconds}s, step: {dt}s)...")
         last_yield_time = 0.0
         while self.sim_time < max_sim_seconds:
             snap = self.step(dt)
@@ -551,62 +670,149 @@ class SwarmSimulation:
                 last_yield_time = self.sim_time
                 yield snap
             if snap["all_done"]:
-                print(f"\nAll drones completed their search patterns at T={self.sim_time:.1f}s!")
+                if self.verbose:
+                    print(f"\nAll drones completed their search patterns at T={self.sim_time:.1f}s!")
                 break
-        self._export_mission_output()
-        # Final completed snapshot
+        if self.write_logs:
+            self._export_mission_output()
         total_sectors = self.grid_dim * self.grid_dim
         all_scanned = set().union(*[d.scanned_sectors for d in self.drones])
-        coverage_pct = round((len(all_scanned) / total_sectors) * 100.0, 1)
         yield {
             "sim_time": self.sim_time,
-            "coverage_pct": coverage_pct,
+            "coverage_pct": round((len(all_scanned) / total_sectors) * 100.0, 1),
             "targets_count": len(self.all_reported_targets),
             "targets": list(self.all_reported_targets),
-            "avg_consensus": 1.0,
+            "avg_consensus": self.last_consensus,
             "active_drones": len([d for d in self.drones if d.is_alive]),
-            "drones": self.drones,
-            "base_station": self.base_station,
-            "arena_size": self.arena_size,
-            "failed_uav_info": self.failed_uav_info,
-            "all_done": True
+            "drones": self.drones, "base_station": self.base_station, "arena_size": self.arena_size,
+            "failed_uav_info": self.failed_uav_info, "all_done": True
         }
 
     def run(self, max_sim_seconds=300, dt=1.0):
         for snap in self.run_streaming(max_sim_seconds=max_sim_seconds, dt=dt, yield_interval=20):
             print(f"[T={snap['sim_time']:.0f}s] Area Coverage: {snap['coverage_pct']}% | Targets: {snap['targets_count']} | Consensus: {snap['avg_consensus']*100:.1f}%")
 
+    # ------------------------------------------------------------------ metrics
+    def _energy_summary(self):
+        active = [d for d in self.drones if d.is_alive]
+        if not active:
+            return {}
+        b = [float(d.battery) for d in active]
+        n = len(b)
+        sb, sb2 = sum(b), sum(x * x for x in b)
+        return {
+            "alpha": self.ewcvt_alpha,
+            "mode": "Standard CVT (Unweighted)" if self.ewcvt_alpha == 0.0 else f"Energy-Weighted CVT (alpha={self.ewcvt_alpha})",
+            "jains_energy_fairness_index": round((sb ** 2) / (n * sb2), 4) if sb2 > 0 else 1.0,
+            "battery_spread_delta_pct": round(max(b) - min(b), 2),
+            "battery_std_pct": round(float(np.std(b)), 2),
+            "battery_variance_pct2": round(float(np.var(b)), 2),
+            "min_remaining_battery_pct": round(min(b), 2),
+            "max_remaining_battery_pct": round(max(b), 2),
+            "mean_remaining_battery_pct": round(float(np.mean(b)), 2),
+            "fleet_endurance_safety_margin_pct": round(min(b) - BATTERY_RESERVE_PCT, 2),
+            "active_uav_count": n,
+        }
+
+    def collect_metrics(self, match_radius_m=15.0):
+        """Single flat dict of every measured quantity (used by the ablation harness)."""
+        W = self.world
+        gt = list(W.ground_truth_victims)
+        reports = list(self.all_reported_targets)
+        scanned = set().union(*[d.scanned_sectors for d in self.drones])
+
+        def match(rep_list, gt_list):
+            pairs = []
+            for gi, g in enumerate(gt_list):
+                for ri, r in enumerate(rep_list):
+                    d = math.hypot(g["world_x"] - r["world_x"], g["world_y"] - r["world_y"])
+                    if d <= match_radius_m:
+                        pairs.append((d, gi, ri))
+            pairs.sort()
+            ug, ur, errs = set(), set(), []
+            for d, gi, ri in pairs:
+                if gi in ug or ri in ur:
+                    continue
+                ug.add(gi); ur.add(ri); errs.append(d)
+            return len(errs), errs
+
+        gt_surveyed = [g for g in gt if g["sector_id"] in scanned]
+        tp, errs = match(reports, gt)
+        fp = len(reports) - tp
+        op_reports = [r for r in reports if r["target_key"] in self.gcs_known]
+        op_tp, _ = match(op_reports, gt)
+
+        lat = [self.gcs_known[r["target_key"]] - r["time"] for r in op_reports]
+        ts = self.timeseries
+
+        def t_reach(field, thr):
+            for row in ts:
+                if row[field] >= thr:
+                    return row["t"]
+            return None
+
+        active = [d for d in self.drones if d.is_alive]
+        init_b = {d.uav_id: d.initial_battery for d in self.drones}
+        used = [init_b[d.uav_id] - d.battery for d in active]
+        en = self._energy_summary()
+        viol = sum(1 for d in active if d.battery < BATTERY_RESERVE_PCT)
+        n_total = len(gt)
+        sent_p, deliv_p = self.network_stats["sent"], self.network_stats["delivered"]
+        gs, gd = self.network_stats["gcs_sent"], self.network_stats["gcs_delivered"]
+        hys_updates = sum(d.hysteresis.updates_executed for d in self.drones)
+        forced = sum(d.hysteresis.forced_overrides for d in self.drones)
+        n_alerts = len(reports)
+        return {
+            # --- mission ---
+            "coverage_pct": round(len(scanned) / (self.grid_dim ** 2) * 100.0, 2),
+            "makespan_s": self.makespan if self.makespan is not None else self.sim_time,
+            "completed": self.makespan is not None,
+            "t_cov50_s": t_reach("coverage", 50.0), "t_cov90_s": t_reach("coverage", 90.0),
+            "t_cov100_s": t_reach("coverage", 100.0),
+            "ttfd_s": self.ttfd,
+            "total_distance_km": round(sum(d.total_distance_flown for d in self.drones) / 1000.0, 2),
+            "sectors_lost": self.grid_dim ** 2 - len(scanned),
+            # --- detection (end-to-end) ---
+            "gt_total": n_total, "reports": n_alerts, "tp": tp, "fp": fp,
+            "precision": round(tp / n_alerts, 4) if n_alerts else 0.0,
+            "recall_arena": round(tp / n_total, 4) if n_total else 0.0,
+            "recall_surveyed": round(tp / len(gt_surveyed), 4) if gt_surveyed else 0.0,
+            "f1_arena": round(2 * (tp / n_alerts) * (tp / n_total) / ((tp / n_alerts) + (tp / n_total)), 4)
+                        if tp and n_alerts and n_total else 0.0,
+            "loc_err_mean_m": round(float(np.mean(errs)), 3) if errs else None,
+            "loc_err_rmse_m": round(float(np.sqrt(np.mean(np.square(errs)))), 3) if errs else None,
+            # --- operator (GCS) view ---
+            "operator_recall": round(op_tp / n_total, 4) if n_total else 0.0,
+            "operator_known_frac": round(len(op_reports) / n_alerts, 4) if n_alerts else 0.0,
+            "alert_latency_mean_s": round(float(np.mean(lat)), 1) if lat else None,
+            "alert_latency_max_s": round(float(np.max(lat)), 1) if lat else None,
+            # --- network ---
+            "pdr_first_attempt": round(deliv_p / sent_p, 4) if sent_p else None,
+            "gcs_pdr_first_attempt": round(gd / gs, 4) if gs else None,
+            "consensus_final": self.last_consensus,
+            "msgs_sent": sent_p + gs, "msgs_lost_forever": self.network_stats["lost"],
+            "msgs_delivered_late": self.network_stats["delivered_late"],
+            # --- energy ---
+            "batt_min_pct": en.get("min_remaining_battery_pct"),
+            "batt_mean_pct": en.get("mean_remaining_battery_pct"),
+            "batt_spread_pct": en.get("battery_spread_delta_pct"),
+            "jain_fairness": en.get("jains_energy_fairness_index"),
+            "reserve_violations": viol,
+            "energy_used_mean_pct": round(float(np.mean(used)), 2) if used else None,
+            "energy_used_max_pct": round(float(np.max(used)), 2) if used else None,
+            # --- control stability ---
+            "replan_ticks": self.stats_control["replan_ticks"],
+            "partition_commits": self.stats_control["commits"],
+            "sector_flips": self.stats_control["sector_flips"],
+            "route_changes": self.stats_control["route_changes"],
+            "failover_reassigned": self.stats_control["failover_reassigned"],
+            "hysteresis_updates": hys_updates, "forced_overrides": forced,
+            "uavs_lost": len(self.drones) - len(active),
+            "rtl_aborts": self.stats_control["rtl_aborts"], "energy_crashes": self.stats_control["energy_crashes"],
+        }
+
     def _export_mission_output(self):
-        active_drones = [d for d in self.drones if d.is_alive]
-        if active_drones:
-            batteries = [float(d.battery) for d in active_drones]
-            n_act = len(batteries)
-            mean_b = float(np.mean(batteries))
-            std_b = float(np.std(batteries))
-            var_b = float(np.var(batteries))
-            min_b = float(np.min(batteries))
-            max_b = float(np.max(batteries))
-            spread_b = round(max_b - min_b, 2)
-            sum_b = sum(batteries)
-            sum_b_sq = sum(b * b for b in batteries)
-            jains_fairness = round(float((sum_b ** 2) / (n_act * sum_b_sq)), 4) if sum_b_sq > 0 else 1.0
-
-            ewcvt_summary = {
-                "alpha": self.ewcvt_alpha,
-                "mode": "Standard CVT (Unweighted)" if self.ewcvt_alpha == 0.0 else f"Energy-Weighted CVT (alpha={self.ewcvt_alpha})",
-                "jains_energy_fairness_index": jains_fairness,
-                "battery_spread_delta_pct": spread_b,
-                "battery_std_pct": round(std_b, 2),
-                "battery_variance_pct2": round(var_b, 2),
-                "min_remaining_battery_pct": round(min_b, 2),
-                "max_remaining_battery_pct": round(max_b, 2),
-                "mean_remaining_battery_pct": round(mean_b, 2),
-                "fleet_endurance_safety_margin_pct": round(min_b - 15.0, 2),
-                "active_uav_count": n_act
-            }
-        else:
-            ewcvt_summary = {}
-
+        ewcvt_summary = self._energy_summary()
         output = {
             "mission_duration_sec": round(self.sim_time, 2),
             "ttfd_sec": self.ttfd,
@@ -617,18 +823,18 @@ class SwarmSimulation:
             "base_station": self.base_station,
             "failed_uav_info": self.failed_uav_info,
             "network_stats": self.network_stats,
+            "control_stats": self.stats_control,
             "drones": [
                 {
-                    "uav_id": d.uav_id,
-                    "is_alive": d.is_alive,
-                    "crash_pos": d.crash_pos,
+                    "uav_id": d.uav_id, "is_alive": d.is_alive, "crash_pos": d.crash_pos,
+                    "initial_battery_pct": round(d.initial_battery, 2),
                     "remaining_battery_pct": round(d.battery, 2),
                     "total_distance_m": round(d.total_distance_flown, 2),
                     "sectors_scanned": list(d.scanned_sectors),
                     "targets_discovered_count": len(d.discovered_targets),
                     "consensus_targets_count": len(d.consensus_registry),
                     "hysteresis_metrics": d.hysteresis.get_status_summary(),
-                    "trajectory": d.trajectory_history[::5] # Subsample trajectory for compact storage
+                    "trajectory": d.trajectory_history[::5]
                 }
                 for d in self.drones
             ],
@@ -639,49 +845,59 @@ class SwarmSimulation:
             },
             "reported_targets": self.all_reported_targets
         }
-
-        with open("swarm_mission_output.json", "w") as f:
+        with open(os.path.join(self.out_dir, "swarm_mission_output.json"), "w") as f:
             json.dump(output, f, indent=2)
 
-        print("\n" + "=" * 65)
-        print("MISSION COMPLETED & EXPORTED")
-        print(f"Summary saved to: swarm_mission_output.json")
-        if ewcvt_summary:
+        if self.verbose:
+            print("\n" + "=" * 65)
+            print("MISSION COMPLETED & EXPORTED")
+            print(f"Summary saved to: {os.path.join(self.out_dir, 'swarm_mission_output.json')}")
+            if ewcvt_summary:
+                print("=" * 65)
+                print("EW-CVT ENERGY BALANCE & WORKLOAD EQUILIBRIUM")
+                print("=" * 65)
+                print(f"EW-CVT Metric:                  {ewcvt_summary['mode']}")
+                print(f"Jain's Energy Fairness Index:   {ewcvt_summary['jains_energy_fairness_index']:.4f} / 1.0000")
+                print(f"Fleet Battery Spread (Delta):   {ewcvt_summary['battery_spread_delta_pct']}% (Min: {ewcvt_summary['min_remaining_battery_pct']}%, Max: {ewcvt_summary['max_remaining_battery_pct']}%)")
+                print(f"Fleet Battery Std Dev (sigma):  {ewcvt_summary['battery_std_pct']}%")
+                print(f"Fleet Endurance Safety Margin:  +{ewcvt_summary['fleet_endurance_safety_margin_pct']}% (above 15% RTL reserve)")
             print("=" * 65)
-            print("EW-CVT ENERGY BALANCE & WORKLOAD EQUILIBRIUM")
-            print("=" * 65)
-            print(f"EW-CVT Metric:                  {ewcvt_summary['mode']}")
-            print(f"Jain's Energy Fairness Index:   {ewcvt_summary['jains_energy_fairness_index']:.4f} / 1.0000")
-            print(f"Fleet Battery Spread (Delta):   {ewcvt_summary['battery_spread_delta_pct']}% (Min: {ewcvt_summary['min_remaining_battery_pct']}%, Max: {ewcvt_summary['max_remaining_battery_pct']}%)")
-            print(f"Fleet Battery Std Dev (sigma):  {ewcvt_summary['battery_std_pct']}%")
-            print(f"Fleet Endurance Safety Margin:  +{ewcvt_summary['fleet_endurance_safety_margin_pct']}% (above 15% RTL reserve)")
-        print(f"Vision log:       {self.vision_log_file}")
-        print(f"Network log:      {self.network_log_file}")
-        print(f"Mission log:      {self.mission_log_file}")
-        print("=" * 65)
 
 
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Autonomous Swarm SAR Mission Simulator")
-    parser.add_argument("--drones", type=int, default=3, help="Number of drones in the swarm (default: 3)")
-    parser.add_argument("--arena", type=float, default=400.0, help="Arena width/height in meters (default: 400.0)")
-    parser.add_argument("--grid", type=int, default=5, help="Number of sector rows/cols (default: 5)")
-    parser.add_argument("--model", type=str, default="best.pt", help="Path to YOLO model weights (default: best.pt)")
-    parser.add_argument("--conf", type=float, default=0.20, help="Detection confidence threshold (default: 0.20)")
-    parser.add_argument("--duration", type=int, default=180, help="Maximum mission duration in seconds (default: 180)")
-    parser.add_argument("--step", type=float, default=1.0, help="Simulation step size in seconds (default: 1.0)")
-    parser.add_argument("--seed", type=int, default=42, help="Random seed for reproducibility (default: 42)")
-    parser.add_argument("--fail-drone", type=int, default=None, help="UAV ID to simulate mid-mission failure (default: None)")
-    parser.add_argument("--fail-time", type=float, default=45.0, help="Simulation time in seconds when drone failure occurs (default: 45.0)")
-    parser.add_argument("--base-x", type=float, default=None, help="Base Station X coordinate in meters (default: 5 percent of arena)")
-    parser.add_argument("--base-y", type=float, default=None, help="Base Station Y coordinate in meters (default: 5 percent of arena)")
+    parser.add_argument("--drones", type=int, default=3)
+    parser.add_argument("--arena", type=float, default=400.0)
+    parser.add_argument("--grid", type=int, default=5)
+    parser.add_argument("--model", type=str, default="best.pt")
+    parser.add_argument("--conf", type=float, default=0.20)
+    parser.add_argument("--duration", type=int, default=180)
+    parser.add_argument("--step", type=float, default=1.0)
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--fail-drone", type=int, default=None)
+    parser.add_argument("--fail-time", type=float, default=45.0)
+    parser.add_argument("--base-x", type=float, default=None)
+    parser.add_argument("--base-y", type=float, default=None)
     parser.add_argument("--alpha", "--ewcvt-alpha", type=float, default=1.0, dest="ewcvt_alpha",
-                        help="EW-CVT energy weighting sensitivity exponent (default: 1.0, 0.0=Standard CVT)")
+                        help="EW-CVT energy exponent (0.0 = standard CVT)")
+    parser.add_argument("--no-hysteresis", action="store_true", help="ablate the dual-threshold hysteresis gate")
+    parser.add_argument("--no-failover", action="store_true", help="ablate autonomous sector failover")
+    parser.add_argument("--static", action="store_true", help="ablate dynamic EW-CVT replanning")
+    parser.add_argument("--no-dtn", action="store_true", help="ablate store-and-forward buffering")
+    parser.add_argument("--no-multihop", action="store_true", help="ablate multi-hop relaying")
+    parser.add_argument("--batt-min", type=float, default=100.0, help="lowest initial battery %% (UAVs start U(min,100))")
+    parser.add_argument("--batt-noise", type=float, default=0.0, help="battery measurement noise std-dev (%% points)")
+    parser.add_argument("--out-dir", type=str, default=".")
     args = parser.parse_args()
 
     sim = SwarmSimulation(num_drones=args.drones, arena_size=args.arena, grid_dim=args.grid,
                           model_path=args.model, conf_thresh=args.conf, seed=args.seed,
                           fail_drone_id=args.fail_drone, fail_time=args.fail_time,
-                          base_x=args.base_x, base_y=args.base_y, ewcvt_alpha=args.ewcvt_alpha)
+                          base_x=args.base_x, base_y=args.base_y, ewcvt_alpha=args.ewcvt_alpha,
+                          hysteresis_enabled=not args.no_hysteresis, failover_enabled=not args.no_failover,
+                          dynamic_repartition=not args.static, dtn_enabled=not args.no_dtn,
+                          multihop_enabled=not args.no_multihop,
+                          initial_battery_range=(args.batt_min, 100.0), battery_noise_std=args.batt_noise,
+                          out_dir=args.out_dir)
     sim.run(max_sim_seconds=args.duration, dt=args.step)

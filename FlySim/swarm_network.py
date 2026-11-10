@@ -137,19 +137,21 @@ class EdgeBroker:
             })
             return False
 
-    def flush_buffers(self, my_loc, swarm_locations, obstacle_mask):
-        """ Attempt to synchronize buffered QoS 1 packets when link is restored. """
-        flushed_targets = []
+    def flush_buffers_detailed(self, my_loc, swarm_locations, obstacle_mask):
+        """ Like flush_buffers but returns {neighbor_id: [buffered message dicts]} (silent). """
+        flushed = {}
         for neighbor_id, buffer in list(self.qos1_buffers.items()):
             if not buffer or neighbor_id not in swarm_locations:
                 continue
-                
-            neighbor_loc = swarm_locations[neighbor_id]
-            snr, per = self.physics_engine.calculate_snr_per(my_loc, neighbor_loc, obstacle_mask)
-            
-            if per < 0.2: # Link is highly stable again
-                # Flush the queue (In integration, we return the targets to be rebroadcast)
-                flushed_targets.append(neighbor_id)
-                print(f"[{self.node_id}] FLUSHED {len(buffer)} buffered msgs to {neighbor_id}")
+            snr, per = self.physics_engine.calculate_snr_per(my_loc, swarm_locations[neighbor_id], obstacle_mask)
+            if per < 0.2:  # Link is highly stable again
+                flushed[neighbor_id] = list(buffer)
                 buffer.clear()
-        return flushed_targets
+        return flushed
+
+    def flush_buffers(self, my_loc, swarm_locations, obstacle_mask):
+        """ Attempt to synchronize buffered QoS 1 packets when link is restored. """
+        flushed = self.flush_buffers_detailed(my_loc, swarm_locations, obstacle_mask)
+        for neighbor_id, msgs in flushed.items():
+            print(f"[{self.node_id}] FLUSHED {len(msgs)} buffered msgs to {neighbor_id}")
+        return list(flushed.keys())

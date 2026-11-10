@@ -20,6 +20,7 @@ Formulation:
 """
 
 import math
+import numpy as np
 from typing import Tuple, Sequence, Optional, Dict, Any, List
 
 
@@ -51,46 +52,25 @@ def compute_ew_cvt_centroids(
         return {}
 
     node_ids = list(generators.keys())
-    pts_x = [generators[nid][0] for nid in node_ids]
-    pts_y = [generators[nid][1] for nid in node_ids]
-    w_vals = [max(0.01, float(weights.get(nid, 1.0))) for nid in node_ids]
+    pts_x = np.array([generators[nid][0] for nid in node_ids], dtype=float)
+    pts_y = np.array([generators[nid][1] for nid in node_ids], dtype=float)
+    w_vals = np.array([max(0.01, float(weights.get(nid, 1.0))) for nid in node_ids], dtype=float)
 
-    cell_x_sums = {nid: 0.0 for nid in node_ids}
-    cell_y_sums = {nid: 0.0 for nid in node_ids}
-    cell_counts = {nid: 0 for nid in node_ids}
-
-    xs = [arena_width * (i + 0.5) / grid_res for i in range(grid_res)]
-    ys = [arena_height * (j + 0.5) / grid_res for j in range(grid_res)]
-
-    for px in xs:
-        for py in ys:
-            # Find nearest generator in power distance
-            best_idx = 0
-            best_dist = float("inf")
-            for idx in range(len(node_ids)):
-                dx = px - pts_x[idx]
-                dy = py - pts_y[idx]
-                dist_sq = dx * dx + dy * dy
-                weighted_dist = dist_sq / w_vals[idx]
-                if weighted_dist < best_dist:
-                    best_dist = weighted_dist
-                    best_idx = idx
-
-            chosen_id = node_ids[best_idx]
-            cell_x_sums[chosen_id] += px
-            cell_y_sums[chosen_id] += py
-            cell_counts[chosen_id] += 1
+    xs = arena_width * (np.arange(grid_res) + 0.5) / grid_res
+    ys = arena_height * (np.arange(grid_res) + 0.5) / grid_res
+    px, py = np.meshgrid(xs, ys, indexing="ij")
+    # power distance of every sample point to every generator; argmin keeps first-minimum tie-break
+    d = ((px[..., None] - pts_x) ** 2 + (py[..., None] - pts_y) ** 2) / w_vals
+    owner = d.argmin(axis=-1)
 
     centroids = {}
-    for nid in node_ids:
-        if cell_counts[nid] > 0:
-            cx = cell_x_sums[nid] / cell_counts[nid]
-            cy = cell_y_sums[nid] / cell_counts[nid]
-            centroids[nid] = (round(cx, 2), round(cy, 2))
+    for k, nid in enumerate(node_ids):
+        mask = owner == k
+        if mask.any():
+            centroids[nid] = (round(float(px[mask].mean()), 2), round(float(py[mask].mean()), 2))
         else:
             # Fallback to generator location if cell has zero sample points
             centroids[nid] = generators[nid]
-
     return centroids
 
 
