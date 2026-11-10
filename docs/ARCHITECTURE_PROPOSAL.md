@@ -59,7 +59,7 @@ three narrow interfaces: alerts (perception to comms), a sector route (control t
 From sensor to operator, on one aircraft.
 
 ```mermaid
-flowchart LR
+flowchart TB
   subgraph SENSE["Sensing"]
     RGB["Visible camera<br/>RGB"]
     THM["Thermal camera<br/>LWIR"]
@@ -72,14 +72,17 @@ flowchart LR
   end
   subgraph NET["Comms"]
     ALERT["Alert<br/>key, class, conf, x, y"]
-    SEND["Send to peers and GCS<br/>direct, else one relay hop"]
+    SEND["Send to every UAV and the GCS<br/>one direct attempt each"]
     BUF["QoS-1 buffer<br/>per recipient"]
+    FWD["Receivers keep copies and<br/>forward on later contact"]
   end
   RGB --> FUSE
   THM --> FUSE
   FUSE --> DET --> GEO --> DEDUP --> ALERT --> SEND
   SEND -- "failed" --> BUF
   BUF -. "flush when link PER < 0.2" .-> SEND
+  SEND -- "received by a peer" --> FWD
+  FWD -. "flush to recipients that lack it" .-> SEND
 ```
 
 **Notes for accuracy:** georeferencing is a linear map from the box centre in the frame to the sector's bounds
@@ -87,28 +90,33 @@ flowchart LR
 
 ---
 
-## D3. Swarm control loop (EW-CVT + hysteresis)
+## D3. Swarm control loop (EW-CVT + hysteresis + claims), per UAV
 
-Runs every 5 s of mission time. The hysteresis gate decides whether each UAV's territory parameters change.
+Runs on **every UAV** every 5 s of mission time, from that UAV's own view only. There is no central planner. The hysteresis gate decides whether the UAV's territory parameters change.
 
 ```mermaid
 flowchart TD
-  TICK["Replan tick, every 5 s"] --> MEAS["Read battery B_i<br/>(with sensor noise)"]
+  BEACON["Peer beacons received over RF<br/>position, committed g, w, state,<br/>return ETA, claims, scanned sectors"] --> VIEW["Local view<br/>peers, claims, scanned set"]
+  TICK["Replan tick, every 5 s"] --> EXP["Expire leases:<br/>peer overdue back at base + slack<br/>=> suspected lost, claims released"]
+  VIEW --> EXP
+  EXP --> MEAS["Read own battery B_i<br/>(with sensor noise)"]
   MEAS --> WGT["Fresh weight<br/>w*_i = (B_i / Bmax)^alpha"]
-  WGT --> CENT["EW-CVT centroid C*_i of cell i<br/>power distance d = dist^2(p, g_i) / w_i"]
+  WGT --> CENT["EW-CVT centroid C*_i over peers<br/>believed active, using their<br/>advertised g and w"]
   CENT --> GATE{"Hysteresis gate<br/>(see D4)"}
   GATE -- "locked" --> KEEP["Keep committed g_i and w_i"]
   GATE -- "commit" --> NEW["g_i = C*_i,  w_i = w*_i"]
-  KEEP --> ASSIGN
-  NEW --> ASSIGN["Assign each unscanned sector to<br/>argmin of dist^2(c_s, g_i) / w_i"]
-  ASSIGN --> CHG{"UAV's pending<br/>sector set changed?"}
+  KEEP --> CLAIM
+  NEW --> CLAIM["Claim sectors:<br/>keep mine unless a better claim beats it,<br/>take free sectors I am best for,<br/>take released work only if at base,<br/>idle: nearest leftover"]
+  CLAIM --> CHG{"My claim set<br/>changed?"}
   CHG -- "yes" --> ROUTE["Rebuild route:<br/>nearest-neighbour tour, then return to pad"]
   CHG -- "no" --> FLY["Keep flying current route"]
   ROUTE --> FLY
+  FLY --> OUT["Advertise route ETA and claims<br/>in my next beacon"]
 ```
 
 **Say:** alpha = 0 gives ordinary Voronoi; larger alpha shrinks low-battery UAVs' territories.
-Because assignment uses only *committed* values, a locked gate means no ownership flips and no re-routing.
+Because claiming uses only *committed* values, a locked gate means few ownership flips and little re-routing.
+The earlier central ("oracle") planner, which computed every assignment from true global state, remains as `--planner centralized` for comparison only.
 
 ---
 
@@ -118,7 +126,7 @@ The dual-threshold rule with the topology override.
 
 ```mermaid
 flowchart TD
-  IN["Inputs: battery B_i(t), centroid C*_i(t), alive set N(t)"] --> Q1{"N(t) differs from<br/>N(t_k)?"}
+  IN["Inputs: battery B_i(t), centroid C*_i(t),<br/>this UAV's view of the live set N(t)"] --> Q1{"N(t) differs from<br/>N(t_k)?"}
   Q1 -- "yes" --> FORCE["FORCED OVERRIDE<br/>commit immediately"]
   Q1 -- "no" --> Q2{"Battery down >= 2% of Bmax<br/>since last commit?"}
   Q2 -- "no" --> LOCK["LOCK<br/>keep g_i, w_i<br/>(chattering suppressed)"]
@@ -174,13 +182,14 @@ stateDiagram-v2
   TRANSIT --> SEARCHING: first sector reached, scan
   SEARCHING --> SEARCHING: next sector reached, scan
   SEARCHING --> RETURNING: no sectors pending
-  RETURNING --> SEARCHING: failover assigns new sectors
+  RETURNING --> SEARCHING: claims new sectors before landing
   TRANSIT --> RETURNING: battery at or below 15%
   SEARCHING --> RETURNING: battery at or below 15%
   RETURNING --> LANDED: reached pad
   TRANSIT --> CRASHED: motor failure or battery 0%
   SEARCHING --> CRASHED: motor failure or battery 0%
   RETURNING --> CRASHED: motor failure or battery 0%
+  LANDED --> TRANSIT: relaunch for released work (after listening on the pad)
   LANDED --> [*]
   CRASHED --> [*]
 ```
@@ -234,6 +243,7 @@ flowchart LR
   subgraph SERVICES["Components under study"]
     DETM["rgbt_detector.py<br/>RGBTDetector"]
     CTRLM["FlySim/hysteresis_controller.py<br/>EW-CVT + dual-threshold gate"]
+    AGENT["FlySim/swarm_agent.py<br/>per-UAV view, claims, leases"]
     NETM["FlySim/swarm_network.py<br/>RF physics, EdgeBroker"]
     WORLD["sar_world.py<br/>SARWorld"]
   end
@@ -258,6 +268,7 @@ flowchart LR
   ABL --> SIM
   SIM --> DETM
   SIM --> CTRLM
+  SIM --> AGENT
   SIM --> NETM
   SIM --> WORLD
   WORLD --> FR
@@ -279,25 +290,29 @@ How each switch removes one component and which measurements change. This links 
 flowchart LR
   subgraph KNOBS["Ablation switches"]
     K1["Input masking<br/>fused / RGB only / thermal only"]
-    K2["DTN buffer on or off<br/>forwarding on or off"]
+    K2["DTN buffer on or off<br/>forwarding on or off<br/>buffer cap"]
     K3["EW weighting alpha<br/>hysteresis on or off<br/>failover on or off<br/>dynamic replanning on or off"]
+    K4["Planner<br/>decentralized or oracle<br/>lease slack, beacon interval"]
     SC["Scenario<br/>swarm size, arena, battery spread,<br/>sensor noise, UAV loss"]
   end
 
   K1 --> EVAL["Detector evaluation<br/>held-out frames, day / night / washout"]
   K2 --> SIMX["Mission simulator<br/>paired seeds"]
   K3 --> SIMX
+  K4 --> SIMX
   SC --> SIMX
 
   EVAL --> M1["AP50, precision, recall, F1"]
   SIMX --> M2["Coverage, recall over whole arena,<br/>mission time, distance"]
   SIMX --> M3["Min battery, aborts,<br/>sector flips, route changes, commits"]
-  SIMX --> M4["Operator recall, alert latency,<br/>consensus, messages lost"]
+  SIMX --> M4["Operator recall, alert latency,<br/>consensus, messages lost, copies forwarded"]
+  SIMX --> M5["Failover latency, duplicate scans,<br/>false suspicions, control messages"]
 
   M1 --> REP["Final report"]
   M2 --> REP
   M3 --> REP
   M4 --> REP
+  M5 --> REP
 ```
 
 ---
@@ -312,7 +327,7 @@ The earlier TikZ figure should not be reused as is. These items do not match the
 | Shadow fading sigma = **7.5 dB** | `swarm_network.py` uses **4 dB** | Use 4 dB, or change the code deliberately |
 | **Blade-element propulsion model** | Linear battery drain (0.07 %/s in transit, 0.04 %/s in search) | Remove, or describe the drain model honestly |
 | **Pinhole georeferencing** | Linear map from box centre to the sector's bounds | Call it sector-based georeferencing |
-| **DLL heartbeat watchdog** | Alive set is read directly from simulator state; no heartbeat protocol | Say "topology change detected" without a heartbeat claim |
+| **DLL heartbeat watchdog** | Each UAV has its own view of the live set from beacons it actually received; a peer is suspected lost when overdue back at base plus a lease slack (no fixed-rate heartbeat timeout, because silence in flight is normal) | Describe the lease-based failure suspicion, not a heartbeat watchdog |
 | **ZeroMQ P2P brokers on ports 6000+i** | In the Python simulator brokers are in-process objects; ZeroMQ is only in the SITL path (`uav_pubsub.py`) | Put ZeroMQ under the SITL path only |
 | **16 km2 arena**, 800 m sectors | Results use 5 km x 5 km (25 km2), 1 km sectors | Match the arena used in the results |
 | Failure on UAV 2 at **75 s** | Ablation scenario uses 80 s | Match the results |
