@@ -13,6 +13,8 @@ import os
 import sys
 import math
 import json
+import shutil
+import tempfile
 import unittest
 import numpy as np
 
@@ -33,13 +35,13 @@ class TestSARWorld(unittest.TestCase):
     def setUp(self):
         self.arena_size = 400.0
         self.grid_dim = 4
-        self.test_json = "tests/test_ground_truth_temp.json"
+        self._tmp = tempfile.mkdtemp(prefix="sar_test_")
+        self.test_json = os.path.join(self._tmp, "ground_truth_temp.json")
         self.world = SARWorld(arena_width=self.arena_size, arena_height=self.arena_size,
                               grid_cols=self.grid_dim, grid_rows=self.grid_dim, seed=42)
 
     def tearDown(self):
-        if os.path.exists(self.test_json):
-            os.remove(self.test_json)
+        shutil.rmtree(self._tmp, ignore_errors=True)
 
     def test_grid_initialization(self):
         total_sectors = self.grid_dim * self.grid_dim
@@ -147,8 +149,11 @@ class TestSwarmSimulation(unittest.TestCase):
     def test_launch_base_and_failover_streaming(self):
         arena_size = 600.0
         num_drones = 3
+        out_dir = tempfile.mkdtemp(prefix="sar_sim_test_")   # keep mission outputs out of the repo
+        self.addCleanup(shutil.rmtree, out_dir, ignore_errors=True)
         sim = SwarmSimulation(num_drones=num_drones, arena_size=arena_size, grid_dim=5,
-                              conf_thresh=0.20, seed=42, fail_drone_id=1, fail_time=5.0)
+                              conf_thresh=0.20, seed=42, fail_drone_id=1, fail_time=5.0,
+                              out_dir=out_dir)
 
         # All drones must originate at Ground Control Station (Base Station)
         bx, by = sim.base_station

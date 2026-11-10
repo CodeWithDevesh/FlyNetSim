@@ -8,10 +8,10 @@ Run the full automated test suite using Python's standard `unittest` framework:
 
 ```bash
 # From repository root
-python3 -m unittest tests/test_sar_system.py
+python3 -m unittest discover -s tests
 
 # Or run with discovery
-python3 -m unittest discover tests
+python3 -m unittest discover -s tests
 ```
 
 ### Tests Covered in `test_sar_system.py`:
@@ -34,12 +34,12 @@ python3 -m unittest discover tests
 
 ---
 
-## Standalone Verification Scripts
+## One-off checks (not tests)
 
-These scripts provide targeted inspection during development:
+These development scripts now live in [`scripts/debug/`](../scripts/debug/). Run them from the repository root, e.g. `python scripts/debug/check_inference.py`:
 
-- `test_dataloader.py`: Validates custom 4-channel image loading in Ultralytics data pipeline.
-- `test_inference.py`: Smoke test for 4-channel numpy array input to YOLOv8.
-- `test_inference2.py`: Channel tensor interception and verification before model backbone.
-- `test_demo_fix.py`: Predicts on real validation frames and checks output dimensions.
-- `test_demo_plot.py`: Verifies OpenCV and Matplotlib rendering of bounding boxes on 4-channel frames.
+- `check_dataloader.py`: validates custom 4-channel image loading in the Ultralytics data pipeline.
+- `check_inference.py`: smoke test for 4-channel numpy array input.
+- `check_inference_channels.py`: channel tensor interception before the model backbone.
+- `check_demo_fix.py`: predicts on real validation frames and checks output dimensions.
+- `check_demo_plot.py`: verifies OpenCV and Matplotlib rendering of boxes on 4-channel frames.

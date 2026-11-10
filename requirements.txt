@@ -1,0 +1,13 @@
+# Core (mission simulator, detector, validation, demo, ablation harness)
+numpy
+opencv-python
+matplotlib
+pandas
+pillow
+torch
+ultralytics>=8.3      # 4-channel YOLO11 / YOLOv8 support
+gradio>=5             # interactive demo (demo.py)
+
+# Hardware-in-the-loop path only (FlySim/FlyNetSim.py, uav_pubsub.py) - needs ArduPilot SITL and ns-3
+# pyzmq
+# dronekit

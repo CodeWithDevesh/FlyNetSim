@@ -183,7 +183,7 @@ If you are running the full Software-In-The-Loop (SITL) autopilot simulation:
 
 ## 8. Dataset Preparation & Model Training Pipeline
 
-All training and dataset preparation utilities are consolidated in the [`training/`](file:///home/devesh/Projects/FlyNetSim/training) directory:
+All training and dataset preparation utilities are consolidated in the [`training/`](../training) directory:
 
 ### Step 8.1: Unified Dataset Preparation
 Merges Visible RGB JPGs and Thermal Infrared Grayscale JPGs into 4-channel RGBA PNGs while remapping bounding boxes to unified class `0: human`:
@@ -202,7 +202,7 @@ python training/train.py \
   --epochs 40 \
   --batch 32
 ```
-*(Or upload [`training/train_yolov8_rgbt.ipynb`](file:///home/devesh/Projects/FlyNetSim/training/train_yolov8_rgbt.ipynb) to Kaggle / Google Colab for GPU training).*
+*(Or upload [`training/train_yolov8_rgbt.ipynb`](../training/train_yolov8_rgbt.ipynb) to Kaggle / Google Colab for GPU training).*
 
 ---
 
@@ -210,15 +210,16 @@ python training/train.py \
 
 | File / Directory | Description |
 | :--- | :--- |
-| [`demo.py`](file:///home/devesh/Projects/FlyNetSim/demo.py) | Interactive Gradio Web GUI for multispectral model inspection (`http://localhost:7860`). |
-| [`sar_world.py`](file:///home/devesh/Projects/FlyNetSim/sar_world.py) | In-memory spatial world generator mapping dataset images and labels onto 2D sectors. |
-| [`simulate_swarm_mission.py`](file:///home/devesh/Projects/FlyNetSim/simulate_swarm_mission.py) | Multi-UAV decentralized simulation engine with vision inference, RF physics, and QoS 1 buffering. |
-| [`validate_swarm_mission.py`](file:///home/devesh/Projects/FlyNetSim/validate_swarm_mission.py) | Ground-truth validator computing TP/FP/FN, precision, recall, RMSE, PDR, and rendering plots. |
-| [`rgbt_detector.py`](file:///home/devesh/Projects/FlyNetSim/rgbt_detector.py) | Modular 4-channel early-fusion YOLO inference wrapper supporting both YOLO11 and YOLOv8-P2. |
-| [`best.pt`](file:///home/devesh/Projects/FlyNetSim/best.pt) | Active trained 4-channel YOLO model weights (YOLO11s, with fallback/ablation support for `best_yolov8_p2.pt`). |
-| [`training/`](file:///home/devesh/Projects/FlyNetSim/training) | Dedicated directory containing dataset converter, training CLI, GPU notebook, and model configs. |
-| [`tests/`](file:///home/devesh/Projects/FlyNetSim/tests) | Automated unit and integration test suite (`test_sar_system.py`) and verification scripts. |
-| [`FlySim/hysteresis_controller.py`](file:///home/devesh/Projects/FlyNetSim/FlySim/hysteresis_controller.py) | Dual-threshold hysteresis controller for anti-chattering flight control and EW-CVT partitioning. |
-| [`FlySim/swarm_network.py`](file:///home/devesh/Projects/FlyNetSim/FlySim/swarm_network.py) | Decentralized `EdgeBroker` with DMLT routing, QoS 1 Store-and-Forward queues, and `RFPhysicsEngine`. |
-| [`FlySim/uav_pubsub.py`](file:///home/devesh/Projects/FlyNetSim/FlySim/uav_pubsub.py) | ArduPilot SITL / DroneKit autonomous autopilot flight loop with vision and swarm communication. |
-| [`PAPER_METRICS_AND_EXPERIMENTS.md`](file:///home/devesh/Projects/FlyNetSim/PAPER_METRICS_AND_EXPERIMENTS.md) | Academic paper specification: mathematical formulas, variables, and publication figure blueprints. |
+| [`demo.py`](../demo.py) | Interactive Gradio Web GUI for multispectral model inspection (`http://localhost:7860`). |
+| [`sar_world.py`](../sar_world.py) | In-memory spatial world generator mapping dataset images and labels onto 2D sectors. |
+| [`simulate_swarm_mission.py`](../simulate_swarm_mission.py) | Multi-UAV decentralized simulation engine with vision inference, RF physics, and QoS 1 buffering. |
+| [`validate_swarm_mission.py`](../validate_swarm_mission.py) | Ground-truth validator computing TP/FP/FN, precision, recall, RMSE, PDR, and rendering plots. |
+| [`rgbt_detector.py`](../rgbt_detector.py) | Modular 4-channel early-fusion YOLO inference wrapper supporting both YOLO11 and YOLOv8-P2. |
+| [`best.pt`](../best.pt) | Active trained 4-channel YOLO model weights (YOLO11s, with fallback/ablation support for `best_yolov8_p2.pt`). |
+| [`training/`](../training) | Dedicated directory containing dataset converter, training CLI, GPU notebook, and model configs. |
+| [`tests/`](../tests) | Automated unit and integration test suite (`test_sar_system.py`); one-off checks are in [`scripts/debug/`](../scripts/debug) |
+| [`ablation/`](../ablation) / [`results/`](../results) | Ablation harness and its results (see [`results/README.md`](../results/README.md)) |
+| [`FlySim/hysteresis_controller.py`](../FlySim/hysteresis_controller.py) | Dual-threshold hysteresis controller for anti-chattering flight control and EW-CVT partitioning. |
+| [`FlySim/swarm_network.py`](../FlySim/swarm_network.py) | Decentralized `EdgeBroker` with DMLT routing, QoS 1 Store-and-Forward queues, and `RFPhysicsEngine`. |
+| [`FlySim/uav_pubsub.py`](../FlySim/uav_pubsub.py) | ArduPilot SITL / DroneKit autonomous autopilot flight loop with vision and swarm communication. |
+| [`PAPER_METRICS_AND_EXPERIMENTS.md`](PAPER_METRICS_AND_EXPERIMENTS.md) | Academic paper specification: mathematical formulas, variables, and publication figure blueprints. |

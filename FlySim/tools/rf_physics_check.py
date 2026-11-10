@@ -1,3 +1,5 @@
+import os, sys
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # FlySim/
 import swarm_network
 eng = swarm_network.RFPhysicsEngine()
 loc_a = {'lat': 0, 'lon': 0}

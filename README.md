@@ -117,42 +117,39 @@ flowchart TD
 
 ```
 FlyNetSim/
-├── best.pt                             # Active 4-channel YOLO model weights (YOLO11)
-├── best_yolo11.pt                      # Trained 4-channel YOLO11s model weights (NII-CU dataset)
-├── best_yolov8_p2.pt                   # Trained 4-channel YOLOv8n-P2 model weights (legacy)
+├── best.pt                             # Active 4-channel YOLO11s weights (default for every entry point)
+├── requirements.txt                    # Python dependencies
 ├── demo.py                             # Interactive Gradio web console with live radar
-├── simulate_swarm_mission.py           # Core decentralized swarm simulation engine
+├── simulate_swarm_mission.py           # Mission simulator: EW-CVT control, hysteresis, failover, mesh + DTN,
+│                                       #   per-component ablation switches
 ├── validate_swarm_mission.py           # Ground-truth validator & publication figure generator
 ├── sar_world.py                        # In-memory spatial world & ground-truth generator
 ├── rgbt_detector.py                    # 4-channel early-fusion YOLO detector (YOLO11 & YOLOv8-P2)
 │
-├── training/                           # Multispectral YOLOv8 training pipeline
-│   ├── prepare_dataset.py              # Unified dataset converter & label remapper
-│   ├── train.py                        # Training execution script (CLI)
-│   ├── train_yolov8_rgbt.ipynb         # Full Kaggle/Colab GPU training notebook
-│   ├── yolov8n-p2-1cls-4ch.yaml        # 4-channel YOLOv8-P2 architecture definition
-│   ├── dataset_1cls_4ch.yaml           # Dataset configuration YAML
-│   └── README.md                       # Detailed training documentation
+├── ablation/                           # Ablation study: perception_eval, run_ablation, make_report, make_readme
+├── results/                            # Ablation results: README.md, HTML report, figures, raw run data
 │
-├── tests/                              # Automated test suite
-│   ├── test_sar_system.py              # Unittest suite (World, Detector, Network, Sim)
-│   ├── README.md                       # Test documentation
-│   └── ...                             # Standalone verification scripts
-│
-├── FlySim/                             # Flight simulation & networking components
+├── FlySim/                             # Control, networking and hardware-in-the-loop components
 │   ├── hysteresis_controller.py        # Dual-threshold hysteresis controller & EW-CVT partitioning
 │   ├── swarm_network.py                # EdgeBroker, RF physics engine, QoS 1 buffers
 │   ├── uav_pubsub.py                   # ArduPilot SITL / DroneKit flight control loop
-│   └── FlyNetSim.py                    # Original multi-UAV SITL launcher
+│   ├── FlyNetSim.py                    # Original multi-UAV SITL launcher
+│   └── tools/                          # SITL and network helper scripts
 │
-├── NetSim/                             # ns-3 network simulation integration
-│   ├── ns-allinone-3.27/               # ns-3.27 core distribution and patches
-│   └── net_init.sh                     # ns-3 configure & build script
+├── training/                           # Multispectral detector training pipeline (scripts, notebooks, configs)
+├── tests/                              # Automated test suite (test_sar_system.py)
+├── scripts/debug/                      # One-off model / dataloader checks (not part of the test suite)
+├── models/legacy/                      # Earlier checkpoints (YOLOv8-P2, 4-class)
 │
-├── HOW_TO_RUN.md                       # Comprehensive operational execution guide
-├── PAPER_METRICS_AND_EXPERIMENTS.md    # Mathematical specifications & benchmark tables
-└── README.md                           # Project documentation
+├── docs/                               # HOW_TO_RUN, metric specifications, architecture notes and proposal
+├── paper/                              # IEEE paper sources and figures
+├── code_printout/                      # Printable code listings
+└── NetSim/                             # ns-3 network simulation integration
 ```
+
+Mission outputs (`metrics_*.csv`, `swarm_mission_output.json`, `mission_validation_report.json`,
+`ground_truth_world.json` and the two validation PNGs) are written to the repository root when you run the
+simulator and validator. They are git-ignored.
 
 ---
 
@@ -217,7 +214,7 @@ Outputs generated:
 
 ### 4. Execute Automated Test Suite
 ```bash
-python -m unittest tests/test_sar_system.py
+python -m unittest discover -s tests
 ```
 Runs 16 unit and integration tests covering spatial world geometry, 4-channel tensor permutations, RF physics, dual-threshold hysteresis anti-chattering control, EW-CVT energy exponent allocation, and swarm streaming failover.
 
@@ -256,6 +253,10 @@ When drones complete their search pattern and return to the Ground Control Stati
 ---
 
 ## Benchmark Performance
+
+> **Superseded.** The table below comes from an earlier simulator version in which UAVs teleported to their
+> first waypoint, so its mission-time, time-to-first-detection and energy figures are not valid. The corrected,
+> reproducible ablation results are in [`results/README.md`](results/README.md).
 
 Validation results from a representative wide-area mission sweep:
 
