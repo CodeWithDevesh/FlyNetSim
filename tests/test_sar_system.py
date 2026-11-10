@@ -292,5 +292,117 @@ class TestDualThresholdHysteresis(unittest.TestCase):
         self.assertLess(cost_p2_ew, cost_p0_ew, "EW-CVT (alpha=2.0) must reassign workload to higher battery peer.")
 
 
+class TestDecentralizedAgent(unittest.TestCase):
+    """The per-UAV claiming agent works from its own view only."""
+
+    def setUp(self):
+        from FlySim.swarm_agent import SwarmAgent
+        self.centers = {s: (100.0 * s, 0.0) for s in range(6)}
+        self.A = SwarmAgent("A", ["A", "B"], self.centers)
+        self.A.peers["B"].update(gen=(500.0, 0.0), w=1.0, ret=200.0, state="SEARCHING")
+        self.A.peer_claims["B"] = {4: 150.0, 5: 180.0}
+
+    def assign(self, **kw):
+        a = dict(pos=(0.0, 0.0), gen=(0.0, 0.0), w=1.0, speed=10.0, end_pos=(0.0, 0.0), end_eta=0.0)
+        a.update(kw)
+        return self.A.assign(**a)
+
+    def test_silence_before_advertised_return_is_not_suspicion(self):
+        self.assertEqual(self.A.expire(now=250.0, slack=60.0), [])     # 250 < 200 + 60
+        self.assertEqual(self.A.expire(now=261.0, slack=60.0), ["B"])  # overdue
+
+    def test_claimed_sectors_are_not_taken(self):
+        mine = self.assign()
+        self.assertNotIn(4, mine)
+        self.assertNotIn(5, mine)
+
+    def test_abandoned_work_only_taken_at_base(self):
+        self.A.expire(now=300.0, slack=60.0)
+        self.assertEqual(set(self.assign(at_base=False)) & {4, 5}, set())
+        self.assertTrue({4, 5} <= set(self.assign(at_base=True)))
+
+    def test_beacon_merges_scanned_and_unsuspects(self):
+        self.A.expire(now=300.0, slack=60.0)
+        self.assertTrue(self.A.peers["B"]["suspected"])
+        self.A.receive({"id": "B", "x": 0, "y": 0, "gen": (500.0, 0.0), "w": 1.0, "state": "SEARCHING",
+                        "ret": 400.0, "claims": {5: 380.0}, "scanned": frozenset({4})}, now=310.0)
+        self.assertFalse(self.A.peers["B"]["suspected"])
+        self.assertIn(4, self.A.scanned)
+
+    def test_conflicting_claims_resolved_by_power_distance(self):
+        self.A.peers["B"]["gen"] = (900.0, 0.0)
+        self.A.mine = {3: 50.0}                      # I hold sector 3 (closer to me) ...
+        self.A.peer_claims["B"] = {3: 60.0}          # ... and so does B, whose generator is far away
+        self.assertIn(3, self.assign())
+        self.A.peers["B"]["gen"] = (300.0, 0.0)      # now B is at the sector: B wins, I yield
+        self.assertNotIn(3, self.assign())
+
+    def test_decentralized_mission_covers_arena_after_failure(self):
+        tmp = tempfile.mkdtemp(prefix="sar_dec_")
+        try:
+            sim = SwarmSimulation(num_drones=3, arena_size=400.0, grid_dim=4, seed=7, planner="decentralized",
+                                  fail_drone_id=1, fail_time=5.0, out_dir=tmp, write_logs=False, verbose=False)
+            for _ in sim.run_streaming(max_sim_seconds=1500):
+                pass
+            m = sim.collect_metrics()
+            self.assertEqual(m["coverage_pct"], 100.0)
+            self.assertEqual(m["uavs_lost"], 1)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+
+class TestForwarding(unittest.TestCase):
+    """Alerts are carried onward by whichever UAV received them."""
+
+    def make(self, **kw):
+        tmp = tempfile.mkdtemp(prefix="sar_fwd_")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        return SwarmSimulation(num_drones=3, arena_size=400.0, grid_dim=4, seed=7, out_dir=tmp,
+                               write_logs=False, verbose=False, **kw)
+
+    def rec(self, by="0"):
+        return {"target_key": "T1", "class_name": "person", "conf": 0.9, "world_x": 10.0, "world_y": 10.0,
+                "sector_id": 0, "detected_by": by, "time": 1.0}
+
+    def test_receiver_queues_copies_for_everyone_else(self):
+        sim = self.make()
+        a, b = sim.drones[0], sim.drones[1]
+        r = self.rec()
+        a.discovered_targets["T1"] = r
+        sim._receive_alert(a, b.uav_id, "T1", r)
+        self.assertIn("T1", b.consensus_registry)
+        queued = {rid for rid, buf in b.broker.qos1_buffers.items() if buf}
+        self.assertEqual(queued, {"2", "GCS"})          # not back to the sender, not to itself
+        self.assertEqual(sim.network_stats["forwarded"], 0)
+
+    def test_no_forwarding_when_disabled(self):
+        sim = self.make(forwarding_enabled=False)
+        a, b = sim.drones[0], sim.drones[1]
+        a.discovered_targets["T1"] = self.rec()
+        sim._receive_alert(a, b.uav_id, "T1", self.rec())
+        self.assertFalse(any(b.broker.qos1_buffers.values()))
+
+    def test_buffer_cap_drops_oldest(self):
+        sim = self.make(buffer_cap=2)
+        a = sim.drones[0]
+        for i in range(4):
+            sim.sim_time = float(i)
+            sim._queue_copy(a, "GCS", f"K{i}", self.rec(), f"M{i}")
+        kept = [m["message_id"] for m in a.broker.qos1_buffers["GCS"]]
+        self.assertEqual(kept, ["M2", "M3"])
+        self.assertEqual(sim.network_stats["dropped_buffer"], 2)
+
+    def test_forwarded_alert_reaches_gcs_after_finder_is_lost(self):
+        sim = self.make()
+        a, b = sim.drones[0], sim.drones[1]
+        r = self.rec()
+        a.discovered_targets["T1"] = r
+        sim._receive_alert(a, b.uav_id, "T1", r)        # b gets it directly from a ...
+        a.is_alive = False                              # ... then a is lost
+        b.x, b.y = sim.base_station                     # b flies home
+        sim._flush_buffers({d.uav_id: d.get_location_dict() for d in sim.drones if d.is_alive})
+        self.assertIn("T1", sim.gcs_known)
+
+
 if __name__ == "__main__":
     unittest.main()

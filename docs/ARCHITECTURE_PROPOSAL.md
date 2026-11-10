@@ -27,14 +27,15 @@ Three contributions sit inside every UAV; the mission layer and the operator sit
 ```mermaid
 flowchart TB
   ARENA["Search arena<br/>N x N sectors, one multispectral frame per sector"]
-  GCS["Ground Control Station<br/>base station and launch pads"]
+  GCS["Ground Control Station<br/>passive alert sink, no planning"]
 
   subgraph UAV["Every UAV (x N)"]
     PERC["1. Perception<br/>4-channel RGB + thermal YOLO"]
-    COMM["2. Mesh comms<br/>RF link, relay, store-and-forward"]
-    CTRL["3. Swarm control<br/>EW-CVT + hysteresis + failover"]
+    COMM["2. Mesh comms<br/>RF link, beacons, store-and-forward"]
+    CTRL["3. Swarm control<br/>EW-CVT + hysteresis + claims + failover<br/>(from local view only)"]
     FLT["Flight and battery"]
     PERC -- "victim alerts" --> COMM
+    COMM -- "peer beacons: position, claims, scanned sectors" --> CTRL
     CTRL -- "sector route" --> FLT
     FLT -- "position, battery" --> CTRL
     FLT -- "position" --> COMM
@@ -45,12 +46,11 @@ flowchart TB
   ARENA -- "frames" --> PERC
   GCS -- "launch" --> FLT
   COMM -- "alerts (most arrive on return to base)" --> GCS
-  COMM <-->|"alerts, buffered until link is good"| PEERS
-  PEERS -. "alive set N(t)" .-> CTRL
+  COMM <-->|"beacons and alerts, buffered until link is good"| PEERS
 ```
 
 **Say:** each UAV carries a perception stack, a comms stack and a control stack. They interact through
-three narrow interfaces: alerts (perception to comms), a sector route (control to flight), and the alive set (comms to control).
+three narrow interfaces: alerts (perception to comms), a sector route (control to flight), and peer beacons (comms to control). There is no central planner: control works only from the beacons this UAV has actually received.
 
 ---
 
@@ -136,27 +136,30 @@ Why the operator still learns about victims when the swarm is mostly out of radi
 ```mermaid
 sequenceDiagram
   participant U as Detecting UAV
-  participant P as Peer UAVs
+  participant P as Peer UAV
   participant G as GCS (at base)
 
   U->>U: detect, georeference, de-duplicate
-  par to every peer and the GCS
+  par to every other UAV and the GCS
     U->>P: alert over direct RF link (succeeds with probability 1 - PER)
   and
     U->>G: alert over direct RF link
   end
-  opt direct link failed and multi-hop enabled
-    U->>P: retry through one relay UAV (must be closer to both ends)
-  end
-  alt still undelivered and DTN enabled
-    U->>U: store message in QoS-1 buffer for that recipient
+  alt undelivered and DTN enabled
+    U->>U: keep a copy in the QoS-1 buffer for that recipient
   else DTN disabled
     Note over U: message is lost
   end
-  Note over U,G: later, the UAV returns to base
-  U->>G: flush buffered alerts once link PER < 0.2
+  opt peer received it and forwarding enabled
+    P->>P: keep a copy for every recipient not known to hold it
+  end
+  Note over U,G: later, any holder meets a recipient (often at base)
+  P->>G: flush copies the recipient lacks once link PER < 0.2
+  U->>G: or the finder itself flushes
   G->>G: record first-known time (alert latency)
 ```
+
+Because any UAV that received the alert carries it onward, the alert survives the finder being lost.
 
 **RF model behind PER:** log-distance path loss (exponent 2.5), 4 dB shadow fading, 15 dB obstruction penalty,
 SNR mapped to PER over 5 to 25 dB; 33 dBm at 2.4 GHz for arenas of 2 km or more, otherwise 30 dBm at 5 GHz.
@@ -191,20 +194,22 @@ Speeds: transit and return up to 50 m/s; search cruise up to 32 m/s. Battery dra
 ```mermaid
 sequenceDiagram
   participant E as Event
-  participant S as Swarm controller
-  participant H as Hysteresis gate (each survivor)
-  participant D as Surviving UAVs
+  participant D as Dead UAV (silent)
+  participant S as Surviving UAV (own view)
+  participant B as At base (landed survivors)
 
-  E->>S: UAV lost (motor failure or 0% battery), or UAV aborts at 15%
-  S->>S: alive set N(t) changes
-  S->>H: evaluate with new topology
-  H-->>S: FORCED OVERRIDE, thresholds bypassed
-  S->>S: re-partition remaining unscanned sectors among survivors
+  E->>D: motor failure or 0% battery
+  Note over S: No signal. Silence in flight is normal.
+  S->>S: peer's advertised return time passes, plus lease slack
+  S->>S: peer suspected lost, claims released, view of live UAVs changes
+  S->>S: hysteresis forced override (topology changed)
   alt failover enabled
-    S->>D: abandoned sectors assigned, routes rebuilt
+    S->>B: released sectors are taken only by UAVs at base
+    B->>B: landed UAVs share the work by power distance and relaunch
   else failover disabled
-    S->>S: abandoned sectors stay unsearched
+    S->>S: released sectors stay unsearched
   end
+  Note over D,B: A peer that only landed and went quiet looks the same as a dead one until a UAV reaches base
 ```
 
 ---
@@ -274,7 +279,7 @@ How each switch removes one component and which measurements change. This links 
 flowchart LR
   subgraph KNOBS["Ablation switches"]
     K1["Input masking<br/>fused / RGB only / thermal only"]
-    K2["DTN buffer on or off<br/>multi-hop on or off"]
+    K2["DTN buffer on or off<br/>forwarding on or off"]
     K3["EW weighting alpha<br/>hysteresis on or off<br/>failover on or off<br/>dynamic replanning on or off"]
     SC["Scenario<br/>swarm size, arena, battery spread,<br/>sensor noise, UAV loss"]
   end

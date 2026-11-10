@@ -3,7 +3,7 @@
 This document provides step-by-step instructions on how to run every component of the **Autonomous Multispectral UAV Swarm SAR System**, including:
 1. **Interactive Web Demo** (Gradio frontend for real-time model inspection).
 2. **In-Memory Spatial World Generator** (Maps dataset images and ground-truth targets).
-3. **Swarm Mission Simulator** (multi-UAV search with RF physics, a store-and-forward mesh and swarm control; coordinated planning, see Scope in the main README).
+3. **Swarm Mission Simulator** (multi-UAV search with RF physics, a store-and-forward mesh and fully decentralized swarm control; `--planner centralized` gives the oracle baseline).
 4. **Mission Validator & Publication Graph Generator** (Scores swarm output against ground truth and renders 300 DPI figures).
 5. **Autopilot SITL Swarm Integration** (ArduPilot + DroneKit flight loop).
 6. **Dataset & Training Pipeline** (YOLO11s via the notebook; the YOLOv8n-P2 scripts are the legacy path).

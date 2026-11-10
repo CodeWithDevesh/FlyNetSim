@@ -1,6 +1,6 @@
 # Swarm Architecture Plan
 
-> **Status: design plan, not the current implementation.** The mission simulator (`simulate_swarm_mission.py`) uses coordinated planning from global swarm state with instant failure detection. The fully decentralized, peer-to-peer design below (self-claimed sectors, beacons, leases) is future work. See the Scope section of the main README.
+> **Status: design plan for the ArduPilot/ZeroMQ path.** The Python mission simulator (`simulate_swarm_mission.py`) already implements the decentralized control described here, in `FlySim/swarm_agent.py`: per-UAV views, state beacons over the lossy radio, claim/yield sector assignment and lease-based failure suspicion. This document's ZeroMQ + DroneKit "brain thread" design is the not-yet-built hardware-in-the-loop counterpart.
 
 This document outlines the architecture to transition FlyNetSim into a decentralized, peer-to-peer (P2P) mesh network where each drone operates autonomously with its own "brain."
 

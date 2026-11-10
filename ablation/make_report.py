@@ -172,7 +172,7 @@ sections.append(ctl_html)
 
 # =============================================================== 3. network
 arenas = [1500, 3000, 5000]
-NV = ["Full (DTN + multi-hop)", "- DTN buffer", "- Multi-hop", "- Both (direct only)"]
+NV = ["Full (DTN + forwarding)", "- Forwarding", "- DTN buffer", "Old geometric relay"]
 fig, axs = plt.subplots(1, 2, figsize=(7.8, 3.1))
 w = 0.2
 for i, (n, col) in enumerate(zip(NV, [C1, C2, C3, C4])):
@@ -194,10 +194,19 @@ for a in arenas:
 net_tbl = table(["Arena", "Variant", "Operator recall", "Reports known to GCS", "Alert latency s", "Consensus", "First-attempt PDR to GCS",
                  "Messages lost", "Delivered late (DTN)"], rows)
 net_html = f"""
-<h2>3 &nbsp; Networking: delay-tolerant mesh and multi-hop relaying</h2>
+<h2>3 &nbsp; Networking: delay-tolerant mesh and store-carry-forward relaying</h2>
 <p class="lead">Every victim alert is sent to all peers <i>and</i> to a Ground Control Station at the base. <b>Operator recall</b> is the fraction of all victims in the arena that the operator actually learned about, so it is the end-to-end quantity the network exists to protect. 6 UAVs, equal batteries, no failures, {len(SEEDS)} seeds.</p>
 {net_img}{net_tbl}
-<p class="note">At these ranges the swarm is mostly <b>disconnected</b> in flight (direct link range is a few hundred metres under the RF model), so first-attempt delivery is low everywhere. Store-and-forward is what turns a mostly-offline swarm into a working one: alerts wait in the QoS-1 buffer and flush when the UAV returns to base. Multi-hop relaying adds little here because a relay must be closer to <i>both</i> endpoints, which rarely holds in a sparse swarm.</p>"""
+<p class="note">At these ranges the swarm is mostly <b>disconnected</b> in flight (direct link range is a few hundred metres under the RF model), so first-attempt delivery is low everywhere. Store-and-forward is what turns a mostly-offline swarm into a working one: alerts wait in the QoS-1 buffer and flush when the UAV returns to base. The old instant relay (a UAV geometrically between the endpoints) adds nothing because that rarely holds in a sparse swarm. <b>Forwarding</b> replaces it: any UAV that receives an alert keeps it and hands it over whenever it later meets a recipient, so no UAV has to be in the right place at the right time.</p>"""
+loss_rows = []
+for a in arenas:
+    for n in NV[:2]:
+        k = ("network", f"loss_arena_{a}", n)
+        loss_rows.append([f"{a/1000:g} km", n, ms(k, "operator_known_frac", 3), ms(k, "alert_latency_mean_s", 0), ms(k, "consensus_final", 3), ms(k, "alerts_forwarded", 0)])
+net_html += "<h3>A UAV is lost at t = 60 s</h3>" + table(["Arena", "Variant", "Reports known to GCS", "Alert latency s", "Consensus", "Copies forwarded"], loss_rows)
+cap_rows = [[n, ms(("network", f"cap_{c}", n), "operator_known_frac", 3), ms(("network", f"cap_{c}", n), "alert_latency_mean_s", 0),
+             ms(("network", f"cap_{c}", n), "buffer_drops", 0)] for c, n in [(5, "buffer cap 5"), (15, "buffer cap 15"), (40, "buffer cap 40"), (120, "buffer cap 120"), ("none", "buffer cap none")]]
+net_html += "<h3>Buffer cap per UAV (3 km, UAV lost)</h3>" + table(["Cap", "Reports known to GCS", "Alert latency s", "Copies dropped"], cap_rows)
 sections.append(net_html)
 
 # =============================================================== 4. scale
@@ -220,17 +229,21 @@ full_loss, nofail = ck("uav_loss", "Full system"), ck("uav_loss", "- Failover")
 H.append(["<b>Swarm control</b>", "", "", ""])
 for row in [hl("Remove <b>failover</b> (UAV lost): area coverage", full_loss, nofail, "coverage_pct", " %", 1),
             hl("&nbsp;&nbsp;&nbsp;&nbsp;victims found, whole arena (recall)", full_loss, nofail, "recall_arena", "", 3),
-            hl("Remove <b>hysteresis</b>: sector flips per mission", ck("nominal", "Full system"), ck("nominal", "- Hysteresis"), "sector_flips", "", 1),
-            hl("&nbsp;&nbsp;&nbsp;&nbsp;route changes per mission", ck("nominal", "Full system"), ck("nominal", "- Hysteresis"), "route_changes", "", 1),
-            hl("&nbsp;&nbsp;&nbsp;&nbsp;mission time", ck("nominal", "Full system"), ck("nominal", "- Hysteresis"), "makespan_s", " s", 0),
+            hl("Remove <b>hysteresis</b> (oracle planner, noise 2 %): sector flips per mission", ("noise", "sigma_2", "Hysteresis ON"), ("noise", "sigma_2", "Hysteresis OFF"), "sector_flips", "", 1),
+            hl("&nbsp;&nbsp;&nbsp;&nbsp;route changes per mission", ("noise", "sigma_2", "Hysteresis ON"), ("noise", "sigma_2", "Hysteresis OFF"), "route_changes", "", 1),
+            hl("&nbsp;&nbsp;&nbsp;&nbsp;mission time", ("noise", "sigma_2", "Hysteresis ON"), ("noise", "sigma_2", "Hysteresis OFF"), "makespan_s", " s", 0),
+            hl("<b>Decentralized</b> vs oracle planner (UAV lost): mission time", ("planner", "uav_loss", "centralized"), ("planner", "uav_loss", "decentralized"), "makespan_s", " s", 0),
             hl("Remove <b>EW weighting</b> (α=0): min final battery", ck("nominal", "Full system"), ck("nominal", "- EW weighting (alpha=0)"), "batt_min_pct", " %", 1),
             hl("Static baseline vs full: mission time (cost of re-planning)", ck("nominal", "Static baseline"), ck("nominal", "Full system"), "makespan_s", " s", 0)]:
     if row: H.append(row)
 H.append(["<b>Networking</b> (5 km arena)", "", "", ""])
-fk, dk, mk = ("network", "arena_5000", NV[0]), ("network", "arena_5000", NV[1]), ("network", "arena_5000", NV[2])
+fk, dk, mk = ("network", "arena_5000", NV[0]), ("network", "arena_5000", NV[2]), ("network", "arena_5000", NV[1])
+fl, ml = ("network", "loss_arena_5000", NV[0]), ("network", "loss_arena_5000", NV[1])
 for row in [hl("Remove <b>DTN buffer</b>: victims known to operator", fk, dk, "operator_recall", " %", 1, 100),
             hl("&nbsp;&nbsp;&nbsp;&nbsp;swarm consensus", fk, dk, "consensus_final", " %", 1, 100),
-            hl("Remove <b>multi-hop</b>: victims known to operator", fk, mk, "operator_recall", " %", 1, 100)]:
+            hl("Remove <b>forwarding</b>: victims known to operator", fk, mk, "operator_recall", " %", 1, 100),
+            hl("&nbsp;&nbsp;&nbsp;&nbsp;mean alert latency", fk, mk, "alert_latency_mean_s", " s", 0),
+            hl("Remove <b>forwarding</b>, UAV lost: reports known to GCS", fl, ml, "operator_known_frac", " %", 1, 100)]:
     if row: H.append(row)
 if perc:
     H.append(["<b>Perception</b> (AP50, %)", "", "", ""])

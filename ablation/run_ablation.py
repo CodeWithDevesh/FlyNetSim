@@ -8,10 +8,11 @@ seed is a *paired* comparison across configurations.
 
 Groups
   control   : EW-CVT / hysteresis / failover / dynamic re-planning      (nominal + UAV-loss scenario)
-  network   : store-and-forward (DTN) / multi-hop relaying              (across arena sizes)
-  noise     : hysteresis on/off vs battery-sensor noise                 (churn)
+  network   : store-and-forward (DTN) / store-carry-forward relaying    (across arena sizes, with and without a UAV lost)
+  noise     : hysteresis on/off vs battery-sensor noise                 (churn; centralized planner)
   alpha     : EW-CVT exponent sweep                                     (time vs energy-reserve trade-off)
   scale     : swarm size sweep
+  planner   : decentralized (per-UAV views) vs centralized oracle; lease-slack and beacon-interval sweeps
 
 All output goes to results/ablation/ - nothing in the repo root is touched.
 """
@@ -28,8 +29,9 @@ MAX_SIM_SECONDS = 1500
 
 BASE = dict(num_drones=6, arena_size=5000.0, grid_dim=5, conf_thresh=0.20, model_path=os.path.join(ROOT, "best.pt"),
             ewcvt_alpha=1.0, hysteresis_enabled=True, failover_enabled=True, dynamic_repartition=True,
-            dtn_enabled=True, multihop_enabled=True, initial_battery_range=(20.0, 100.0),
-            battery_noise_std=1.5, fail_drone_id=None, fail_time=None)
+            dtn_enabled=True, forwarding_enabled=True, multihop_enabled=False, buffer_cap=None, initial_battery_range=(20.0, 100.0),
+            battery_noise_std=1.5, fail_drone_id=None, fail_time=None,
+            planner="decentralized", beacon_interval=5.0, lease_slack=60.0)
 
 FAIL = dict(fail_drone_id=2, fail_time=80.0)
 
@@ -42,10 +44,10 @@ CONTROL_VARIANTS = {
                                      hysteresis_enabled=False),
 }
 NETWORK_VARIANTS = {
-    "Full (DTN + multi-hop)": {},
-    "- DTN buffer":           dict(dtn_enabled=False),
-    "- Multi-hop":            dict(multihop_enabled=False),
-    "- Both (direct only)":   dict(dtn_enabled=False, multihop_enabled=False),
+    "Full (DTN + forwarding)": {},
+    "- Forwarding":            dict(forwarding_enabled=False),
+    "- DTN buffer":            dict(dtn_enabled=False),            # no buffering also means nothing to forward
+    "Old geometric relay":     dict(forwarding_enabled=False, multihop_enabled=True),
 }
 
 
@@ -66,12 +68,35 @@ def build_experiments(quick=False):
         for name, o in NETWORK_VARIANTS.items():
             add("network", f"arena_{int(arena)}", name, arena_size=arena, initial_battery_range=(100.0, 100.0),
                 battery_noise_std=0.0, **o)
+    # --- planner: decentralized vs oracle, and the two decentralization knobs ------------------
+    for pl in ("centralized", "decentralized"):
+        add("planner", "nominal", pl, planner=pl)
+        add("planner", "uav_loss", pl, planner=pl, **FAIL)
+        for arena in (1500.0, 3000.0):
+            add("planner", f"loss_arena_{int(arena)}", pl, planner=pl, arena_size=arena, **FAIL)
+    for sl in (20.0, 60.0, 120.0, 240.0):
+        add("planner", f"slack_{sl:g}", f"slack={sl:g}", lease_slack=sl, **FAIL)
+    for bi in (2.0, 5.0, 15.0, 60.0):
+        add("planner", f"beacon_{bi:g}", f"beacon={bi:g}", beacon_interval=bi, **FAIL)
+    # --- a UAV that found victims is lost: does anyone else carry its alerts home? ---------
+    for arena in (1500.0, 3000.0, 5000.0):
+        for name in ("Full (DTN + forwarding)", "- Forwarding"):
+            add("network", f"loss_arena_{int(arena)}", name, arena_size=arena, initial_battery_range=(100.0, 100.0),
+                battery_noise_std=0.0, fail_drone_id=2, fail_time=60.0, **NETWORK_VARIANTS[name])
+    for cap in (5, 15, 40, 120):
+        add("network", f"cap_{cap}", f"buffer cap {cap}", arena_size=3000.0, initial_battery_range=(100.0, 100.0),
+            battery_noise_std=0.0, fail_drone_id=2, fail_time=60.0, buffer_cap=cap)
+    add("network", "cap_none", "buffer cap none", arena_size=3000.0, initial_battery_range=(100.0, 100.0),
+        battery_noise_std=0.0, fail_drone_id=2, fail_time=60.0)
     if quick:
         return ex
     # --- hysteresis vs sensor noise -------------------------------------------------------
     for sigma in (0.0, 1.0, 2.0, 4.0):
-        add("noise", f"sigma_{sigma:g}", "Hysteresis ON", battery_noise_std=sigma)
-        add("noise", f"sigma_{sigma:g}", "Hysteresis OFF", battery_noise_std=sigma, hysteresis_enabled=False)
+        # run with the centralized planner: that is where partitions are recomputed from fresh
+        # batteries every tick, i.e. where hysteresis has something to suppress
+        add("noise", f"sigma_{sigma:g}", "Hysteresis ON", battery_noise_std=sigma, planner="centralized")
+        add("noise", f"sigma_{sigma:g}", "Hysteresis OFF", battery_noise_std=sigma, hysteresis_enabled=False,
+            planner="centralized")
     # --- alpha sweep ------------------------------------------------------------------------
     for a in (0.0, 0.5, 1.0, 2.0, 3.0):
         add("alpha", f"alpha_{a:g}", f"alpha={a:g}", ewcvt_alpha=a, initial_battery_range=(15.0, 100.0))

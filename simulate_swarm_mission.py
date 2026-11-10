@@ -6,7 +6,7 @@ Three contributions are modelled and can each be switched off for ablation:
 
   1. Perception   - 4-channel RGB+Thermal early-fusion YOLO detector (rgbt_detector.py)
   2. Networking   - FANET mesh with RF physics, QoS-1 store-and-forward (DTN) buffers,
-                    multi-hop relaying and a Ground Control Station (GCS) sink
+                    store-carry-forward relaying and a Ground Control Station (GCS) sink
   3. Swarm control- Energy-Weighted Centroidal Voronoi Tessellation (EW-CVT) territory
                     partitioning, gated by a dual-threshold hysteresis controller, with
                     autonomous failover when a UAV is lost
@@ -39,6 +39,7 @@ from sar_world import SARWorld
 from rgbt_detector import RGBTDetector
 import swarm_network
 from hysteresis_controller import DualThresholdHysteresisController, compute_ew_cvt_centroids
+from swarm_agent import SwarmAgent
 
 BATTERY_RESERVE_PCT = 15.0     # RTL reserve used by the safety-margin metric
 GCS_ID = "GCS"
@@ -110,6 +111,10 @@ class SimulatedUAV:
         self.scanned_sectors = set()
         self.is_alive = True
         self.crash_pos = None
+        self.agent = None                # SwarmAgent (decentralized planner only)
+        self.relaunches = 0
+        self.landed_since = None
+        self.fwd_known = defaultdict(set)    # alert key -> ids this UAV knows already hold it
 
     def reset_hysteresis(self, gen0, topology):
         """(Re)build the dual-threshold controller around the committed generator g_i(t_0)."""
@@ -182,12 +187,18 @@ class SwarmSimulation:
                  failover_enabled=True,        # re-assign a lost UAV's sectors to survivors
                  dynamic_repartition=True,     # periodic EW-CVT replanning during the mission
                  dtn_enabled=True,             # QoS-1 store-and-forward buffering
-                 multihop_enabled=True,        # relay via an intermediate UAV
+                 multihop_enabled=False,       # old instant relay via a UAV geometrically between the endpoints
+                 forwarding_enabled=True,      # store-carry-forward: UAVs relay alerts they hold when they meet a recipient
+                 buffer_cap=None,              # max buffered alert copies per UAV (None = unlimited)
                  # ---- scenario knobs ----------------------------------------------------
                  initial_battery_range=(100.0, 100.0),   # per-UAV start charge ~ U(lo, hi) [%]
                  battery_noise_std=0.0,        # std-dev of battery *measurement* noise [% points]
                  replan_interval=5.0,          # seconds between EW-CVT replans
                  tau_epsilon_ratio=0.02, tau_delta=5.0,
+                 # ---- planner -----------------------------------------------------------
+                 planner="decentralized",       # 'decentralized' (per-UAV views) or 'centralized' (oracle baseline)
+                 beacon_interval=5.0,          # seconds between state beacons (decentralized)
+                 lease_slack=60.0,             # seconds past a claim's ETA before its owner is suspected lost
                  out_dir=".", write_logs=True, verbose=True, detector=None):
 
         random.seed(seed)
@@ -205,11 +216,19 @@ class SwarmSimulation:
         self.dynamic_repartition = dynamic_repartition
         self.dtn_enabled = dtn_enabled
         self.multihop_enabled = multihop_enabled
+        self.forwarding_enabled = forwarding_enabled and dtn_enabled
+        self.buffer_cap = buffer_cap
         self.initial_battery_range = initial_battery_range
         self.battery_noise_std = float(battery_noise_std)
         self.replan_interval = float(replan_interval)
         self.tau_epsilon_ratio = tau_epsilon_ratio
         self.tau_delta = tau_delta
+        assert planner in ("decentralized", "centralized")
+        self.planner = planner
+        self.dec = planner == "decentralized"
+        self.beacon_interval = float(beacon_interval)
+        self.lease_slack = float(lease_slack)
+        self.settle_time = 2.0 * float(beacon_interval)
         self.out_dir = out_dir
         self.write_logs = write_logs
         self.verbose = verbose
@@ -235,8 +254,9 @@ class SwarmSimulation:
             print(f"Detector Weights: {model_path} (Conf Threshold: {conf_thresh})")
             mode_str = "Standard Unweighted CVT (alpha=0.0)" if self.ewcvt_alpha == 0.0 else f"Energy-Weighted CVT (alpha={self.ewcvt_alpha})"
             print(f"Partitioning Metric: {mode_str}")
+            print(f"Planner: {planner}" + (f" (beacon {beacon_interval}s, lease slack {lease_slack}s)" if self.dec else " (oracle baseline)"))
             print(f"Switches: hysteresis={hysteresis_enabled} failover={failover_enabled} dynamic={dynamic_repartition} "
-                  f"dtn={dtn_enabled} multihop={multihop_enabled}")
+                  f"dtn={dtn_enabled} forwarding={self.forwarding_enabled} multihop={multihop_enabled}")
             if self.fail_drone_id is not None:
                 print(f"Injected Failure: UAV {self.fail_drone_id} will fail at T={self.fail_time}s")
             print("=" * 65)
@@ -260,6 +280,11 @@ class SwarmSimulation:
         self.stats_control = {"replan_ticks": 0, "sector_flips": 0, "failover_reassigned": 0,
                               "route_changes": 0, "commits": 0, "rtl_aborts": 0, "energy_crashes": 0}
         self.drones = self._spawn_drones()
+        self.suspect_log = []
+        self.dup_scans = 0
+        self.last_fly_time = 0.0
+        self.first_adopt_t = None
+        self.ctl_msgs = {"sent": 0, "delivered": 0}
 
         # 4. Logs
         self.vision_log_file = os.path.join(out_dir, "metrics_vision.csv")
@@ -270,6 +295,7 @@ class SwarmSimulation:
 
         self.sim_time = 0.0
         self._next_replan = self.replan_interval
+        self._next_beacon = self.beacon_interval
         self.msg_counter = 0
         self.ttfd = None
         self.first_victim_id = None
@@ -282,7 +308,10 @@ class SwarmSimulation:
         self.timeseries = []
         self.makespan = None
         self.network_stats = {"sent": 0, "delivered": 0, "dropped": 0, "buffered": 0,
-                              "delivered_late": 0, "lost": 0, "gcs_sent": 0, "gcs_delivered": 0}
+                              "delivered_late": 0, "lost": 0, "gcs_sent": 0, "gcs_delivered": 0,
+                              "forwarded": 0, "dropped_buffer": 0}
+        if self.dec:
+            self._init_agents()
 
     # ------------------------------------------------------------------ detector
     @property
@@ -447,8 +476,141 @@ class SwarmSimulation:
                 self.stats_control["route_changes"] += 1
                 self._build_route(d)
 
+    # ------------------------------------------------------------------ decentralized planner
+    def _etas(self, d):
+        """Planned arrival time of each pending sector along the UAV's current route."""
+        t, x, y, out = self.sim_time, d.x, d.y, {}
+        for k in range(d.current_waypoint_idx, len(d.waypoints) - 1):
+            wx, wy = d.waypoints[k]
+            sp = d.transit_speed if (k == d.current_waypoint_idx and not d.reached_first_sector) else d.search_speed
+            t += math.hypot(wx - x, wy - y) / sp
+            x, y = wx, wy
+            sec = self.world.get_sector_at(wx, wy)
+            if sec is not None:
+                out[sec["sector_id"]] = round(t, 1)
+        return out
+
+    def _return_eta(self, d):
+        """When the current route should bring the UAV back to its pad."""
+        if d.current_waypoint_idx >= len(d.waypoints):
+            return None
+        t, x, y = self.sim_time, d.x, d.y
+        for k in range(d.current_waypoint_idx, len(d.waypoints)):
+            wx, wy = d.waypoints[k]
+            last = k == len(d.waypoints) - 1
+            sp = d.transit_speed if (last or (k == d.current_waypoint_idx and not d.reached_first_sector)) else d.search_speed
+            t += math.hypot(wx - x, wy - y) / sp
+            x, y = wx, wy
+        return round(t, 1)
+
+    def _refresh_claims(self, d):
+        """Rebuild the UAV's own claim list with fresh ETAs for the sectors it will still visit."""
+        etas = self._etas(d)
+        d.agent.mine = {s: etas.get(s) for s in d.pending}
+
+    def _init_agents(self):
+        ids = [d.uav_id for d in self.drones]
+        centers = {s: tuple(v["center"]) for s, v in self.world.sectors.items()}
+        for d in self.drones:
+            d.agent = SwarmAgent(d.uav_id, ids, centers, failover=self.failover_enabled)
+        for d in self.drones:
+            self._refresh_claims(d)
+        # Pre-flight sync on the pad: all UAVs are co-located at launch, so they start with the
+        # same view (the shared initial partition and everyone's launch claims).
+        for d in self.drones:
+            for o in self.drones:
+                if o is d:
+                    continue
+                d.agent.peers[o.uav_id].update(x=o.x, y=o.y, gen=o.gen, w=o.weight, state="TRANSIT",
+                                               ret=self._return_eta(o), heard=0.0)
+                d.agent.peer_claims[o.uav_id] = dict(o.agent.mine)
+
+    def _agent_state(self, d):
+        return "RTL" if d.rtl else d.state
+
+    def _exchange_beacons(self):
+        """Every UAV broadcasts its beacon; each copy survives the RF link with probability 1-PER."""
+        live = [d for d in self.drones if d.is_alive]
+        beacons = {}
+        for d in live:
+            if not d.rtl and d.state != "LANDED":
+                self._refresh_claims(d)
+            beacons[d.uav_id] = d.agent.beacon(d.x, d.y, d.gen, d.weight, self._agent_state(d), self._return_eta(d))
+        pe = self.physics_engine
+        for src in live:
+            for dst in live:
+                if dst is src:
+                    continue
+                self.ctl_msgs["sent"] += 1
+                _, per = pe.calculate_snr_per(src.get_location_dict(), dst.get_location_dict(), self.obstacle_mask)
+                if random.random() >= per:
+                    self.ctl_msgs["delivered"] += 1
+                    dst.agent.receive(beacons[src.uav_id], self.sim_time)
+
+    def _replan_decentralized(self):
+        """Each UAV plans from its own view only: expire leases, EW-CVT over the peers it believes
+        are active, hysteresis gate, then claim sectors (yield to better claims, steal when idle)."""
+        self.stats_control["replan_ticks"] += 1
+        for d in self.drones:
+            if not d.is_alive or d.rtl:
+                continue
+            ag = d.agent
+            for j in ag.expire(self.sim_time, self.lease_slack):
+                truly = not next(x for x in self.drones if x.uav_id == j).is_alive
+                self.suspect_log.append({"t": round(self.sim_time, 1), "observer": d.uav_id,
+                                         "suspect": j, "truly_dead": truly})
+            landed = d.state == "LANDED"
+            if landed and (d.battery <= BATTERY_RESERVE_PCT + 5.0 or
+                           self.sim_time - d.landed_since < self.settle_time):
+                continue          # on the pad: listen for peers' beacons before deciding to relaunch
+            peers = ag.active_peers(include_landed=landed)
+            alive_ids = tuple(sorted([d.uav_id] + peers))
+            d.b_meas = max(0.0, min(100.0, d.battery + self.rng.gauss(0.0, self.battery_noise_std)))
+            if self.dynamic_repartition:
+                gens = {d.uav_id: d.gen}
+                weights = {d.uav_id: (d.b_meas / d.battery_max) ** self.ewcvt_alpha}
+                for j in peers:
+                    gens[j], weights[j] = ag.peers[j]["gen"], ag.peers[j]["w"]
+                c_star = compute_ew_cvt_centroids(gens, weights, self.arena_size, self.arena_size,
+                                                  grid_res=CVT_GRID_RES)[d.uav_id]
+                if self.hysteresis_enabled:
+                    res = d.hysteresis.evaluate(self.sim_time, d.b_meas, c_star, alive_ids, d.speed)
+                    if res["trigger_u_t"]:
+                        self.stats_control["commits"] += 1
+                    d.gen, d.weight = tuple(res["commanded_pos"]), res["effective_weight"]
+                else:
+                    d.gen, d.weight = tuple(c_star), weights[d.uav_id]
+                    self.stats_control["commits"] += 1
+            before = dict(ag.stats)
+            etas = self._etas(d)
+            if d.pending and etas:
+                end_pos, end_eta = d.waypoints[len(d.waypoints) - 2], max(v for v in etas.values())
+            else:
+                end_pos, end_eta = (d.x, d.y), self.sim_time
+            speed = d.search_speed
+            was = set(ag.mine)
+            new = ag.assign((d.x, d.y), d.gen, d.weight, speed, end_pos, end_eta, at_base=landed)
+            if self.failed_uav_info and self.first_adopt_t is None and \
+                    (set(new) - was) & set(self.failed_uav_info["abandoned_sectors"]):
+                self.first_adopt_t = round(self.sim_time, 1)
+            self.stats_control["sector_flips"] += ag.stats["yields"] - before["yields"]
+            self.stats_control["failover_reassigned"] += ag.stats["adopted"] - before["adopted"]
+            if landed and not new:
+                continue
+            if set(new) != set(d.pending):
+                d.pending = list(new)
+                d.assigned_sectors = sorted(set(d.scanned_sectors) | set(d.pending))
+                d.route_changes += 1
+                self.stats_control["route_changes"] += 1
+                self._build_route(d)
+                if landed:
+                    d.reached_first_sector = False
+                    d.relaunches += 1
+            self._refresh_claims(d)
+
     # ------------------------------------------------------------------ networking
     def _try_deliver(self, src, dst_id, dst_loc):
+        """One radio attempt src -> dst (optionally via the old instant geometric relay)."""
         pe = self.physics_engine
         my_loc = src.get_location_dict()
         dist_m = pe.calculate_euclidean_distance(my_loc, dst_loc)
@@ -467,40 +629,76 @@ class SwarmSimulation:
                     if (random.random() >= p1) and (random.random() >= p2):
                         delivered = True
                         break
+        peer = next((d for d in self.drones if d.uav_id == dst_id), None)
+        if peer is not None and not peer.is_alive:
+            delivered = False                      # a dead UAV receives nothing (the sender cannot know)
         return delivered, dist_m, snr, per
+
+    @staticmethod
+    def _holds(d, key):
+        return key in d.discovered_targets or key in d.consensus_registry
+
+    def _queue_copy(self, drone, rid, key, rec, msg_id):
+        """Put one alert copy for `rid` into this UAV's store-and-forward buffer (bounded)."""
+        drone.broker.qos1_buffers[rid].append({
+            "topic": "target_alert", "message_id": msg_id, "timestamp": self.sim_time,
+            "payload": f"{key}:{rec['class_name']}:{rec['conf']}:{rec['world_x']}:{rec['world_y']}"})
+        if self.buffer_cap is not None:
+            while sum(len(b) for b in drone.broker.qos1_buffers.values()) > self.buffer_cap:
+                oldest = min((b for b in drone.broker.qos1_buffers.values() if b), key=lambda b: b[0]["timestamp"])
+                oldest.popleft()
+                self.network_stats["dropped_buffer"] += 1
+
+    def _all_recipients(self, me):
+        return [d.uav_id for d in self.drones if d.uav_id != me.uav_id] + [GCS_ID]
+
+    def _receive_alert(self, src, rid, key, rec):
+        """`rid` has just received alert `key` from `src` (directly or from src's buffer)."""
+        src.fwd_known[key].add(rid)
+        if rid == GCS_ID:
+            self.gcs_known.setdefault(key, self.sim_time)
+            return
+        peer = next((d for d in self.drones if d.uav_id == rid), None)
+        if peer is None or not peer.is_alive or self._holds(peer, key):
+            return
+        peer.consensus_registry[key] = rec
+        peer.fwd_known[key] |= {src.uav_id, peer.uav_id} | src.fwd_known[key]
+        if src.uav_id != rec["detected_by"]:
+            self.network_stats["forwarded"] += 1
+        if self.forwarding_enabled:
+            # store-carry-forward: the receiver now carries the alert for everyone not known to hold it
+            for r in self._all_recipients(peer):
+                if r not in peer.fwd_known[key]:
+                    self._queue_copy(peer, r, key, rec, f"FWD_{key}_{peer.uav_id}")
 
     def _broadcast_alert(self, drone, target_key, det, wx, wy):
         msg_id = f"ALERT_U{drone.uav_id}_{self.msg_counter}"
         self.msg_counter += 1
-        payload = f"{target_key}:{det['class_name']}:{det['conf']}:{wx}:{wy}"
         record = drone.discovered_targets[target_key]
-        peers = [p for p in self.drones if p.uav_id != drone.uav_id and p.is_alive]
-        recipients = [(p.uav_id, p.get_location_dict(), p) for p in peers] + [(GCS_ID, self.gcs_loc, None)]
-        for rid, rloc, peer in recipients:
-            is_gcs = peer is None
+        drone.fwd_known[target_key].add(drone.uav_id)
+        for rid in self._all_recipients(drone):
+            is_gcs = rid == GCS_ID
+            rloc = self.gcs_loc if is_gcs else next(d for d in self.drones if d.uav_id == rid).get_location_dict()
             self.network_stats["gcs_sent" if is_gcs else "sent"] += 1
             delivered, dist_m, snr, per = self._try_deliver(drone, rid, rloc)
             buffered = (not delivered) and self.dtn_enabled
             if delivered:
                 self.network_stats["gcs_delivered" if is_gcs else "delivered"] += 1
-                if is_gcs:
-                    self.gcs_known.setdefault(target_key, self.sim_time)
-                else:
-                    peer.consensus_registry[target_key] = record
+                self._receive_alert(drone, rid, target_key, record)
             else:
                 if not is_gcs:
                     self.network_stats["dropped"] += 1
                 if buffered:
                     if not is_gcs:
                         self.network_stats["buffered"] += 1
-                    drone.broker.qos1_buffers[rid].append({"topic": "target_alert", "payload": payload,
-                                                           "message_id": msg_id, "timestamp": self.sim_time})
+                    self._queue_copy(drone, rid, target_key, record, msg_id)
                 else:
                     self.network_stats["lost"] += 1
             self._log(self.network_log_file, [round(self.sim_time, 2), drone.uav_id, rid, "target_alert", msg_id,
                                               round(dist_m, 2), round(snr, 2), round(per, 3), int(delivered), int(buffered)])
 
     def _flush_buffers(self, swarm_locations):
+        """When the link to a recipient is good, hand over every buffered copy it does not already hold."""
         locs = dict(swarm_locations)
         locs[GCS_ID] = self.gcs_loc
         for drone in self.drones:
@@ -510,21 +708,28 @@ class SwarmSimulation:
             for nid, msgs in flushed.items():
                 for m in msgs:
                     key = m["payload"].split(":")[0]
-                    rec = drone.discovered_targets.get(key)
+                    rec = drone.discovered_targets.get(key) or drone.consensus_registry.get(key)
                     if rec is None:
                         continue
-                    self.network_stats["delivered_late"] += 1
                     if nid == GCS_ID:
-                        self.gcs_known.setdefault(key, self.sim_time)
+                        if key in self.gcs_known:
+                            continue                        # already told (by another UAV)
                     else:
-                        peer = next((d for d in self.drones if d.uav_id == nid and d.is_alive), None)
-                        if peer is not None:
-                            peer.consensus_registry[key] = rec
+                        peer = next((d for d in self.drones if d.uav_id == nid), None)
+                        if peer is None or not peer.is_alive or self._holds(peer, key):
+                            drone.fwd_known[key].add(nid)
+                            continue
+                    self.network_stats["delivered_late"] += 1
+                    self._receive_alert(drone, nid, key, rec)
 
     # ------------------------------------------------------------------ vision
     def _scan_sector(self, drone, sec):
         sid = sec["sector_id"]
+        if sid in self.sector_scan_time:
+            self.dup_scans += 1
         drone.scanned_sectors.add(sid)
+        if drone.agent is not None:
+            drone.agent.mark_scanned(sid)
         if sid in drone.pending:
             drone.pending.remove(sid)
         self.sector_scan_time.setdefault(sid, self.sim_time)
@@ -575,7 +780,7 @@ class SwarmSimulation:
             print(f"Abandoned sectors: {abandoned} | failover={'ON' if self.failover_enabled else 'OFF'}")
             print("=" * 55 + "\n")
         dead.pending = []
-        if self.failover_enabled:
+        if self.failover_enabled and not self.dec:
             self._replan("failover")     # topology change => controllers take a forced override
 
     def _trigger_failure(self):
@@ -594,7 +799,9 @@ class SwarmSimulation:
             self.stats_control["rtl_aborts"] += 1
             drone.pending = []
             self._build_route(drone)     # route = [home]
-            if self.failover_enabled:
+            if drone.agent is not None:
+                drone.agent.mine = {}
+            if self.failover_enabled and not self.dec:
                 self._replan("low_battery")
 
     def step(self, dt=1.0):
@@ -604,7 +811,14 @@ class SwarmSimulation:
         if self.fail_drone_id is not None and not self.failure_triggered and self.sim_time >= self.fail_time:
             self._trigger_failure()
 
-        if self.dynamic_repartition and self.sim_time >= self._next_replan:
+        if self.dec:
+            if self.sim_time >= self._next_beacon:
+                self._next_beacon += self.beacon_interval
+                self._exchange_beacons()
+            if self.sim_time >= self._next_replan:
+                self._next_replan += self.replan_interval
+                self._replan_decentralized()
+        elif self.dynamic_repartition and self.sim_time >= self._next_replan:
             self._next_replan += self.replan_interval
             self._replan("periodic")
 
@@ -617,6 +831,12 @@ class SwarmSimulation:
                 continue
             if not drone.update_position(dt, current_time=self.sim_time):
                 all_done = False
+                self.last_fly_time = self.sim_time
+            if drone.state == "LANDED":
+                if drone.landed_since is None:
+                    drone.landed_since = self.sim_time
+            else:
+                drone.landed_since = None
             if drone.arrived_at_sector:
                 drone.arrived_at_sector = False
                 sec = self.world.get_sector_at(drone.x, drone.y)
@@ -650,8 +870,12 @@ class SwarmSimulation:
                                           self.msg_counter, avg_consensus, round(min_dist, 2)])
         self.timeseries.append({"t": self.sim_time, "coverage": coverage_pct, "targets": len(uniq),
                                 "gcs_known": len(self.gcs_known), "consensus": avg_consensus})
+        if self.dec and all_done and coverage_pct < 100.0 and \
+                (self.sim_time - self.last_fly_time) < (self.lease_slack + 30.0) and \
+                any(d.is_alive and not d.rtl and d.battery > BATTERY_RESERVE_PCT + 5.0 for d in self.drones):
+            all_done = False          # leftover sectors: wait for leases to expire and UAVs to take them
         if all_done and self.makespan is None:
-            self.makespan = self.sim_time
+            self.makespan = self.last_fly_time + 1.0 if self.dec else self.sim_time
 
         return {
             "sim_time": self.sim_time, "coverage_pct": coverage_pct, "targets_count": len(uniq),
@@ -713,6 +937,13 @@ class SwarmSimulation:
             "fleet_endurance_safety_margin_pct": round(min(b) - BATTERY_RESERVE_PCT, 2),
             "active_uav_count": n,
         }
+
+    def _detect_delay(self):
+        """Seconds from the injected failure until some UAV first suspected the failed one."""
+        if not self.failed_uav_info:
+            return None
+        ts = [e["t"] for e in self.suspect_log if e["suspect"] == self.failed_uav_info["uav_id"] and e["truly_dead"]]
+        return round(min(ts) - self.failed_uav_info["time"], 1) if ts else None
 
     def collect_metrics(self, match_radius_m=15.0):
         """Single flat dict of every measured quantity (used by the ablation harness)."""
@@ -792,6 +1023,7 @@ class SwarmSimulation:
             "consensus_final": self.last_consensus,
             "msgs_sent": sent_p + gs, "msgs_lost_forever": self.network_stats["lost"],
             "msgs_delivered_late": self.network_stats["delivered_late"],
+            "alerts_forwarded": self.network_stats["forwarded"], "buffer_drops": self.network_stats["dropped_buffer"],
             # --- energy ---
             "batt_min_pct": en.get("min_remaining_battery_pct"),
             "batt_mean_pct": en.get("mean_remaining_battery_pct"),
@@ -809,6 +1041,15 @@ class SwarmSimulation:
             "hysteresis_updates": hys_updates, "forced_overrides": forced,
             "uavs_lost": len(self.drones) - len(active),
             "rtl_aborts": self.stats_control["rtl_aborts"], "energy_crashes": self.stats_control["energy_crashes"],
+            # --- decentralized planner ---
+            "duplicate_scans": self.dup_scans,
+            "suspicions": len(self.suspect_log),
+            "false_suspicions": sum(1 for e in self.suspect_log if not e["truly_dead"]),
+            "failure_detect_delay_s": self._detect_delay(),
+            "failover_latency_s": (round(self.first_adopt_t - self.failed_uav_info["time"], 1)
+                                   if self.first_adopt_t is not None and self.failed_uav_info else None),
+            "ctl_msgs_sent": self.ctl_msgs["sent"], "ctl_msgs_delivered": self.ctl_msgs["delivered"],
+            "relaunches": sum(d.relaunches for d in self.drones),
         }
 
     def _export_mission_output(self):
@@ -885,9 +1126,15 @@ if __name__ == "__main__":
     parser.add_argument("--no-failover", action="store_true", help="ablate autonomous sector failover")
     parser.add_argument("--static", action="store_true", help="ablate dynamic EW-CVT replanning")
     parser.add_argument("--no-dtn", action="store_true", help="ablate store-and-forward buffering")
-    parser.add_argument("--no-multihop", action="store_true", help="ablate multi-hop relaying")
+    parser.add_argument("--no-forwarding", action="store_true", help="ablate store-carry-forward relaying of received alerts")
+    parser.add_argument("--multihop", action="store_true", help="enable the old instant geometric relay")
+    parser.add_argument("--buffer-cap", type=int, default=None, help="max buffered alert copies per UAV")
     parser.add_argument("--batt-min", type=float, default=100.0, help="lowest initial battery %% (UAVs start U(min,100))")
     parser.add_argument("--batt-noise", type=float, default=0.0, help="battery measurement noise std-dev (%% points)")
+    parser.add_argument("--planner", choices=["decentralized", "centralized"], default="decentralized",
+                        help="decentralized: per-UAV views and claims; centralized: oracle baseline")
+    parser.add_argument("--beacon-interval", type=float, default=5.0, help="seconds between state beacons")
+    parser.add_argument("--lease-slack", type=float, default=60.0, help="seconds past a claim ETA before suspecting its owner")
     parser.add_argument("--out-dir", type=str, default=".")
     args = parser.parse_args()
 
@@ -897,7 +1144,8 @@ if __name__ == "__main__":
                           base_x=args.base_x, base_y=args.base_y, ewcvt_alpha=args.ewcvt_alpha,
                           hysteresis_enabled=not args.no_hysteresis, failover_enabled=not args.no_failover,
                           dynamic_repartition=not args.static, dtn_enabled=not args.no_dtn,
-                          multihop_enabled=not args.no_multihop,
+                          multihop_enabled=args.multihop, forwarding_enabled=not args.no_forwarding, buffer_cap=args.buffer_cap,
                           initial_battery_range=(args.batt_min, 100.0), battery_noise_std=args.batt_noise,
-                          out_dir=args.out_dir)
+                          planner=args.planner, beacon_interval=args.beacon_interval,
+                          lease_slack=args.lease_slack, out_dir=args.out_dir)
     sim.run(max_sim_seconds=args.duration, dt=args.step)
