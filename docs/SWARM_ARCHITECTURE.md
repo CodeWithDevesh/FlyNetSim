@@ -1,5 +1,7 @@
 # Swarm Architecture Plan
 
+> **Status: design plan, not the current implementation.** The mission simulator (`simulate_swarm_mission.py`) uses coordinated planning from global swarm state with instant failure detection. The fully decentralized, peer-to-peer design below (self-claimed sectors, beacons, leases) is future work. See the Scope section of the main README.
+
 This document outlines the architecture to transition FlyNetSim into a decentralized, peer-to-peer (P2P) mesh network where each drone operates autonomously with its own "brain."
 
 ## 1. The "Brain" (Autonomous Control Loop)

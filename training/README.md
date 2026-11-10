@@ -1,4 +1,6 @@
-# Multispectral YOLOv8 Training Pipeline
+# Multispectral YOLO Training Pipeline
+
+> **Current model:** the shipped `best.pt` is a 4-channel **YOLO11s** trained on the NII-CU dataset with [`train_yolo11_rgbt.ipynb`](train_yolo11_rgbt.ipynb) (GPU environment such as Kaggle). The scripts below (`prepare_dataset.py`, `train.py`, YOLOv8n-P2 on RGBTDronePerson) are the **earlier pipeline**, kept for reference. Note that `dataset_1cls_4ch.yaml` points at a validation-only local copy.
 
 This directory contains the dataset preparation scripts, model architecture definitions, and training pipelines for the **4-channel Early-Fusion YOLOv8-P2 multispectral drone vision system**.
 

@@ -3,16 +3,16 @@
 This document provides step-by-step instructions on how to run every component of the **Autonomous Multispectral UAV Swarm SAR System**, including:
 1. **Interactive Web Demo** (Gradio frontend for real-time model inspection).
 2. **In-Memory Spatial World Generator** (Maps dataset images and ground-truth targets).
-3. **Decentralized Swarm Mission Simulator** (Multi-drone autonomous search with RF physics and EdgeBroker P2P mesh).
+3. **Swarm Mission Simulator** (multi-UAV search with RF physics, a store-and-forward mesh and swarm control; coordinated planning, see Scope in the main README).
 4. **Mission Validator & Publication Graph Generator** (Scores swarm output against ground truth and renders 300 DPI figures).
 5. **Autopilot SITL Swarm Integration** (ArduPilot + DroneKit flight loop).
-6. **Dataset & Training Pipeline** (VOC conversion, label remapping, and YOLOv8n-P2 training).
+6. **Dataset & Training Pipeline** (YOLO11s via the notebook; the YOLOv8n-P2 scripts are the legacy path).
 
 ---
 
 ## 1. Quick Environment Setup
 
-All dependencies (PyTorch, Ultralytics YOLOv8, OpenCV, Gradio, Matplotlib, ZeroMQ) are pre-installed in the local virtual environment.
+All dependencies (PyTorch, Ultralytics, OpenCV, Gradio, Matplotlib, ZeroMQ) are pre-installed in the local virtual environment.
 
 Always activate the virtual environment before executing commands:
 
@@ -82,8 +82,8 @@ python sar_world.py --arena 400.0 --grid 5 --seed 42 --out ground_truth_world.js
 Simulates a swarm of autonomous drones sweeping the disaster arena. As each drone navigates its assigned route:
 1. It captures multispectral frames from the sector beneath it.
 2. It executes 4-channel early-fusion inference using `best.pt`.
-3. It broadcasts discovered victim alerts over a peer-to-peer ZeroMQ mesh network.
-4. The `EdgeBroker` applies realistic RF physics (Free Space Path Loss at 5 GHz, Log-Distance Shadow Fading with $\sigma = 7.5\text{ dB}$, and dynamic SNR-to-PER conversion).
+3. It sends discovered victim alerts to peers and the ground station through the simulated mesh (an in-process `EdgeBroker`; no ZeroMQ is used in the mission simulator).
+4. The `EdgeBroker` applies realistic RF physics (log-distance path loss with exponent 2.5, log-normal shadow fading with $\sigma = 4\text{ dB}$, and SNR-to-PER conversion).
 5. Dropped packets are queued in QoS 1 Store-and-Forward buffers and flushed when drones re-enter RF range.
 6. The `DualThresholdHysteresisController` suppresses flight controller chattering by enforcing discrete battery decay ($\tau_\epsilon = 0.02 \times B_{\text{max}}$) and spatial centroid shift ($\tau_\delta = 5.0\text{m}$) gates, while permitting immediate override upon node failure.
 
@@ -193,7 +193,7 @@ python training/prepare_dataset.py \
   --dst /home/devesh/Downloads/YOLO_RGBT_4CH
 ```
 
-### Step 8.2: Train YOLOv8n-P2 4-Channel Model
+### Step 8.2: Train YOLOv8n-P2 4-Channel Model (legacy; the shipped YOLO11s model uses `training/train_yolo11_rgbt.ipynb`)
 Trains the 29-layer P2 high-resolution architecture:
 ```bash
 python training/train.py \
@@ -223,3 +223,16 @@ python training/train.py \
 | [`FlySim/swarm_network.py`](../FlySim/swarm_network.py) | Decentralized `EdgeBroker` with DMLT routing, QoS 1 Store-and-Forward queues, and `RFPhysicsEngine`. |
 | [`FlySim/uav_pubsub.py`](../FlySim/uav_pubsub.py) | ArduPilot SITL / DroneKit autonomous autopilot flight loop with vision and swarm communication. |
 | [`PAPER_METRICS_AND_EXPERIMENTS.md`](PAPER_METRICS_AND_EXPERIMENTS.md) | Academic paper specification: mathematical formulas, variables, and publication figure blueprints. |
+
+
+---
+
+## Reproducing the Ablation Study
+
+```bash
+python ablation/perception_eval.py --n 150
+python ablation/run_ablation.py --seeds 20
+python ablation/make_report.py
+python ablation/make_readme.py
+```
+Outputs are in `results/` (see `results/README.md`).

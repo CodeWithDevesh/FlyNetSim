@@ -3,12 +3,14 @@
 
 ---
 
+> **Status note.** This is the original *metric specification*. Measured results are in [`results/README.md`](../results/README.md), produced by the ablation harness in `ablation/`. Section 8 below describes the earlier 10-UAV benchmark whose numbers predate the simulator rewrite (real flight dynamics, de-duplicated reports, frame-size-aware localization) and are no longer valid.
+
 ## 1. Executive Overview
 
 This document specifies the complete experimental framework and evaluation metrics for our research paper on **Autonomous Multispectral UAV Swarms in Post-Disaster Search and Rescue**. 
 
 The evaluation is organized across three hierarchical layers, capped by a cross-layer synergy analysis:
-1. **Perception Layer**: 4-Channel Early-Fusion YOLOv8-P2 Multispectral Object Detection.
+1. **Perception Layer**: 4-Channel Early-Fusion Multispectral Object Detection (shipped model: YOLO11s; the YOLOv8-P2 variant is the earlier design discussed below).
 2. **Communication Layer**: Decentralized Flying Ad-Hoc Network (FANET) with Log-Distance RF Physics & DMLT EdgeBroker.
 3. **Mission Execution Layer**: Swarm Spatial Dynamics, Area Coverage, and Target Consensus.
 4. **Cross-Layer Coupling**: Trade-off between detection confidence, false-positive alerts, and RF channel saturation.
@@ -245,21 +247,12 @@ timestamp,swarm_size,area_m2,elapsed_sec,area_covered_pct,ttfd_sec,consensus_sec
   * **Ingress / Egress Transit Dash**: $50\text{ m/s}$ ($180\text{ km/h}$) to cross multi-kilometer corridors rapidly.
   * **Sensor Survey Cruise**: $32\text{ m/s}$ ($115\text{ km/h}$) for steady multispectral imaging and optimal forward overlap.
 * **Search Domain**: $5000\text{m} \times 5000\text{m}$ ($25\text{ km}^2$, 25 sectors of $1000\text{m} \times 1000\text{m}$).
-* **Fleet Configuration**: $N = 10$ autonomous UAVs with geographic centroid territorial clustering.
-* **Perception Architecture**: 4-channel early-fusion YOLOv8n-P2 (Stride 4) at $\tau = 0.20$.
+* **Fleet Configuration**: $N = 10$ autonomous UAVs (earlier benchmark; the ablation uses $N = 6$) with geographic centroid territorial clustering.
+* **Perception Architecture**: 4-channel early-fusion YOLO at $\tau = 0.20$ (earlier benchmark used YOLOv8n-P2; shipped model is now YOLO11s).
 * **Injected Mid-Mission Fault**: Catastrophic propulsion failure on **UAV 4** at $T = 80.0\text{s}$ at coordinates $(756.0\text{m}, 3500.0\text{m})$.
 * **Fault-Tolerant Dynamic Failover**: Unsurveyed abandoned sectors (Sectors 16 & 20) autonomously reassigned to nearest active peer UAV 3.
 * **Return-to-Base (RTL) Convergence**: Surviving UAVs return to the launch pad, triggering proximity buffer flushes and map synchronization.
 
 ### 8.2 Empirical Results
-| Experimental Metric | Measured Swarm Outcome | Resilient Swarm Behavior |
-| :--- | :--- | :--- |
-| **Launch Origin** | **Single Base Pad $(250\text{m}, 250\text{m})$** | All 10 UAVs fan outward from a unified Ground Control Station. |
-| **Area Survey Coverage** | **$100.0\%$ (25/25 Sectors)** | Surviving UAV 3 dynamically adopted abandoned Sectors 16 & 20. |
-| **Ground Truth Targets** | **259 Human Victims** | Ground-truth annotations from RGBT SAR dataset. |
-| **True Positive Detections (TP)** | **185 Human Victims** | Correct spatial victim identifications. |
-| **Perception Recall** | **$71.43\%$ Recall** | High victim discovery across $25\text{ km}^2$ wilderness. |
-| **Mean / RMSE Spatial Error** | **$2.60\text{ m}$ / $3.64\text{ m}$** | High localization accuracy across a 5 km domain. |
-| **Mesh Consensus at Egress** | **$97.7\%$ Final Consensus** | Swarm convergence at base station flushes all QoS 1 buffers. |
-| **Total Mission Duration** | **$286.0\text{ seconds}$** | Complete launch $\rightarrow$ transit $\rightarrow$ search $\rightarrow$ failover $\rightarrow$ return cycle. |
+Superseded. The earlier single-run table (10 UAVs, 259 victims, 71 % recall, 286 s) was produced by a simulator that teleported drones, double-counted reports and projected detections with a fixed frame size, so its numbers are withdrawn. Current results, over 780 paired missions with confidence intervals, are in [`results/README.md`](../results/README.md). The reference mission (6 UAVs, 5 km arena) reaches 100 % coverage, precision/recall ≈ 0.98, 1.45 m mean localization error and about 367 s mission time.
 

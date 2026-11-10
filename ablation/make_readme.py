@@ -252,4 +252,5 @@ The ablation harness never writes outside `results/`, so it will not overwrite m
 | `results/figures/` | Charts used above |
 """
 open(os.path.join(ROOT, "results", "README.md"), "w").write(doc)
+open(os.path.join(ROOT, "results", "headline_table.md"), "w").write(headline + "\n")   # reused by the top-level README
 print("wrote results/README.md", len(doc), "chars")
