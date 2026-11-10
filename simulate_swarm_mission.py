@@ -187,7 +187,6 @@ class SwarmSimulation:
                  failover_enabled=True,        # re-assign a lost UAV's sectors to survivors
                  dynamic_repartition=True,     # periodic EW-CVT replanning during the mission
                  dtn_enabled=True,             # QoS-1 store-and-forward buffering
-                 multihop_enabled=False,       # old instant relay via a UAV geometrically between the endpoints
                  forwarding_enabled=True,      # store-carry-forward: UAVs relay alerts they hold when they meet a recipient
                  buffer_cap=None,              # max buffered alert copies per UAV (None = unlimited)
                  # ---- scenario knobs ----------------------------------------------------
@@ -215,7 +214,6 @@ class SwarmSimulation:
         self.failover_enabled = failover_enabled
         self.dynamic_repartition = dynamic_repartition
         self.dtn_enabled = dtn_enabled
-        self.multihop_enabled = multihop_enabled
         self.forwarding_enabled = forwarding_enabled and dtn_enabled
         self.buffer_cap = buffer_cap
         self.initial_battery_range = initial_battery_range
@@ -256,7 +254,7 @@ class SwarmSimulation:
             print(f"Partitioning Metric: {mode_str}")
             print(f"Planner: {planner}" + (f" (beacon {beacon_interval}s, lease slack {lease_slack}s)" if self.dec else " (oracle baseline)"))
             print(f"Switches: hysteresis={hysteresis_enabled} failover={failover_enabled} dynamic={dynamic_repartition} "
-                  f"dtn={dtn_enabled} forwarding={self.forwarding_enabled} multihop={multihop_enabled}")
+                  f"dtn={dtn_enabled} forwarding={self.forwarding_enabled}")
             if self.fail_drone_id is not None:
                 print(f"Injected Failure: UAV {self.fail_drone_id} will fail at T={self.fail_time}s")
             print("=" * 65)
@@ -610,25 +608,12 @@ class SwarmSimulation:
 
     # ------------------------------------------------------------------ networking
     def _try_deliver(self, src, dst_id, dst_loc):
-        """One radio attempt src -> dst (optionally via the old instant geometric relay)."""
+        """One radio attempt src -> dst (direct link only; indirect delivery is store-carry-forward)."""
         pe = self.physics_engine
         my_loc = src.get_location_dict()
         dist_m = pe.calculate_euclidean_distance(my_loc, dst_loc)
         snr, per = pe.calculate_snr_per(my_loc, dst_loc, self.obstacle_mask)
         delivered = (random.random() >= per)
-        if not delivered and self.multihop_enabled:
-            for relay in self.drones:
-                if not relay.is_alive or relay.uav_id in (src.uav_id, dst_id):
-                    continue
-                rl = relay.get_location_dict()
-                d1 = pe.calculate_euclidean_distance(my_loc, rl)
-                d2 = pe.calculate_euclidean_distance(rl, dst_loc)
-                if d1 < dist_m and d2 < dist_m:
-                    _, p1 = pe.calculate_snr_per(my_loc, rl, self.obstacle_mask)
-                    _, p2 = pe.calculate_snr_per(rl, dst_loc, self.obstacle_mask)
-                    if (random.random() >= p1) and (random.random() >= p2):
-                        delivered = True
-                        break
         peer = next((d for d in self.drones if d.uav_id == dst_id), None)
         if peer is not None and not peer.is_alive:
             delivered = False                      # a dead UAV receives nothing (the sender cannot know)
@@ -1127,7 +1112,6 @@ if __name__ == "__main__":
     parser.add_argument("--static", action="store_true", help="ablate dynamic EW-CVT replanning")
     parser.add_argument("--no-dtn", action="store_true", help="ablate store-and-forward buffering")
     parser.add_argument("--no-forwarding", action="store_true", help="ablate store-carry-forward relaying of received alerts")
-    parser.add_argument("--multihop", action="store_true", help="enable the old instant geometric relay")
     parser.add_argument("--buffer-cap", type=int, default=None, help="max buffered alert copies per UAV")
     parser.add_argument("--batt-min", type=float, default=100.0, help="lowest initial battery %% (UAVs start U(min,100))")
     parser.add_argument("--batt-noise", type=float, default=0.0, help="battery measurement noise std-dev (%% points)")
@@ -1144,7 +1128,7 @@ if __name__ == "__main__":
                           base_x=args.base_x, base_y=args.base_y, ewcvt_alpha=args.ewcvt_alpha,
                           hysteresis_enabled=not args.no_hysteresis, failover_enabled=not args.no_failover,
                           dynamic_repartition=not args.static, dtn_enabled=not args.no_dtn,
-                          multihop_enabled=args.multihop, forwarding_enabled=not args.no_forwarding, buffer_cap=args.buffer_cap,
+                          forwarding_enabled=not args.no_forwarding, buffer_cap=args.buffer_cap,
                           initial_battery_range=(args.batt_min, 100.0), battery_noise_std=args.batt_noise,
                           planner=args.planner, beacon_interval=args.beacon_interval,
                           lease_slack=args.lease_slack, out_dir=args.out_dir)

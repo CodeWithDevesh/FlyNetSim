@@ -29,7 +29,7 @@ MAX_SIM_SECONDS = 1500
 
 BASE = dict(num_drones=6, arena_size=5000.0, grid_dim=5, conf_thresh=0.20, model_path=os.path.join(ROOT, "best.pt"),
             ewcvt_alpha=1.0, hysteresis_enabled=True, failover_enabled=True, dynamic_repartition=True,
-            dtn_enabled=True, forwarding_enabled=True, multihop_enabled=False, buffer_cap=None, initial_battery_range=(20.0, 100.0),
+            dtn_enabled=True, forwarding_enabled=True, buffer_cap=None, initial_battery_range=(20.0, 100.0),
             battery_noise_std=1.5, fail_drone_id=None, fail_time=None,
             planner="decentralized", beacon_interval=5.0, lease_slack=60.0)
 
@@ -47,7 +47,6 @@ NETWORK_VARIANTS = {
     "Full (DTN + forwarding)": {},
     "- Forwarding":            dict(forwarding_enabled=False),
     "- DTN buffer":            dict(dtn_enabled=False),            # no buffering also means nothing to forward
-    "Old geometric relay":     dict(forwarding_enabled=False, multihop_enabled=True),
 }
 
 

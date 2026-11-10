@@ -9,7 +9,7 @@ three contributions buys, by switching it off and measuring what happens.
 | 2 | Delay-tolerant FANET mesh: RF physics, QoS-1 store-and-forward, store-carry-forward relaying | `FlySim/swarm_network.py` |
 | 3 | Swarm control: Energy-Weighted CVT partitioning, dual-threshold hysteresis, autonomous failover | `FlySim/hysteresis_controller.py`, `simulate_swarm_mission.py` |
 
-Everything here is **1320 simulated missions** plus a detector evaluation, and is reproducible
+Everything here is **1260 simulated missions** plus a detector evaluation, and is reproducible
 (see [Reproduce](#reproduce)). A self-contained HTML version with the same charts is in
 [`final_report.html`](final_report.html).
 
@@ -158,15 +158,12 @@ Coverage is 100 % at every α, so the third panel is flat.
 | 1.5 km | Full (DTN + forwarding) | 0.985 ± 0.013 | 34 ± 4 | 1.000 ± 0.000 | 0.045 ± 0.026 | 0 ± 0 | 251 ± 30 |
 | 1.5 km | - Forwarding | 0.985 ± 0.013 | 41 ± 5 | 1.000 ± 0.000 | 0.043 ± 0.031 | 0 ± 0 | 251 ± 29 |
 | 1.5 km | - DTN buffer | 0.046 ± 0.028 | 0 ± 0 | 0.236 ± 0.025 | 0.047 ± 0.029 | 252 ± 30 | 0 ± 0 |
-| 1.5 km | Old geometric relay | 0.985 ± 0.013 | 41 ± 5 | 1.000 ± 0.000 | 0.064 ± 0.036 | 0 ± 0 | 250 ± 29 |
 | 3 km | Full (DTN + forwarding) | 0.985 ± 0.013 | 41 ± 4 | 1.000 ± 0.000 | 0.061 ± 0.046 | 0 ± 0 | 243 ± 28 |
 | 3 km | - Forwarding | 0.985 ± 0.013 | 59 ± 7 | 1.000 ± 0.000 | 0.059 ± 0.045 | 0 ± 0 | 243 ± 28 |
 | 3 km | - DTN buffer | 0.060 ± 0.033 | 0 ± 0 | 0.263 ± 0.027 | 0.062 ± 0.036 | 244 ± 28 | 0 ± 0 |
-| 3 km | Old geometric relay | 0.985 ± 0.013 | 59 ± 6 | 1.000 ± 0.000 | 0.084 ± 0.036 | 0 ± 0 | 240 ± 29 |
 | 5 km | Full (DTN + forwarding) | 0.980 ± 0.015 | 103 ± 13 | 1.000 ± 0.000 | 0.033 ± 0.024 | 0 ± 0 | 258 ± 30 |
 | 5 km | - Forwarding | 0.980 ± 0.015 | 109 ± 12 | 1.000 ± 0.000 | 0.037 ± 0.026 | 0 ± 0 | 257 ± 29 |
 | 5 km | - DTN buffer | 0.034 ± 0.019 | 0 ± 0 | 0.221 ± 0.027 | 0.036 ± 0.022 | 257 ± 30 | 0 ± 0 |
-| 5 km | Old geometric relay | 0.980 ± 0.015 | 110 ± 12 | 1.000 ± 0.000 | 0.050 ± 0.031 | 0 ± 0 | 256 ± 30 |
 
 ![Network ablation](figures/network_ablation.png)
 
@@ -175,7 +172,7 @@ the swarm is mostly disconnected in flight and first-attempt delivery to the GCS
 alerts in the UAV's buffer and flushes them when it returns to base, which turns a mostly-offline swarm into one the operator can
 rely on.
 
-**Store-carry-forward.** A UAV that receives an alert keeps a copy for every recipient not known to hold it, and hands it over whenever it later meets that recipient with a good link (the same rule as the base flush). No UAV has to sit between two others at the right moment, so this replaces the old instant geometric relay (last variant above), which adds nothing in a sparse swarm. On contact, only copies the other side lacks are sent; the simulator reads the recipient's holdings as the exchanged summary.
+**Store-carry-forward.** A UAV that receives an alert keeps a copy for every recipient not known to hold it, and hands it over whenever it later meets that recipient with a good link (the same rule as the base flush). No UAV has to sit between two others at the right moment, so delivery does not depend on the swarm's geometry. On contact, only copies the other side lacks are sent; the simulator reads the recipient's holdings as the exchanged summary.
 
 ### A UAV is lost before it returns
 

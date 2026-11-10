@@ -172,18 +172,18 @@ sections.append(ctl_html)
 
 # =============================================================== 3. network
 arenas = [1500, 3000, 5000]
-NV = ["Full (DTN + forwarding)", "- Forwarding", "- DTN buffer", "Old geometric relay"]
+NV = ["Full (DTN + forwarding)", "- Forwarding", "- DTN buffer"]
 fig, axs = plt.subplots(1, 2, figsize=(7.8, 3.1))
-w = 0.2
-for i, (n, col) in enumerate(zip(NV, [C1, C2, C3, C4])):
-    xs = np.arange(3) + (i - 1.5) * w
+w = 0.25
+for i, (n, col) in enumerate(zip(NV, [C1, C2, C3])):
+    xs = np.arange(3) + (i - 1) * w
     b = axs[0].bar(xs, [mean(("network", f"arena_{a}", n), "operator_recall") * 100 for a in arenas], w * 0.9, color=col, label=n)
     bar_labels(axs[0], b, "{:.0f}")
     b = axs[1].bar(xs, [mean(("network", f"arena_{a}", n), "consensus_final") * 100 for a in arenas], w * 0.9, color=col)
     bar_labels(axs[1], b, "{:.0f}")
 for ax, t in zip(axs, ["Victims known to the operator (%)", "Swarm-wide consensus at end (%)"]):
     ax.set_xticks(range(3)); ax.set_xticklabels([f"{a/1000:g} km arena" for a in arenas]); ax.set_title(t); ax.set_ylim(0, 118); ax.grid(axis="x", visible=False)
-axs[0].legend(frameon=False, fontsize=7.5, loc="upper center", bbox_to_anchor=(1.1, -0.12), ncol=4)
+axs[0].legend(frameon=False, fontsize=7.5, loc="upper center", bbox_to_anchor=(1.1, -0.12), ncol=3)
 net_img = fig_html(fig, "Network ablation")
 rows = []
 for a in arenas:
@@ -197,7 +197,7 @@ net_html = f"""
 <h2>3 &nbsp; Networking: delay-tolerant mesh and store-carry-forward relaying</h2>
 <p class="lead">Every victim alert is sent to all peers <i>and</i> to a Ground Control Station at the base. <b>Operator recall</b> is the fraction of all victims in the arena that the operator actually learned about, so it is the end-to-end quantity the network exists to protect. 6 UAVs, equal batteries, no failures, {len(SEEDS)} seeds.</p>
 {net_img}{net_tbl}
-<p class="note">At these ranges the swarm is mostly <b>disconnected</b> in flight (direct link range is a few hundred metres under the RF model), so first-attempt delivery is low everywhere. Store-and-forward is what turns a mostly-offline swarm into a working one: alerts wait in the QoS-1 buffer and flush when the UAV returns to base. The old instant relay (a UAV geometrically between the endpoints) adds nothing because that rarely holds in a sparse swarm. <b>Forwarding</b> replaces it: any UAV that receives an alert keeps it and hands it over whenever it later meets a recipient, so no UAV has to be in the right place at the right time.</p>"""
+<p class="note">At these ranges the swarm is mostly <b>disconnected</b> in flight (direct link range is a few hundred metres under the RF model), so first-attempt delivery is low everywhere. Store-and-forward is what turns a mostly-offline swarm into a working one: alerts wait in the QoS-1 buffer and flush when the UAV returns to base. <b>Forwarding</b> adds to this: any UAV that receives an alert keeps it and hands it over whenever it later meets a recipient, so no UAV has to be in the right place at the right time.</p>"""
 loss_rows = []
 for a in arenas:
     for n in NV[:2]:

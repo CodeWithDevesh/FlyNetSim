@@ -317,22 +317,6 @@ flowchart LR
 
 ---
 
-## Corrections needed in the existing figure (`paper/system_architecture.tex`)
-
-The earlier TikZ figure should not be reused as is. These items do not match the code:
-
-| Figure says | Code does | Suggested fix |
-|---|---|---|
-| 4-channel **YOLOv8-P2**, 640 x 512 input | Detector supports YOLO11 and YOLOv8-P2; the shipped model is YOLO11 (trained at 1280 px, frames about 1280 x 937) | Name the shipped model and its input size |
-| Shadow fading sigma = **7.5 dB** | `swarm_network.py` uses **4 dB** | Use 4 dB, or change the code deliberately |
-| **Blade-element propulsion model** | Linear battery drain (0.07 %/s in transit, 0.04 %/s in search) | Remove, or describe the drain model honestly |
-| **Pinhole georeferencing** | Linear map from box centre to the sector's bounds | Call it sector-based georeferencing |
-| **DLL heartbeat watchdog** | Each UAV has its own view of the live set from beacons it actually received; a peer is suspected lost when overdue back at base plus a lease slack (no fixed-rate heartbeat timeout, because silence in flight is normal) | Describe the lease-based failure suspicion, not a heartbeat watchdog |
-| **ZeroMQ P2P brokers on ports 6000+i** | In the Python simulator brokers are in-process objects; ZeroMQ is only in the SITL path (`uav_pubsub.py`) | Put ZeroMQ under the SITL path only |
-| **16 km2 arena**, 800 m sectors | Results use 5 km x 5 km (25 km2), 1 km sectors | Match the arena used in the results |
-| Failure on UAV 2 at **75 s** | Ablation scenario uses 80 s | Match the results |
-| **Victim recall 71.04 %** (184/259) | Superseded; current whole-arena recall is about 0.98 (nominal) | Remove, or replace with the report's numbers |
-
 ## Decisions needed before drawing
 
 1. **Scope of "the system":** present only the Python mission simulator (what the results measure), or also the ArduPilot/ns-3 SITL path as a deployment route? Proposal: simulator in D1 to D7, SITL only in D8.

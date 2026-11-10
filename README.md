@@ -314,7 +314,7 @@ $$\text{SNR} = P_{tx} - PL(d) - N_0, \qquad \text{PER} = \begin{cases} 0 & \text
 | Arenas ≥ 2 km | 33 dBm at 2.4 GHz, direct link reaches PER ≈ 0.5 at about 520 m |
 | Smaller arenas | 30 dBm at 5 GHz, direct link reaches PER ≈ 0.5 at about 220 m |
 
-Because direct range is a few hundred metres against arenas of several kilometres, the swarm is mostly disconnected in flight. A failed alert, after one optional relay attempt, waits in a per-recipient QoS-1 FIFO buffer on the sending UAV and is flushed when the packet error rate to that recipient falls below 0.2, which in practice happens when the UAV returns to base. The ablation measures the effect on what the operator learns and how late; see [`results/README.md`](results/README.md).
+Because direct range is a few hundred metres against arenas of several kilometres, the swarm is mostly disconnected in flight. A failed alert waits in a per-recipient QoS-1 FIFO buffer on the sending UAV and is flushed when the packet error rate to that recipient falls below 0.2, which in practice happens when the UAV returns to base. The ablation measures the effect on what the operator learns and how late; see [`results/README.md`](results/README.md).
 
 ---
 

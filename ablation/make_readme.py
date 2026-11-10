@@ -83,7 +83,7 @@ alpha_tbl = md(["α", "Min final battery %", "Mission time s", "Coverage %", "Lo
 
 net_rows = []
 for a in (1500, 3000, 5000):
-    for n in ("Full (DTN + forwarding)", "- Forwarding", "- DTN buffer", "Old geometric relay"):
+    for n in ("Full (DTN + forwarding)", "- Forwarding", "- DTN buffer"):
         k = ("network", f"arena_{a}", n)
         net_rows.append([f"{a/1000:g} km", n, ms(k, "operator_recall", 3), ms(k, "alert_latency_mean_s", 0), ms(k, "consensus_final", 3),
                          ms(k, "gcs_pdr_first_attempt", 3), ms(k, "msgs_lost_forever", 0), ms(k, "msgs_delivered_late", 0)])
@@ -234,7 +234,7 @@ the swarm is mostly disconnected in flight and first-attempt delivery to the GCS
 alerts in the UAV's buffer and flushes them when it returns to base, which turns a mostly-offline swarm into one the operator can
 rely on.
 
-**Store-carry-forward.** A UAV that receives an alert keeps a copy for every recipient not known to hold it, and hands it over whenever it later meets that recipient with a good link (the same rule as the base flush). No UAV has to sit between two others at the right moment, so this replaces the old instant geometric relay (last variant above), which adds nothing in a sparse swarm. On contact, only copies the other side lacks are sent; the simulator reads the recipient's holdings as the exchanged summary.
+**Store-carry-forward.** A UAV that receives an alert keeps a copy for every recipient not known to hold it, and hands it over whenever it later meets that recipient with a good link (the same rule as the base flush). No UAV has to sit between two others at the right moment, so delivery does not depend on the swarm's geometry. On contact, only copies the other side lacks are sent; the simulator reads the recipient's holdings as the exchanged summary.
 
 ### A UAV is lost before it returns
 
