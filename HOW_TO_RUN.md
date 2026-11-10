@@ -214,8 +214,8 @@ python training/train.py \
 | [`sar_world.py`](file:///home/devesh/Projects/FlyNetSim/sar_world.py) | In-memory spatial world generator mapping dataset images and labels onto 2D sectors. |
 | [`simulate_swarm_mission.py`](file:///home/devesh/Projects/FlyNetSim/simulate_swarm_mission.py) | Multi-UAV decentralized simulation engine with vision inference, RF physics, and QoS 1 buffering. |
 | [`validate_swarm_mission.py`](file:///home/devesh/Projects/FlyNetSim/validate_swarm_mission.py) | Ground-truth validator computing TP/FP/FN, precision, recall, RMSE, PDR, and rendering plots. |
-| [`rgbt_detector.py`](file:///home/devesh/Projects/FlyNetSim/rgbt_detector.py) | Modular 4-channel early-fusion YOLOv8 inference wrapper with multispectral rendering. |
-| [`best.pt`](file:///home/devesh/Projects/FlyNetSim/best.pt) | Trained 4-channel YOLOv8n-P2 model weights. |
+| [`rgbt_detector.py`](file:///home/devesh/Projects/FlyNetSim/rgbt_detector.py) | Modular 4-channel early-fusion YOLO inference wrapper supporting both YOLO11 and YOLOv8-P2. |
+| [`best.pt`](file:///home/devesh/Projects/FlyNetSim/best.pt) | Active trained 4-channel YOLO model weights (YOLO11s, with fallback/ablation support for `best_yolov8_p2.pt`). |
 | [`training/`](file:///home/devesh/Projects/FlyNetSim/training) | Dedicated directory containing dataset converter, training CLI, GPU notebook, and model configs. |
 | [`tests/`](file:///home/devesh/Projects/FlyNetSim/tests) | Automated unit and integration test suite (`test_sar_system.py`) and verification scripts. |
 | [`FlySim/hysteresis_controller.py`](file:///home/devesh/Projects/FlyNetSim/FlySim/hysteresis_controller.py) | Dual-threshold hysteresis controller for anti-chattering flight control and EW-CVT partitioning. |

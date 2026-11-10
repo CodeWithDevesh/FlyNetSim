@@ -12,10 +12,10 @@ base.imread = lambda p, flags=cv2.IMREAD_COLOR: cv2.imdecode(np.fromfile(p, np.u
 class RGBTDetector:
     """
     Multispectral 4-Channel Early-Fusion Detector for Autonomous Drone Vision.
-    Supports both standard YOLOv8 4-channel and high-resolution P2-head 1-class ('human') models.
+    Supports YOLO11, high-resolution YOLOv8-P2 (4 heads), and standard YOLOv8 models.
     """
 
-    def __init__(self, model_path="best.pt", conf_thresh=0.20, iou_thresh=0.45, imgsz=1024, device=None):
+    def __init__(self, model_path="best.pt", conf_thresh=0.20, iou_thresh=0.45, imgsz=None, device=None):
         self.model_path = model_path
         self.conf_thresh = conf_thresh
         self.iou_thresh = iou_thresh
@@ -25,10 +25,20 @@ class RGBTDetector:
         self.nc = 1
         self.names = {0: "human"}
         self.is_p2 = False
+        self.model_family = "Unknown"
+        self.channel_order = [2, 1, 0, 3]
 
         self._load_model()
 
     def _load_model(self):
+        # Handle if a .zip model file is passed directly (Ultralytics requires .pt extension)
+        if self.model_path.endswith(".zip"):
+            pt_target = self.model_path[:-4] + ".pt"
+            if not os.path.exists(pt_target):
+                import shutil
+                shutil.copyfile(self.model_path, pt_target)
+            self.model_path = pt_target
+
         if not os.path.exists(self.model_path):
             print(f"[RGBTDetector] Model weights not found at: {self.model_path}")
             return False
@@ -37,21 +47,47 @@ class RGBTDetector:
             print(f"[RGBTDetector] Loading weights from {self.model_path} on {self.device}...")
             self.model = YOLO(self.model_path)
             
-            # Inspect loaded model architecture
+            # Inspect loaded model architecture and classes
             if hasattr(self.model, "names") and self.model.names:
                 self.names = self.model.names
                 self.nc = len(self.names)
             
-            # Check if this is the P2 architecture (4 detection scales)
-            try:
-                detect_module = self.model.model.model[-1]
-                nl = getattr(detect_module, "nl", 3)
-                self.is_p2 = (nl == 4)
-            except Exception:
-                self.is_p2 = False
+            # Determine model family, detection scales, and input channel order
+            yaml_dict = getattr(self.model.model, "yaml", {}) or {}
+            yaml_file = str(yaml_dict.get("yaml_file", ""))
+            layer_types = [type(m).__name__ for m in getattr(self.model.model, "model", [])]
+            detect_module = self.model.model.model[-1]
+            nl = getattr(detect_module, "nl", 3)
+            self.is_p2 = (nl == 4)
+
+            # Check for YOLO11 (uses C3k2, C2PSA blocks or yolo11 in yaml_file)
+            if "C3k2" in layer_types or "C2PSA" in layer_types or "yolo11" in yaml_file.lower():
+                self.model_family = "YOLO11"
+                # Trained with planes = [r, g, b, th] (Red, Green, Blue, Thermal).
+                # From OpenCV BGRA (B=0, G=1, R=2, T=3), order is [2, 1, 0, 3].
+                self.channel_order = [2, 1, 0, 3]
+                default_imgsz = 1280
+            elif self.is_p2:
+                self.model_family = "YOLOv8-P2"
+                # Trained with [Thermal, Blue, Green, Red]
+                self.channel_order = [3, 0, 1, 2]
+                default_imgsz = 1024
+            elif self.nc == 1:
+                self.model_family = "YOLOv8"
+                self.channel_order = [3, 0, 1, 2]
+                default_imgsz = 1024
+            else:
+                self.model_family = "Legacy 4-Channel"
+                self.channel_order = [0, 1, 2, 3]
+                default_imgsz = 1024
+
+            if self.imgsz is None:
+                trained_imgsz = getattr(self.model.model, "args", {}).get("imgsz")
+                self.imgsz = trained_imgsz if trained_imgsz else default_imgsz
 
             print(f"[RGBTDetector] Loaded successfully!")
-            print(f"               Architecture: {'YOLOv8-P2 (4 heads)' if self.is_p2 else 'YOLOv8 Standard (3 heads)'}")
+            print(f"               Architecture: {self.model_family} ({nl} detection heads)")
+            print(f"               Channel order: {self.channel_order} (Input imgsz: {self.imgsz})")
             print(f"               Classes ({self.nc}): {list(self.names.values())}")
             return True
         except Exception as e:
@@ -93,12 +129,12 @@ class RGBTDetector:
         else:
             raise TypeError("Unsupported image input format.")
 
-        # If trained with the P2 1-class script, channel ordering was [Thermal, Blue, Green, Red]
-        # which corresponds to indices [3, 0, 1, 2] of OpenCV BGRA.
-        if self.nc == 1 or self.is_p2:
+        # Permute channels to the ordering expected by the loaded model
+        if hasattr(self, "channel_order") and self.channel_order:
+            img_prepared = np.ascontiguousarray(img_bgra[:, :, self.channel_order])
+        elif self.nc == 1 or self.is_p2:
             img_prepared = np.ascontiguousarray(img_bgra[:, :, [3, 0, 1, 2]])
         else:
-            # Fallback for earlier 4-class checkpoint
             img_prepared = np.ascontiguousarray(img_bgra)
 
         return img_prepared, img_bgra

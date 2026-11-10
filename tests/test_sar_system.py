@@ -80,9 +80,9 @@ class TestRGBTDetector(unittest.TestCase):
 
     def test_detector_initialization(self):
         self.assertTrue(self.detector.is_ready(), "Model weights should be loaded.")
-        self.assertEqual(self.detector.nc, 1, "Model must have 1 class ('human').")
+        self.assertEqual(self.detector.nc, 1, "Model must have 1 class ('human' or 'person').")
         self.assertIn(0, self.detector.names)
-        self.assertEqual(self.detector.names[0], "human")
+        self.assertIn(self.detector.names[0], ["human", "person"])
 
     def test_preprocessing_4channel(self):
         # Create synthetic 4-channel BGRA image (640x512)
@@ -94,8 +94,15 @@ class TestRGBTDetector(unittest.TestCase):
 
         img_prep, img_orig = self.detector.preprocess_4channel(dummy_bgra)
         self.assertEqual(img_prep.shape, (512, 640, 4))
-        # Channel ordering for P2: Thermal at index 0, Blue at 1, Green at 2, Red at 3
-        if self.detector.is_p2:
+        # Channel ordering depends on model family:
+        # YOLO11: [Red, Green, Blue, Thermal] -> [2, 1, 0, 3] from BGRA
+        # YOLOv8-P2: [Thermal, Blue, Green, Red] -> [3, 0, 1, 2] from BGRA
+        if self.detector.channel_order == [2, 1, 0, 3]:
+            self.assertEqual(img_prep[0, 0, 0], 150)  # Red
+            self.assertEqual(img_prep[0, 0, 1], 100)  # Green
+            self.assertEqual(img_prep[0, 0, 2], 50)   # Blue
+            self.assertEqual(img_prep[0, 0, 3], 200)  # Thermal
+        elif self.detector.is_p2:
             self.assertEqual(img_prep[0, 0, 0], 200)  # Thermal channel first
             self.assertEqual(img_prep[0, 0, 1], 50)   # Blue
             self.assertEqual(img_prep[0, 0, 2], 100)  # Green
@@ -109,7 +116,7 @@ class TestRGBTDetector(unittest.TestCase):
             self.assertIn("box", det)
             self.assertIn("conf", det)
             self.assertIn("class_name", det)
-            self.assertEqual(det["class_name"], "human")
+            self.assertIn(det["class_name"], ["human", "person"])
 
 
 class TestRFPhysicsEngine(unittest.TestCase):

@@ -10,6 +10,7 @@ import os
 import sys
 import glob
 import random
+from hysteresis_controller import DualThresholdHysteresisController, compute_ew_cvt_centroids
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 try:
@@ -95,9 +96,15 @@ class UAV:
                     self.detector = RGBTDetector(model_path=weights_path, conf_thresh=0.20, device="cpu")
                 except Exception as e:
                     print(self.prefix + f" [VISION] Could not load detector: {e}")
-            val_dir = "/home/devesh/Downloads/YOLO_RGBT_4CH_Mini/images/val"
+            val_dir = "/home/devesh/Downloads/NII_CU_MAPD_4CH/images/val"
             if os.path.exists(val_dir):
                 self.val_images = glob.glob(os.path.join(val_dir, "*.png"))
+
+        # EW-CVT & Hysteresis Controller Attributes
+        self.battery_max = 100.0
+        self.current_battery = 100.0
+        self.ewcvt_alpha = 1.0
+        self.hysteresis = None
 
         print(self.prefix + " Connecting to SITL vehicle...")
         self.vehicle = self.connect_sitl(self.sitl_connection_str, self.verbose)
@@ -913,13 +920,42 @@ class UAV:
                     print(self.prefix + f" [VISION] Scan error: {e}")
 
             if self.current_location is not None:
-                # Fly in different directions to test network partitioning
-                if int(self.uav_id) % 3 == 0:
-                    loc = self.get_location_metres(self.current_location, 20, 0, self.current_location.alt) # North
-                elif int(self.uav_id) % 3 == 1:
-                    loc = self.get_location_metres(self.current_location, 0, 20, self.current_location.alt) # East
-                else:
-                    loc = self.get_location_metres(self.current_location, -20, -20, self.current_location.alt) # South-West
-                self.go_to(self.vehicle, loc, False)
+                # Update battery (Mocking drain for SITL if telemetry doesn't provide it)
+                self.current_battery = max(0.0, self.current_battery - 0.05) 
+
+                # Build Generator dictionary for Voronoi math (Local Cartesian meters)
+                generators = {self.uav_id: (0.0, 0.0)}
+                weights = {self.uav_id: max(0.01, (self.current_battery / self.battery_max) ** self.ewcvt_alpha)}
+                active_topology = [self.uav_id]
+                
+                for peer_id, state in self.swarm_state.items():
+                    active_topology.append(peer_id)
+                    dy, dx = self.get_distance_metres(self.current_location, LocationGlobal(state['lat'], state['lon']))
+                    generators[peer_id] = (dx, dy)
+                    weights[peer_id] = 1.0  # Parse peer battery from telemetry payload in production
+
+                # Compute Theoretical Voronoi Centroid
+                centroids = compute_ew_cvt_centroids(generators, weights, arena_width=400.0, arena_height=400.0)
+                target_cx, target_cy = centroids.get(self.uav_id, (0.0, 0.0))
+
+                # Evaluate Dual-Threshold Hysteresis
+                if self.hysteresis is None:
+                    self.hysteresis = DualThresholdHysteresisController(
+                        uav_id=self.uav_id, initial_pos=(0.0, 0.0),
+                        b_max=self.battery_max, initial_topology=active_topology
+                    )
+
+                hyst_eval = self.hysteresis.evaluate(
+                    current_time=time.time(), current_battery=self.current_battery,
+                    theoretical_centroid=(target_cx, target_cy), current_topology=active_topology,
+                    current_speed=self.groundspeed
+                )
+
+                # Execute Commanded Waypoint (Only if threshold breached)
+                if hyst_eval["trigger_u_t"]:
+                    cmd_x, cmd_y = hyst_eval["commanded_pos"]
+                    print(self.prefix + f" BRAIN: Hysteresis breached. Adjusting trajectory. Reason: {hyst_eval['reason']}")
+                    target_gps = self.get_location_metres(self.current_location, cmd_y, cmd_x, self.current_location.alt)
+                    self.go_to(self.vehicle, target_gps, False)
 
             time.sleep(2)

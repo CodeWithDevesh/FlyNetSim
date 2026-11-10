@@ -8,7 +8,7 @@
     200.0
   ],
   "total_sectors": 25,
-  "total_victims": 259,
+  "total_victims": 46,
   "sectors": [
     {
       "sector_id": 0,
@@ -22,8 +22,8 @@
         400.0,
         400.0
       ],
-      "image_file": "05363.png",
-      "victim_count": 1
+      "image_file": "flight3_frame23241.png",
+      "victim_count": 3
     },
     {
       "sector_id": 1,
@@ -37,8 +37,8 @@
         1200.0,
         400.0
       ],
-      "image_file": "06043.png",
-      "victim_count": 4
+      "image_file": "flight3_frame18361.png",
+      "victim_count": 0
     },
     {
       "sector_id": 2,
@@ -52,8 +52,8 @@
         2000.0,
         400.0
       ],
-      "image_file": "05581.png",
-      "victim_count": 21
+      "image_file": "flight3_frame16291.png",
+      "victim_count": 5
     },
     {
       "sector_id": 3,
@@ -67,8 +67,8 @@
         2800.0,
         400.0
       ],
-      "image_file": "06067.png",
-      "victim_count": 2
+      "image_file": "flight3_frame16331.png",
+      "victim_count": 4
     },
     {
       "sector_id": 4,
@@ -82,8 +82,8 @@
         3600.0,
         400.0
       ],
-      "image_file": "05632.png",
-      "victim_count": 67
+      "image_file": "flight3_frame20281.png",
+      "victim_count": 1
     },
     {
       "sector_id": 5,
@@ -97,8 +97,8 @@
         400.0,
         1200.0
       ],
-      "image_file": "05697.png",
-      "victim_count": 1
+      "image_file": "flight3_frame16921.png",
+      "victim_count": 2
     },
     {
       "sector_id": 6,
@@ -112,8 +112,8 @@
         1200.0,
         1200.0
       ],
-      "image_file": "04967.png",
-      "victim_count": 17
+      "image_file": "flight3_frame19951.png",
+      "victim_count": 1
     },
     {
       "sector_id": 7,
@@ -127,8 +127,8 @@
         2000.0,
         1200.0
       ],
-      "image_file": "04912.png",
-      "victim_count": 9
+      "image_file": "flight3_frame23411.png",
+      "victim_count": 2
     },
     {
       "sector_id": 8,
@@ -142,7 +142,7 @@
         2800.0,
         1200.0
       ],
-      "image_file": "05355.png",
+      "image_file": "flight3_frame25031.png",
       "victim_count": 3
     },
     {
@@ -157,8 +157,8 @@
         3600.0,
         1200.0
       ],
-      "image_file": "05246.png",
-      "victim_count": 3
+      "image_file": "flight3_frame18731.png",
+      "victim_count": 2
     },
     {
       "sector_id": 10,
@@ -172,8 +172,8 @@
         400.0,
         2000.0
       ],
-      "image_file": "05775.png",
-      "victim_count": 8
+      "image_file": "flight3_frame12811.png",
+      "victim_count": 1
     },
     {
       "sector_id": 11,
@@ -187,8 +187,8 @@
         1200.0,
         2000.0
       ],
-      "image_file": "05921.png",
-      "victim_count": 3
+      "image_file": "flight3_frame22301.png",
+      "victim_count": 2
     },
     {
       "sector_id": 12,
@@ -202,8 +202,8 @@
         2000.0,
         2000.0
       ],
-      "image_file": "05734.png",
-      "victim_count": 8
+      "image_file": "flight3_frame19031.png",
+      "victim_count": 1
     },
     {
       "sector_id": 13,
@@ -217,8 +217,8 @@
         2800.0,
         2000.0
       ],
-      "image_file": "05426.png",
-      "victim_count": 14
+      "image_file": "flight3_frame22281.png",
+      "victim_count": 2
     },
     {
       "sector_id": 14,
@@ -232,8 +232,8 @@
         3600.0,
         2000.0
       ],
-      "image_file": "05862.png",
-      "victim_count": 4
+      "image_file": "flight3_frame22861.png",
+      "victim_count": 1
     },
     {
       "sector_id": 15,
@@ -247,8 +247,8 @@
         400.0,
         2800.0
       ],
-      "image_file": "05909.png",
-      "victim_count": 7
+      "image_file": "flight3_frame18751.png",
+      "victim_count": 2
     },
     {
       "sector_id": 16,
@@ -262,8 +262,8 @@
         1200.0,
         2800.0
       ],
-      "image_file": "05248.png",
-      "victim_count": 11
+      "image_file": "flight3_frame23471.png",
+      "victim_count": 2
     },
     {
       "sector_id": 17,
@@ -277,7 +277,7 @@
         2000.0,
         2800.0
       ],
-      "image_file": "05737.png",
+      "image_file": "flight3_frame19211.png",
       "victim_count": 1
     },
     {
@@ -292,8 +292,8 @@
         2800.0,
         2800.0
       ],
-      "image_file": "05131.png",
-      "victim_count": 7
+      "image_file": "flight3_frame21151.png",
+      "victim_count": 1
     },
     {
       "sector_id": 19,
@@ -307,8 +307,8 @@
         3600.0,
         2800.0
       ],
-      "image_file": "04917.png",
-      "victim_count": 7
+      "image_file": "flight3_frame19251.png",
+      "victim_count": 1
     },
     {
       "sector_id": 20,
@@ -322,8 +322,8 @@
         400.0,
         3600.0
       ],
-      "image_file": "05875.png",
-      "victim_count": 16
+      "image_file": "flight3_frame23971.png",
+      "victim_count": 3
     },
     {
       "sector_id": 21,
@@ -337,8 +337,8 @@
         1200.0,
         3600.0
       ],
-      "image_file": "04987.png",
-      "victim_count": 15
+      "image_file": "flight3_frame20061.png",
+      "victim_count": 1
     },
     {
       "sector_id": 22,
@@ -352,8 +352,8 @@
         2000.0,
         3600.0
       ],
-      "image_file": "05204.png",
-      "victim_count": 18
+      "image_file": "flight3_frame13021.png",
+      "victim_count": 0
     },
     {
       "sector_id": 23,
@@ -367,8 +367,8 @@
         2800.0,
         3600.0
       ],
-      "image_file": "05711.png",
-      "victim_count": 8
+      "image_file": "flight3_frame20621.png",
+      "victim_count": 2
     },
     {
       "sector_id": 24,
@@ -382,8 +382,8 @@
         3600.0,
         3600.0
       ],
-      "image_file": "06028.png",
-      "victim_count": 4
+      "image_file": "flight3_frame13191.png",
+      "victim_count": 3
     }
   ],
   "victims": [
@@ -392,3885 +392,690 @@
       "sector_id": 0,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 87.5,
-      "world_y": 185.16,
+      "world_x": 517.81,
+      "world_y": 747.68,
       "norm_bbox": [
-        0.109375,
-        0.231445,
-        0.01875,
-        0.037109
+        0.647265,
+        0.934596,
+        0.028455,
+        0.070202
       ],
-      "image_file": "05363.png"
+      "image_file": "flight3_frame23241.png"
     },
     {
-      "target_id": "GT_S01_00",
-      "sector_id": 1,
+      "target_id": "GT_S00_01",
+      "sector_id": 0,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 1528.12,
-      "world_y": 697.66,
+      "world_x": 393.64,
+      "world_y": 731.72,
       "norm_bbox": [
-        0.910156,
-        0.87207,
-        0.017188,
-        0.025391
+        0.492055,
+        0.914646,
+        0.025499,
+        0.055556
       ],
-      "image_file": "06043.png"
+      "image_file": "flight3_frame23241.png"
     },
     {
-      "target_id": "GT_S01_01",
-      "sector_id": 1,
+      "target_id": "GT_S00_02",
+      "sector_id": 0,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 1033.12,
-      "world_y": 725.78,
+      "world_x": 310.72,
+      "world_y": 678.99,
       "norm_bbox": [
-        0.291406,
-        0.907227,
-        0.023438,
-        0.029297
+        0.388396,
+        0.848737,
+        0.033259,
+        0.057071
       ],
-      "image_file": "06043.png"
-    },
-    {
-      "target_id": "GT_S01_02",
-      "sector_id": 1,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 890.62,
-      "world_y": 175.0,
-      "norm_bbox": [
-        0.113281,
-        0.21875,
-        0.014063,
-        0.03125
-      ],
-      "image_file": "06043.png"
-    },
-    {
-      "target_id": "GT_S01_03",
-      "sector_id": 1,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1061.25,
-      "world_y": 277.34,
-      "norm_bbox": [
-        0.326563,
-        0.34668,
-        0.009375,
-        0.025391
-      ],
-      "image_file": "06043.png"
+      "image_file": "flight3_frame23241.png"
     },
     {
       "target_id": "GT_S02_00",
       "sector_id": 2,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 1731.25,
-      "world_y": 699.22,
+      "world_x": 2248.19,
+      "world_y": 437.37,
       "norm_bbox": [
-        0.164062,
-        0.874023,
-        0.01875,
-        0.037109
+        0.810237,
+        0.546717,
+        0.019586,
+        0.034848
       ],
-      "image_file": "05581.png"
+      "image_file": "flight3_frame16291.png"
     },
     {
       "target_id": "GT_S02_01",
       "sector_id": 2,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 1769.38,
-      "world_y": 688.28,
+      "world_x": 2381.08,
+      "world_y": 325.66,
       "norm_bbox": [
-        0.211719,
-        0.860352,
-        0.023438,
-        0.025391
+        0.976349,
+        0.407071,
+        0.018477,
+        0.039394
       ],
-      "image_file": "05581.png"
+      "image_file": "flight3_frame16291.png"
     },
     {
       "target_id": "GT_S02_02",
       "sector_id": 2,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2113.12,
-      "world_y": 773.44,
+      "world_x": 2235.18,
+      "world_y": 412.53,
       "norm_bbox": [
-        0.641406,
-        0.966797,
-        0.017188,
-        0.027344
+        0.793976,
+        0.515657,
+        0.020325,
+        0.036364
       ],
-      "image_file": "05581.png"
+      "image_file": "flight3_frame16291.png"
     },
     {
       "target_id": "GT_S02_03",
       "sector_id": 2,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2123.12,
-      "world_y": 754.69,
+      "world_x": 2258.39,
+      "world_y": 575.56,
       "norm_bbox": [
-        0.653906,
-        0.943359,
-        0.014063,
-        0.023438
+        0.822986,
+        0.719444,
+        0.019217,
+        0.031818
       ],
-      "image_file": "05581.png"
+      "image_file": "flight3_frame16291.png"
     },
     {
       "target_id": "GT_S02_04",
       "sector_id": 2,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2137.5,
-      "world_y": 751.56,
+      "world_x": 2326.53,
+      "world_y": 250.91,
       "norm_bbox": [
-        0.671875,
-        0.939453,
-        0.015625,
-        0.023438
+        0.908167,
+        0.313636,
+        0.025499,
+        0.036364
       ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_05",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2205.0,
-      "world_y": 647.66,
-      "norm_bbox": [
-        0.75625,
-        0.80957,
-        0.015625,
-        0.017578
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_06",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2208.75,
-      "world_y": 578.12,
-      "norm_bbox": [
-        0.760938,
-        0.722656,
-        0.01875,
-        0.03125
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_07",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2247.5,
-      "world_y": 517.97,
-      "norm_bbox": [
-        0.809375,
-        0.647461,
-        0.015625,
-        0.025391
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_08",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2223.75,
-      "world_y": 461.72,
-      "norm_bbox": [
-        0.779688,
-        0.577148,
-        0.021875,
-        0.033203
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_09",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2242.5,
-      "world_y": 428.91,
-      "norm_bbox": [
-        0.803125,
-        0.536133,
-        0.0125,
-        0.025391
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_10",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2246.88,
-      "world_y": 396.09,
-      "norm_bbox": [
-        0.808594,
-        0.495117,
-        0.020313,
-        0.025391
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_11",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2258.12,
-      "world_y": 360.16,
-      "norm_bbox": [
-        0.822656,
-        0.450195,
-        0.010938,
-        0.021484
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_12",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2294.38,
-      "world_y": 353.12,
-      "norm_bbox": [
-        0.867969,
-        0.441406,
-        0.014063,
-        0.027344
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_13",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2261.25,
-      "world_y": 420.31,
-      "norm_bbox": [
-        0.826563,
-        0.525391,
-        0.021875,
-        0.03125
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_14",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2326.25,
-      "world_y": 253.91,
-      "norm_bbox": [
-        0.907813,
-        0.317383,
-        0.0125,
-        0.021484
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_15",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2310.0,
-      "world_y": 220.31,
-      "norm_bbox": [
-        0.8875,
-        0.275391,
-        0.0125,
-        0.023438
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_16",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2309.38,
-      "world_y": 200.0,
-      "norm_bbox": [
-        0.886719,
-        0.25,
-        0.017188,
-        0.023438
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_17",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2320.62,
-      "world_y": 197.66,
-      "norm_bbox": [
-        0.900781,
-        0.24707,
-        0.010938,
-        0.025391
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_18",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2300.0,
-      "world_y": 170.31,
-      "norm_bbox": [
-        0.875,
-        0.212891,
-        0.0125,
-        0.023438
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_19",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2367.5,
-      "world_y": 120.31,
-      "norm_bbox": [
-        0.959375,
-        0.150391,
-        0.009375,
-        0.023438
-      ],
-      "image_file": "05581.png"
-    },
-    {
-      "target_id": "GT_S02_20",
-      "sector_id": 2,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2380.62,
-      "world_y": 92.97,
-      "norm_bbox": [
-        0.975781,
-        0.116211,
-        0.014063,
-        0.021484
-      ],
-      "image_file": "05581.png"
+      "image_file": "flight3_frame16291.png"
     },
     {
       "target_id": "GT_S03_00",
       "sector_id": 3,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2673.75,
-      "world_y": 436.72,
+      "world_x": 3154.47,
+      "world_y": 249.5,
       "norm_bbox": [
-        0.342188,
-        0.545898,
-        0.009375,
-        0.029297
+        0.943089,
+        0.311869,
+        0.017738,
+        0.034848
       ],
-      "image_file": "06067.png"
+      "image_file": "flight3_frame16331.png"
     },
     {
       "target_id": "GT_S03_01",
       "sector_id": 3,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2680.0,
-      "world_y": 459.38,
+      "world_x": 3066.08,
+      "world_y": 444.44,
       "norm_bbox": [
-        0.35,
-        0.574219,
-        0.009375,
-        0.023438
+        0.832594,
+        0.555556,
+        0.028086,
+        0.029293
       ],
-      "image_file": "06067.png"
+      "image_file": "flight3_frame16331.png"
+    },
+    {
+      "target_id": "GT_S03_02",
+      "sector_id": 3,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3047.01,
+      "world_y": 412.93,
+      "norm_bbox": [
+        0.808758,
+        0.516162,
+        0.015152,
+        0.030303
+      ],
+      "image_file": "flight3_frame16331.png"
+    },
+    {
+      "target_id": "GT_S03_03",
+      "sector_id": 3,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 3071.99,
+      "world_y": 568.48,
+      "norm_bbox": [
+        0.839985,
+        0.710606,
+        0.01626,
+        0.036364
+      ],
+      "image_file": "flight3_frame16331.png"
     },
     {
       "target_id": "GT_S04_00",
       "sector_id": 4,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 3443.12,
-      "world_y": 440.62,
-      "norm_bbox": [
-        0.303906,
-        0.550781,
-        0.010938,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_01",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3420.0,
-      "world_y": 464.06,
-      "norm_bbox": [
-        0.275,
-        0.580078,
-        0.0125,
-        0.03125
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_02",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3414.38,
-      "world_y": 495.31,
-      "norm_bbox": [
-        0.267969,
-        0.619141,
-        0.010938,
-        0.023438
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_03",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3409.38,
-      "world_y": 502.34,
-      "norm_bbox": [
-        0.261719,
-        0.62793,
-        0.010938,
-        0.021484
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_04",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3475.62,
-      "world_y": 577.34,
-      "norm_bbox": [
-        0.344531,
-        0.72168,
-        0.014063,
-        0.017578
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_05",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3498.12,
-      "world_y": 565.62,
-      "norm_bbox": [
-        0.372656,
-        0.707031,
-        0.014063,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_06",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3509.38,
-      "world_y": 571.09,
-      "norm_bbox": [
-        0.386719,
-        0.713867,
-        0.014063,
-        0.029297
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_07",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3625.0,
-      "world_y": 469.53,
-      "norm_bbox": [
-        0.53125,
-        0.586914,
-        0.015625,
-        0.033203
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_08",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3623.75,
-      "world_y": 410.16,
-      "norm_bbox": [
-        0.529687,
-        0.512695,
-        0.0125,
-        0.029297
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_09",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3611.25,
-      "world_y": 407.81,
-      "norm_bbox": [
-        0.514062,
-        0.509766,
-        0.015625,
-        0.019531
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_10",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3609.38,
-      "world_y": 396.09,
-      "norm_bbox": [
-        0.511719,
-        0.495117,
-        0.017188,
-        0.017578
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_11",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3664.38,
-      "world_y": 363.28,
-      "norm_bbox": [
-        0.580469,
-        0.454102,
-        0.010938,
-        0.033203
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_12",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3673.75,
-      "world_y": 393.75,
-      "norm_bbox": [
-        0.592187,
-        0.492188,
-        0.0125,
-        0.03125
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_13",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3673.12,
-      "world_y": 504.69,
-      "norm_bbox": [
-        0.591406,
-        0.630859,
-        0.010938,
-        0.03125
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_14",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3776.88,
-      "world_y": 482.03,
-      "norm_bbox": [
-        0.721094,
-        0.602539,
-        0.014063,
-        0.025391
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_15",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3779.38,
-      "world_y": 513.28,
-      "norm_bbox": [
-        0.724219,
-        0.641602,
-        0.014063,
-        0.029297
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_16",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3774.38,
-      "world_y": 397.66,
-      "norm_bbox": [
-        0.717969,
-        0.49707,
-        0.014063,
-        0.029297
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_17",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3769.38,
-      "world_y": 371.09,
-      "norm_bbox": [
-        0.711719,
-        0.463867,
-        0.010938,
-        0.029297
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_18",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3666.25,
-      "world_y": 296.88,
-      "norm_bbox": [
-        0.582813,
-        0.371094,
-        0.0125,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_19",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3671.88,
-      "world_y": 273.44,
-      "norm_bbox": [
-        0.589844,
-        0.341797,
-        0.010938,
-        0.03125
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_20",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3750.0,
-      "world_y": 307.81,
-      "norm_bbox": [
-        0.6875,
-        0.384766,
-        0.009375,
-        0.023438
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_21",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3751.25,
-      "world_y": 275.78,
-      "norm_bbox": [
-        0.689063,
-        0.344727,
-        0.009375,
-        0.025391
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_22",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3676.25,
-      "world_y": 200.0,
-      "norm_bbox": [
-        0.595313,
-        0.25,
-        0.015625,
-        0.023438
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_23",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3661.88,
-      "world_y": 178.91,
-      "norm_bbox": [
-        0.577344,
-        0.223633,
-        0.010938,
-        0.029297
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_24",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3733.12,
-      "world_y": 210.94,
-      "norm_bbox": [
-        0.666406,
-        0.263672,
-        0.010938,
-        0.023438
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_25",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3756.25,
-      "world_y": 188.28,
-      "norm_bbox": [
-        0.695312,
-        0.235352,
-        0.01875,
-        0.029297
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_26",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3800.0,
-      "world_y": 177.34,
-      "norm_bbox": [
-        0.75,
-        0.22168,
-        0.015625,
-        0.029297
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_27",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3612.5,
-      "world_y": 173.44,
-      "norm_bbox": [
-        0.515625,
-        0.216797,
-        0.015625,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_28",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3614.38,
-      "world_y": 228.91,
-      "norm_bbox": [
-        0.517969,
-        0.286133,
-        0.014063,
-        0.052734
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_29",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3581.25,
-      "world_y": 217.19,
-      "norm_bbox": [
-        0.476562,
-        0.271484,
-        0.01875,
-        0.03125
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_30",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3585.62,
-      "world_y": 193.75,
-      "norm_bbox": [
-        0.482031,
-        0.242188,
-        0.010938,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_31",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3611.25,
-      "world_y": 117.19,
-      "norm_bbox": [
-        0.514062,
-        0.146484,
-        0.0125,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_32",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3655.0,
-      "world_y": 104.69,
-      "norm_bbox": [
-        0.56875,
-        0.130859,
-        0.009375,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_33",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3727.5,
-      "world_y": 110.94,
-      "norm_bbox": [
-        0.659375,
-        0.138672,
-        0.0125,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_34",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3752.5,
-      "world_y": 114.84,
-      "norm_bbox": [
-        0.690625,
-        0.143555,
-        0.0125,
-        0.029297
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_35",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3719.38,
-      "world_y": 45.31,
-      "norm_bbox": [
-        0.649219,
-        0.056641,
-        0.010938,
-        0.03125
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_36",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3732.5,
-      "world_y": 25.78,
-      "norm_bbox": [
-        0.665625,
-        0.032227,
-        0.009375,
-        0.025391
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_37",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3668.12,
-      "world_y": 125.78,
-      "norm_bbox": [
-        0.585156,
-        0.157227,
-        0.007812,
-        0.025391
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_38",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3608.12,
-      "world_y": 31.25,
-      "norm_bbox": [
-        0.510156,
-        0.039062,
-        0.014063,
-        0.066406
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_39",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3501.88,
-      "world_y": 14.06,
-      "norm_bbox": [
-        0.377344,
-        0.017578,
-        0.010938,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_40",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3488.12,
-      "world_y": 44.53,
-      "norm_bbox": [
-        0.360156,
-        0.055664,
-        0.010938,
-        0.021484
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_41",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3496.25,
-      "world_y": 53.91,
-      "norm_bbox": [
-        0.370313,
-        0.067383,
-        0.009375,
-        0.025391
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_42",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3501.88,
-      "world_y": 42.97,
-      "norm_bbox": [
-        0.377344,
-        0.053711,
-        0.010938,
-        0.021484
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_43",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3433.12,
-      "world_y": 31.25,
-      "norm_bbox": [
-        0.291406,
-        0.039062,
-        0.007812,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_44",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3450.62,
-      "world_y": 106.25,
-      "norm_bbox": [
-        0.313281,
-        0.132812,
-        0.017188,
-        0.039062
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_45",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3447.5,
-      "world_y": 125.78,
-      "norm_bbox": [
-        0.309375,
-        0.157227,
-        0.009375,
-        0.025391
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_46",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3460.0,
-      "world_y": 128.12,
-      "norm_bbox": [
-        0.325,
-        0.160156,
-        0.0125,
-        0.03125
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_47",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3460.62,
-      "world_y": 96.88,
-      "norm_bbox": [
-        0.325781,
-        0.121094,
-        0.010938,
-        0.035156
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_48",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3473.12,
-      "world_y": 125.78,
-      "norm_bbox": [
-        0.341406,
-        0.157227,
-        0.010938,
-        0.025391
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_49",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3491.25,
-      "world_y": 134.38,
-      "norm_bbox": [
-        0.364063,
-        0.167969,
-        0.015625,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_50",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3495.0,
-      "world_y": 107.81,
-      "norm_bbox": [
-        0.36875,
-        0.134766,
-        0.0125,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_51",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3450.62,
-      "world_y": 157.81,
-      "norm_bbox": [
-        0.313281,
-        0.197266,
-        0.010938,
-        0.023438
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_52",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3462.5,
-      "world_y": 161.72,
-      "norm_bbox": [
-        0.328125,
-        0.202148,
-        0.009375,
-        0.021484
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_53",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3472.5,
-      "world_y": 172.66,
-      "norm_bbox": [
-        0.340625,
-        0.21582,
-        0.015625,
-        0.025391
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_54",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3480.0,
-      "world_y": 197.66,
-      "norm_bbox": [
-        0.35,
-        0.24707,
-        0.0125,
-        0.025391
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_55",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3493.75,
-      "world_y": 200.0,
-      "norm_bbox": [
-        0.367188,
-        0.25,
-        0.009375,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_56",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3499.38,
-      "world_y": 186.72,
-      "norm_bbox": [
-        0.374219,
-        0.233398,
-        0.010938,
-        0.025391
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_57",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3515.62,
-      "world_y": 189.84,
-      "norm_bbox": [
-        0.394531,
-        0.237305,
-        0.007812,
-        0.029297
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_58",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3509.38,
-      "world_y": 211.72,
-      "norm_bbox": [
-        0.386719,
-        0.264648,
-        0.007812,
-        0.025391
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_59",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3493.12,
-      "world_y": 245.31,
-      "norm_bbox": [
-        0.366406,
-        0.306641,
-        0.010938,
-        0.03125
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_60",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3423.12,
-      "world_y": 297.66,
-      "norm_bbox": [
-        0.278906,
-        0.37207,
-        0.014063,
-        0.037109
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_61",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3435.62,
-      "world_y": 292.19,
-      "norm_bbox": [
-        0.294531,
-        0.365234,
-        0.014063,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_62",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3445.62,
-      "world_y": 360.94,
-      "norm_bbox": [
-        0.307031,
-        0.451172,
-        0.010938,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_63",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3453.75,
-      "world_y": 351.56,
-      "norm_bbox": [
-        0.317188,
-        0.439453,
-        0.009375,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_64",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3479.38,
-      "world_y": 335.16,
-      "norm_bbox": [
-        0.349219,
-        0.418945,
-        0.010938,
-        0.025391
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_65",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3489.38,
-      "world_y": 312.5,
-      "norm_bbox": [
-        0.361719,
-        0.390625,
-        0.010938,
-        0.027344
-      ],
-      "image_file": "05632.png"
-    },
-    {
-      "target_id": "GT_S04_66",
-      "sector_id": 4,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3440.0,
-      "world_y": 382.81,
-      "norm_bbox": [
-        0.3,
-        0.478516,
-        0.0125,
-        0.023438
-      ],
-      "image_file": "05632.png"
+      "world_x": 3602.51,
+      "world_y": 228.28,
+      "norm_bbox": [
+        0.503141,
+        0.285354,
+        0.014412,
+        0.042424
+      ],
+      "image_file": "flight3_frame20281.png"
     },
     {
       "target_id": "GT_S05_00",
       "sector_id": 5,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 454.38,
-      "world_y": 917.19,
+      "world_x": 188.47,
+      "world_y": 1074.95,
       "norm_bbox": [
-        0.567969,
-        0.146484,
-        0.017188,
-        0.035156
+        0.235588,
+        0.343687,
+        0.018847,
+        0.042929
       ],
-      "image_file": "05697.png"
+      "image_file": "flight3_frame16921.png"
+    },
+    {
+      "target_id": "GT_S05_01",
+      "sector_id": 5,
+      "class_id": 0,
+      "class_name": "human",
+      "world_x": 244.35,
+      "world_y": 1041.41,
+      "norm_bbox": [
+        0.305432,
+        0.301768,
+        0.015152,
+        0.033838
+      ],
+      "image_file": "flight3_frame16921.png"
     },
     {
       "target_id": "GT_S06_00",
       "sector_id": 6,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 994.38,
-      "world_y": 1105.47,
+      "world_x": 1151.96,
+      "world_y": 1147.88,
       "norm_bbox": [
-        0.242969,
-        0.381836,
-        0.020313,
-        0.052734
+        0.439948,
+        0.434848,
+        0.019586,
+        0.044444
       ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_01",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1231.25,
-      "world_y": 1550.0,
-      "norm_bbox": [
-        0.539062,
-        0.9375,
-        0.025,
-        0.046875
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_02",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1160.62,
-      "world_y": 1538.28,
-      "norm_bbox": [
-        0.450781,
-        0.922852,
-        0.035938,
-        0.029297
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_03",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1051.88,
-      "world_y": 1304.69,
-      "norm_bbox": [
-        0.314844,
-        0.630859,
-        0.026563,
-        0.039062
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_04",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1041.25,
-      "world_y": 1317.19,
-      "norm_bbox": [
-        0.301563,
-        0.646484,
-        0.015625,
-        0.027344
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_05",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1103.12,
-      "world_y": 1245.31,
-      "norm_bbox": [
-        0.378906,
-        0.556641,
-        0.017188,
-        0.042969
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_06",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1226.88,
-      "world_y": 1372.66,
-      "norm_bbox": [
-        0.533594,
-        0.71582,
-        0.023438,
-        0.044922
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_07",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1370.62,
-      "world_y": 1295.31,
-      "norm_bbox": [
-        0.713281,
-        0.619141,
-        0.014063,
-        0.039062
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_08",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1387.5,
-      "world_y": 1286.72,
-      "norm_bbox": [
-        0.734375,
-        0.608398,
-        0.0125,
-        0.044922
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_09",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1358.12,
-      "world_y": 1432.03,
-      "norm_bbox": [
-        0.697656,
-        0.790039,
-        0.026563,
-        0.033203
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_10",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1368.12,
-      "world_y": 1396.09,
-      "norm_bbox": [
-        0.710156,
-        0.745117,
-        0.023438,
-        0.033203
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_11",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1519.38,
-      "world_y": 1153.91,
-      "norm_bbox": [
-        0.899219,
-        0.442383,
-        0.017188,
-        0.029297
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_12",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1541.25,
-      "world_y": 1133.59,
-      "norm_bbox": [
-        0.926563,
-        0.416992,
-        0.021875,
-        0.033203
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_13",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1590.0,
-      "world_y": 842.19,
-      "norm_bbox": [
-        0.9875,
-        0.052734,
-        0.0125,
-        0.039062
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_14",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1578.12,
-      "world_y": 822.66,
-      "norm_bbox": [
-        0.972656,
-        0.02832,
-        0.010938,
-        0.029297
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_15",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1525.0,
-      "world_y": 810.94,
-      "norm_bbox": [
-        0.90625,
-        0.013672,
-        0.028125,
-        0.023438
-      ],
-      "image_file": "04967.png"
-    },
-    {
-      "target_id": "GT_S06_16",
-      "sector_id": 6,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1486.88,
-      "world_y": 810.94,
-      "norm_bbox": [
-        0.858594,
-        0.013672,
-        0.029688,
-        0.023438
-      ],
-      "image_file": "04967.png"
+      "image_file": "flight3_frame19951.png"
     },
     {
       "target_id": "GT_S07_00",
       "sector_id": 7,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 1951.25,
-      "world_y": 886.72,
+      "world_x": 1674.06,
+      "world_y": 1573.13,
       "norm_bbox": [
-        0.439063,
-        0.108398,
-        0.0125,
-        0.025391
+        0.092572,
+        0.966414,
+        0.029933,
+        0.055051
       ],
-      "image_file": "04912.png"
+      "image_file": "flight3_frame23411.png"
     },
     {
       "target_id": "GT_S07_01",
       "sector_id": 7,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 1886.88,
-      "world_y": 951.56,
+      "world_x": 1969.25,
+      "world_y": 1129.29,
       "norm_bbox": [
-        0.358594,
-        0.189453,
-        0.010938,
-        0.027344
+        0.461567,
+        0.411616,
+        0.017738,
+        0.042424
       ],
-      "image_file": "04912.png"
-    },
-    {
-      "target_id": "GT_S07_02",
-      "sector_id": 7,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1924.38,
-      "world_y": 1289.84,
-      "norm_bbox": [
-        0.405469,
-        0.612305,
-        0.010938,
-        0.025391
-      ],
-      "image_file": "04912.png"
-    },
-    {
-      "target_id": "GT_S07_03",
-      "sector_id": 7,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1953.12,
-      "world_y": 1250.78,
-      "norm_bbox": [
-        0.441406,
-        0.563477,
-        0.010938,
-        0.044922
-      ],
-      "image_file": "04912.png"
-    },
-    {
-      "target_id": "GT_S07_04",
-      "sector_id": 7,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1985.0,
-      "world_y": 1253.12,
-      "norm_bbox": [
-        0.48125,
-        0.566406,
-        0.015625,
-        0.03125
-      ],
-      "image_file": "04912.png"
-    },
-    {
-      "target_id": "GT_S07_05",
-      "sector_id": 7,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1973.12,
-      "world_y": 1246.88,
-      "norm_bbox": [
-        0.466406,
-        0.558594,
-        0.014063,
-        0.023438
-      ],
-      "image_file": "04912.png"
-    },
-    {
-      "target_id": "GT_S07_06",
-      "sector_id": 7,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1950.0,
-      "world_y": 1089.84,
-      "norm_bbox": [
-        0.4375,
-        0.362305,
-        0.009375,
-        0.021484
-      ],
-      "image_file": "04912.png"
-    },
-    {
-      "target_id": "GT_S07_07",
-      "sector_id": 7,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1945.62,
-      "world_y": 1071.88,
-      "norm_bbox": [
-        0.432031,
-        0.339844,
-        0.010938,
-        0.023438
-      ],
-      "image_file": "04912.png"
-    },
-    {
-      "target_id": "GT_S07_08",
-      "sector_id": 7,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1963.75,
-      "world_y": 1560.16,
-      "norm_bbox": [
-        0.454688,
-        0.950195,
-        0.015625,
-        0.037109
-      ],
-      "image_file": "04912.png"
+      "image_file": "flight3_frame23411.png"
     },
     {
       "target_id": "GT_S08_00",
       "sector_id": 8,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2687.5,
-      "world_y": 1301.56,
+      "world_x": 2942.65,
+      "world_y": 1248.28,
       "norm_bbox": [
-        0.359375,
-        0.626953,
-        0.021875,
-        0.039062
+        0.678307,
+        0.560354,
+        0.015891,
+        0.04899
       ],
-      "image_file": "05355.png"
+      "image_file": "flight3_frame25031.png"
     },
     {
       "target_id": "GT_S08_01",
       "sector_id": 8,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2631.88,
-      "world_y": 1457.03,
+      "world_x": 2881.3,
+      "world_y": 1078.79,
       "norm_bbox": [
-        0.289844,
-        0.821289,
-        0.020313,
-        0.037109
+        0.601626,
+        0.348485,
+        0.016999,
+        0.040404
       ],
-      "image_file": "05355.png"
+      "image_file": "flight3_frame25031.png"
     },
     {
       "target_id": "GT_S08_02",
       "sector_id": 8,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2596.25,
-      "world_y": 1311.72,
+      "world_x": 2833.41,
+      "world_y": 1096.77,
       "norm_bbox": [
-        0.245313,
-        0.639648,
-        0.015625,
-        0.021484
+        0.541759,
+        0.37096,
+        0.015521,
+        0.040909
       ],
-      "image_file": "05355.png"
+      "image_file": "flight3_frame25031.png"
     },
     {
       "target_id": "GT_S09_00",
       "sector_id": 9,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 3260.0,
-      "world_y": 1387.5,
+      "world_x": 3757.58,
+      "world_y": 1260.81,
       "norm_bbox": [
-        0.075,
-        0.734375,
-        0.015625,
-        0.027344
+        0.69697,
+        0.57601,
+        0.018477,
+        0.05202
       ],
-      "image_file": "05246.png"
+      "image_file": "flight3_frame18731.png"
     },
     {
       "target_id": "GT_S09_01",
       "sector_id": 9,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 3540.62,
-      "world_y": 1399.22,
+      "world_x": 3683.67,
+      "world_y": 1268.89,
       "norm_bbox": [
-        0.425781,
-        0.749023,
-        0.014063,
-        0.025391
+        0.604582,
+        0.586111,
+        0.027347,
+        0.05
       ],
-      "image_file": "05246.png"
-    },
-    {
-      "target_id": "GT_S09_02",
-      "sector_id": 9,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3582.5,
-      "world_y": 1430.47,
-      "norm_bbox": [
-        0.478125,
-        0.788086,
-        0.01875,
-        0.025391
-      ],
-      "image_file": "05246.png"
+      "image_file": "flight3_frame18731.png"
     },
     {
       "target_id": "GT_S10_00",
       "sector_id": 10,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 538.12,
-      "world_y": 2214.84,
+      "world_x": 250.26,
+      "world_y": 1998.59,
       "norm_bbox": [
-        0.672656,
-        0.768555,
-        0.010938,
-        0.033203
+        0.312823,
+        0.498232,
+        0.020325,
+        0.05202
       ],
-      "image_file": "05775.png"
-    },
-    {
-      "target_id": "GT_S10_01",
-      "sector_id": 10,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 509.38,
-      "world_y": 2238.28,
-      "norm_bbox": [
-        0.636719,
-        0.797852,
-        0.014063,
-        0.029297
-      ],
-      "image_file": "05775.png"
-    },
-    {
-      "target_id": "GT_S10_02",
-      "sector_id": 10,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 518.75,
-      "world_y": 2274.22,
-      "norm_bbox": [
-        0.648438,
-        0.842773,
-        0.0125,
-        0.029297
-      ],
-      "image_file": "05775.png"
-    },
-    {
-      "target_id": "GT_S10_03",
-      "sector_id": 10,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 529.38,
-      "world_y": 2246.88,
-      "norm_bbox": [
-        0.661719,
-        0.808594,
-        0.014063,
-        0.027344
-      ],
-      "image_file": "05775.png"
-    },
-    {
-      "target_id": "GT_S10_04",
-      "sector_id": 10,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 546.88,
-      "world_y": 2243.75,
-      "norm_bbox": [
-        0.683594,
-        0.804688,
-        0.017188,
-        0.03125
-      ],
-      "image_file": "05775.png"
-    },
-    {
-      "target_id": "GT_S10_05",
-      "sector_id": 10,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 565.0,
-      "world_y": 2216.41,
-      "norm_bbox": [
-        0.70625,
-        0.770508,
-        0.01875,
-        0.033203
-      ],
-      "image_file": "05775.png"
-    },
-    {
-      "target_id": "GT_S10_06",
-      "sector_id": 10,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 571.88,
-      "world_y": 2243.75,
-      "norm_bbox": [
-        0.714844,
-        0.804688,
-        0.017188,
-        0.03125
-      ],
-      "image_file": "05775.png"
-    },
-    {
-      "target_id": "GT_S10_07",
-      "sector_id": 10,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 573.12,
-      "world_y": 2298.44,
-      "norm_bbox": [
-        0.716406,
-        0.873047,
-        0.020313,
-        0.03125
-      ],
-      "image_file": "05775.png"
+      "image_file": "flight3_frame12811.png"
     },
     {
       "target_id": "GT_S11_00",
       "sector_id": 11,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 1038.75,
-      "world_y": 2017.97,
+      "world_x": 1074.8,
+      "world_y": 2321.82,
       "norm_bbox": [
-        0.298438,
-        0.522461,
-        0.01875,
-        0.033203
+        0.343496,
+        0.902273,
+        0.034368,
+        0.069192
       ],
-      "image_file": "05921.png"
+      "image_file": "flight3_frame22301.png"
     },
     {
       "target_id": "GT_S11_01",
       "sector_id": 11,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 1480.0,
-      "world_y": 2251.56,
+      "world_x": 1339.69,
+      "world_y": 2146.26,
       "norm_bbox": [
-        0.85,
-        0.814453,
-        0.025,
-        0.027344
+        0.674612,
+        0.682828,
+        0.014412,
+        0.055556
       ],
-      "image_file": "05921.png"
-    },
-    {
-      "target_id": "GT_S11_02",
-      "sector_id": 11,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1548.12,
-      "world_y": 2226.56,
-      "norm_bbox": [
-        0.935156,
-        0.783203,
-        0.017188,
-        0.019531
-      ],
-      "image_file": "05921.png"
+      "image_file": "flight3_frame22301.png"
     },
     {
       "target_id": "GT_S12_00",
       "sector_id": 12,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 1892.5,
-      "world_y": 1714.84,
+      "world_x": 1615.52,
+      "world_y": 1972.12,
       "norm_bbox": [
-        0.365625,
-        0.143555,
-        0.015625,
-        0.037109
+        0.019401,
+        0.465152,
+        0.021064,
+        0.035354
       ],
-      "image_file": "05734.png"
-    },
-    {
-      "target_id": "GT_S12_01",
-      "sector_id": 12,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1884.38,
-      "world_y": 1850.0,
-      "norm_bbox": [
-        0.355469,
-        0.3125,
-        0.020313,
-        0.035156
-      ],
-      "image_file": "05734.png"
-    },
-    {
-      "target_id": "GT_S12_02",
-      "sector_id": 12,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1646.25,
-      "world_y": 1739.06,
-      "norm_bbox": [
-        0.057813,
-        0.173828,
-        0.015625,
-        0.027344
-      ],
-      "image_file": "05734.png"
-    },
-    {
-      "target_id": "GT_S12_03",
-      "sector_id": 12,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1770.0,
-      "world_y": 2047.66,
-      "norm_bbox": [
-        0.2125,
-        0.55957,
-        0.025,
-        0.021484
-      ],
-      "image_file": "05734.png"
-    },
-    {
-      "target_id": "GT_S12_04",
-      "sector_id": 12,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1793.75,
-      "world_y": 2082.03,
-      "norm_bbox": [
-        0.242188,
-        0.602539,
-        0.01875,
-        0.025391
-      ],
-      "image_file": "05734.png"
-    },
-    {
-      "target_id": "GT_S12_05",
-      "sector_id": 12,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1829.38,
-      "world_y": 2225.0,
-      "norm_bbox": [
-        0.286719,
-        0.78125,
-        0.023438,
-        0.03125
-      ],
-      "image_file": "05734.png"
-    },
-    {
-      "target_id": "GT_S12_06",
-      "sector_id": 12,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1866.88,
-      "world_y": 2342.19,
-      "norm_bbox": [
-        0.333594,
-        0.927734,
-        0.020313,
-        0.023438
-      ],
-      "image_file": "05734.png"
-    },
-    {
-      "target_id": "GT_S12_07",
-      "sector_id": 12,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2076.88,
-      "world_y": 1610.16,
-      "norm_bbox": [
-        0.596094,
-        0.012695,
-        0.017188,
-        0.021484
-      ],
-      "image_file": "05734.png"
+      "image_file": "flight3_frame19031.png"
     },
     {
       "target_id": "GT_S13_00",
       "sector_id": 13,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2531.88,
-      "world_y": 1884.38,
+      "world_x": 2934.52,
+      "world_y": 2149.5,
       "norm_bbox": [
-        0.164844,
-        0.355469,
-        0.010938,
-        0.023438
+        0.668145,
+        0.686869,
+        0.018477,
+        0.062626
       ],
-      "image_file": "05426.png"
+      "image_file": "flight3_frame22281.png"
     },
     {
       "target_id": "GT_S13_01",
       "sector_id": 13,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2572.5,
-      "world_y": 1890.62,
+      "world_x": 2662.53,
+      "world_y": 2342.02,
       "norm_bbox": [
-        0.215625,
-        0.363281,
-        0.009375,
-        0.019531
+        0.32816,
+        0.927525,
+        0.036216,
+        0.067172
       ],
-      "image_file": "05426.png"
-    },
-    {
-      "target_id": "GT_S13_02",
-      "sector_id": 13,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2581.25,
-      "world_y": 1871.88,
-      "norm_bbox": [
-        0.226562,
-        0.339844,
-        0.01875,
-        0.027344
-      ],
-      "image_file": "05426.png"
-    },
-    {
-      "target_id": "GT_S13_03",
-      "sector_id": 13,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2560.62,
-      "world_y": 1830.47,
-      "norm_bbox": [
-        0.200781,
-        0.288086,
-        0.010938,
-        0.025391
-      ],
-      "image_file": "05426.png"
-    },
-    {
-      "target_id": "GT_S13_04",
-      "sector_id": 13,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2630.0,
-      "world_y": 1836.72,
-      "norm_bbox": [
-        0.2875,
-        0.295898,
-        0.0125,
-        0.025391
-      ],
-      "image_file": "05426.png"
-    },
-    {
-      "target_id": "GT_S13_05",
-      "sector_id": 13,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2646.88,
-      "world_y": 1824.22,
-      "norm_bbox": [
-        0.308594,
-        0.280273,
-        0.010938,
-        0.017578
-      ],
-      "image_file": "05426.png"
-    },
-    {
-      "target_id": "GT_S13_06",
-      "sector_id": 13,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2675.62,
-      "world_y": 1873.44,
-      "norm_bbox": [
-        0.344531,
-        0.341797,
-        0.010938,
-        0.019531
-      ],
-      "image_file": "05426.png"
-    },
-    {
-      "target_id": "GT_S13_07",
-      "sector_id": 13,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2778.75,
-      "world_y": 1926.56,
-      "norm_bbox": [
-        0.473438,
-        0.408203,
-        0.01875,
-        0.03125
-      ],
-      "image_file": "05426.png"
-    },
-    {
-      "target_id": "GT_S13_08",
-      "sector_id": 13,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2796.25,
-      "world_y": 1938.28,
-      "norm_bbox": [
-        0.495313,
-        0.422852,
-        0.01875,
-        0.021484
-      ],
-      "image_file": "05426.png"
-    },
-    {
-      "target_id": "GT_S13_09",
-      "sector_id": 13,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2793.75,
-      "world_y": 1813.28,
-      "norm_bbox": [
-        0.492188,
-        0.266602,
-        0.009375,
-        0.025391
-      ],
-      "image_file": "05426.png"
-    },
-    {
-      "target_id": "GT_S13_10",
-      "sector_id": 13,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2794.38,
-      "world_y": 1835.94,
-      "norm_bbox": [
-        0.492969,
-        0.294922,
-        0.014063,
-        0.023438
-      ],
-      "image_file": "05426.png"
-    },
-    {
-      "target_id": "GT_S13_11",
-      "sector_id": 13,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2808.75,
-      "world_y": 1971.09,
-      "norm_bbox": [
-        0.510938,
-        0.463867,
-        0.0125,
-        0.021484
-      ],
-      "image_file": "05426.png"
-    },
-    {
-      "target_id": "GT_S13_12",
-      "sector_id": 13,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3049.38,
-      "world_y": 2046.09,
-      "norm_bbox": [
-        0.811719,
-        0.557617,
-        0.014063,
-        0.021484
-      ],
-      "image_file": "05426.png"
-    },
-    {
-      "target_id": "GT_S13_13",
-      "sector_id": 13,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3164.38,
-      "world_y": 1988.28,
-      "norm_bbox": [
-        0.955469,
-        0.485352,
-        0.014063,
-        0.021484
-      ],
-      "image_file": "05426.png"
+      "image_file": "flight3_frame22281.png"
     },
     {
       "target_id": "GT_S14_00",
       "sector_id": 14,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 3857.5,
-      "world_y": 2129.69,
+      "world_x": 3302.88,
+      "world_y": 1648.08,
       "norm_bbox": [
-        0.821875,
-        0.662109,
-        0.015625,
-        0.023438
+        0.128603,
+        0.060101,
+        0.012565,
+        0.026263
       ],
-      "image_file": "05862.png"
-    },
-    {
-      "target_id": "GT_S14_01",
-      "sector_id": 14,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3635.62,
-      "world_y": 2319.53,
-      "norm_bbox": [
-        0.544531,
-        0.899414,
-        0.039062,
-        0.029297
-      ],
-      "image_file": "05862.png"
-    },
-    {
-      "target_id": "GT_S14_02",
-      "sector_id": 14,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3734.38,
-      "world_y": 2367.97,
-      "norm_bbox": [
-        0.667969,
-        0.959961,
-        0.029688,
-        0.033203
-      ],
-      "image_file": "05862.png"
-    },
-    {
-      "target_id": "GT_S14_03",
-      "sector_id": 14,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3533.12,
-      "world_y": 1984.38,
-      "norm_bbox": [
-        0.416406,
-        0.480469,
-        0.032813,
-        0.035156
-      ],
-      "image_file": "05862.png"
+      "image_file": "flight3_frame22861.png"
     },
     {
       "target_id": "GT_S15_00",
       "sector_id": 15,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 519.38,
-      "world_y": 2889.06,
+      "world_x": 694.16,
+      "world_y": 2892.32,
       "norm_bbox": [
-        0.649219,
-        0.611328,
-        0.014063,
-        0.023438
+        0.867701,
+        0.615404,
+        0.022912,
+        0.05404
       ],
-      "image_file": "05909.png"
+      "image_file": "flight3_frame18751.png"
     },
     {
       "target_id": "GT_S15_01",
       "sector_id": 15,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 696.25,
-      "world_y": 2905.47,
+      "world_x": 587.58,
+      "world_y": 2878.38,
       "norm_bbox": [
-        0.870313,
-        0.631836,
-        0.0125,
-        0.021484
+        0.734479,
+        0.59798,
+        0.031412,
+        0.050505
       ],
-      "image_file": "05909.png"
-    },
-    {
-      "target_id": "GT_S15_02",
-      "sector_id": 15,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 83.75,
-      "world_y": 2696.09,
-      "norm_bbox": [
-        0.104688,
-        0.370117,
-        0.015625,
-        0.037109
-      ],
-      "image_file": "05909.png"
-    },
-    {
-      "target_id": "GT_S15_03",
-      "sector_id": 15,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 96.88,
-      "world_y": 2700.0,
-      "norm_bbox": [
-        0.121094,
-        0.375,
-        0.017188,
-        0.035156
-      ],
-      "image_file": "05909.png"
-    },
-    {
-      "target_id": "GT_S15_04",
-      "sector_id": 15,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 141.25,
-      "world_y": 2520.31,
-      "norm_bbox": [
-        0.176563,
-        0.150391,
-        0.015625,
-        0.03125
-      ],
-      "image_file": "05909.png"
-    },
-    {
-      "target_id": "GT_S15_05",
-      "sector_id": 15,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 150.0,
-      "world_y": 2519.53,
-      "norm_bbox": [
-        0.1875,
-        0.149414,
-        0.015625,
-        0.025391
-      ],
-      "image_file": "05909.png"
-    },
-    {
-      "target_id": "GT_S15_06",
-      "sector_id": 15,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 221.88,
-      "world_y": 2592.97,
-      "norm_bbox": [
-        0.277344,
-        0.241211,
-        0.014063,
-        0.029297
-      ],
-      "image_file": "05909.png"
+      "image_file": "flight3_frame18751.png"
     },
     {
       "target_id": "GT_S16_00",
       "sector_id": 16,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 992.5,
-      "world_y": 2596.09,
+      "world_x": 895.34,
+      "world_y": 3148.69,
       "norm_bbox": [
-        0.240625,
-        0.245117,
-        0.0125,
-        0.029297
+        0.11918,
+        0.935859,
+        0.034368,
+        0.055556
       ],
-      "image_file": "05248.png"
+      "image_file": "flight3_frame23471.png"
     },
     {
       "target_id": "GT_S16_01",
       "sector_id": 16,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 1003.12,
-      "world_y": 2592.19,
+      "world_x": 1210.94,
+      "world_y": 2662.63,
       "norm_bbox": [
-        0.253906,
-        0.240234,
-        0.014063,
-        0.03125
+        0.513673,
+        0.328283,
+        0.01626,
+        0.044444
       ],
-      "image_file": "05248.png"
-    },
-    {
-      "target_id": "GT_S16_02",
-      "sector_id": 16,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1045.62,
-      "world_y": 2735.94,
-      "norm_bbox": [
-        0.307031,
-        0.419922,
-        0.014063,
-        0.027344
-      ],
-      "image_file": "05248.png"
-    },
-    {
-      "target_id": "GT_S16_03",
-      "sector_id": 16,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1062.5,
-      "world_y": 2738.28,
-      "norm_bbox": [
-        0.328125,
-        0.422852,
-        0.0125,
-        0.029297
-      ],
-      "image_file": "05248.png"
-    },
-    {
-      "target_id": "GT_S16_04",
-      "sector_id": 16,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1135.62,
-      "world_y": 2873.44,
-      "norm_bbox": [
-        0.419531,
-        0.591797,
-        0.014063,
-        0.023438
-      ],
-      "image_file": "05248.png"
-    },
-    {
-      "target_id": "GT_S16_05",
-      "sector_id": 16,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1241.25,
-      "world_y": 2907.81,
-      "norm_bbox": [
-        0.551563,
-        0.634766,
-        0.015625,
-        0.027344
-      ],
-      "image_file": "05248.png"
-    },
-    {
-      "target_id": "GT_S16_06",
-      "sector_id": 16,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1273.12,
-      "world_y": 2967.97,
-      "norm_bbox": [
-        0.591406,
-        0.709961,
-        0.014063,
-        0.025391
-      ],
-      "image_file": "05248.png"
-    },
-    {
-      "target_id": "GT_S16_07",
-      "sector_id": 16,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 924.38,
-      "world_y": 2432.81,
-      "norm_bbox": [
-        0.155469,
-        0.041016,
-        0.014063,
-        0.03125
-      ],
-      "image_file": "05248.png"
-    },
-    {
-      "target_id": "GT_S16_08",
-      "sector_id": 16,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 990.62,
-      "world_y": 2485.16,
-      "norm_bbox": [
-        0.238281,
-        0.106445,
-        0.014063,
-        0.025391
-      ],
-      "image_file": "05248.png"
-    },
-    {
-      "target_id": "GT_S16_09",
-      "sector_id": 16,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 988.75,
-      "world_y": 2520.31,
-      "norm_bbox": [
-        0.235938,
-        0.150391,
-        0.015625,
-        0.03125
-      ],
-      "image_file": "05248.png"
-    },
-    {
-      "target_id": "GT_S16_10",
-      "sector_id": 16,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1006.88,
-      "world_y": 2528.91,
-      "norm_bbox": [
-        0.258594,
-        0.161133,
-        0.026563,
-        0.029297
-      ],
-      "image_file": "05248.png"
+      "image_file": "flight3_frame23471.png"
     },
     {
       "target_id": "GT_S17_00",
       "sector_id": 17,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2372.5,
-      "world_y": 2810.16,
+      "world_x": 2056.76,
+      "world_y": 2711.52,
       "norm_bbox": [
-        0.965625,
-        0.512695,
-        0.021875,
-        0.044922
+        0.570953,
+        0.389394,
+        0.014782,
+        0.046465
       ],
-      "image_file": "05737.png"
+      "image_file": "flight3_frame19211.png"
     },
     {
       "target_id": "GT_S18_00",
       "sector_id": 18,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2906.25,
-      "world_y": 2525.0,
+      "world_x": 2878.34,
+      "world_y": 2631.11,
       "norm_bbox": [
-        0.632812,
-        0.15625,
-        0.015625,
-        0.035156
+        0.597931,
+        0.288889,
+        0.012565,
+        0.030303
       ],
-      "image_file": "05131.png"
-    },
-    {
-      "target_id": "GT_S18_01",
-      "sector_id": 18,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2938.75,
-      "world_y": 2643.75,
-      "norm_bbox": [
-        0.673438,
-        0.304688,
-        0.0125,
-        0.027344
-      ],
-      "image_file": "05131.png"
-    },
-    {
-      "target_id": "GT_S18_03",
-      "sector_id": 18,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2920.62,
-      "world_y": 3035.16,
-      "norm_bbox": [
-        0.650781,
-        0.793945,
-        0.014063,
-        0.033203
-      ],
-      "image_file": "05131.png"
-    },
-    {
-      "target_id": "GT_S18_04",
-      "sector_id": 18,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2876.88,
-      "world_y": 3088.28,
-      "norm_bbox": [
-        0.596094,
-        0.860352,
-        0.014063,
-        0.025391
-      ],
-      "image_file": "05131.png"
-    },
-    {
-      "target_id": "GT_S18_05",
-      "sector_id": 18,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2884.38,
-      "world_y": 3043.75,
-      "norm_bbox": [
-        0.605469,
-        0.804688,
-        0.010938,
-        0.027344
-      ],
-      "image_file": "05131.png"
-    },
-    {
-      "target_id": "GT_S18_06",
-      "sector_id": 18,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2823.12,
-      "world_y": 3089.06,
-      "norm_bbox": [
-        0.528906,
-        0.861328,
-        0.017188,
-        0.039062
-      ],
-      "image_file": "05131.png"
-    },
-    {
-      "target_id": "GT_S18_07",
-      "sector_id": 18,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3122.5,
-      "world_y": 3077.34,
-      "norm_bbox": [
-        0.903125,
-        0.84668,
-        0.015625,
-        0.037109
-      ],
-      "image_file": "05131.png"
+      "image_file": "flight3_frame21151.png"
     },
     {
       "target_id": "GT_S19_00",
       "sector_id": 19,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 3620.62,
-      "world_y": 2898.44,
+      "world_x": 3644.35,
+      "world_y": 2636.36,
       "norm_bbox": [
-        0.525781,
-        0.623047,
-        0.010938,
-        0.019531
+        0.555432,
+        0.295455,
+        0.016999,
+        0.045455
       ],
-      "image_file": "04917.png"
-    },
-    {
-      "target_id": "GT_S19_01",
-      "sector_id": 19,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3523.75,
-      "world_y": 2900.78,
-      "norm_bbox": [
-        0.404688,
-        0.625977,
-        0.015625,
-        0.025391
-      ],
-      "image_file": "04917.png"
-    },
-    {
-      "target_id": "GT_S19_02",
-      "sector_id": 19,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3556.25,
-      "world_y": 2837.5,
-      "norm_bbox": [
-        0.445312,
-        0.546875,
-        0.0125,
-        0.027344
-      ],
-      "image_file": "04917.png"
-    },
-    {
-      "target_id": "GT_S19_03",
-      "sector_id": 19,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3851.88,
-      "world_y": 2739.84,
-      "norm_bbox": [
-        0.814844,
-        0.424805,
-        0.020313,
-        0.029297
-      ],
-      "image_file": "04917.png"
-    },
-    {
-      "target_id": "GT_S19_04",
-      "sector_id": 19,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3523.75,
-      "world_y": 2735.94,
-      "norm_bbox": [
-        0.404688,
-        0.419922,
-        0.015625,
-        0.03125
-      ],
-      "image_file": "04917.png"
-    },
-    {
-      "target_id": "GT_S19_05",
-      "sector_id": 19,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3523.75,
-      "world_y": 2440.62,
-      "norm_bbox": [
-        0.404688,
-        0.050781,
-        0.009375,
-        0.019531
-      ],
-      "image_file": "04917.png"
-    },
-    {
-      "target_id": "GT_S19_06",
-      "sector_id": 19,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3529.38,
-      "world_y": 2432.81,
-      "norm_bbox": [
-        0.411719,
-        0.041016,
-        0.007812,
-        0.023438
-      ],
-      "image_file": "04917.png"
+      "image_file": "flight3_frame19251.png"
     },
     {
       "target_id": "GT_S20_00",
       "sector_id": 20,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 478.12,
-      "world_y": 3942.97,
+      "world_x": 116.63,
+      "world_y": 3849.09,
       "norm_bbox": [
-        0.597656,
-        0.928711,
-        0.020313,
-        0.025391
+        0.145787,
+        0.811364,
+        0.029194,
+        0.060101
       ],
-      "image_file": "05875.png"
+      "image_file": "flight3_frame23971.png"
     },
     {
       "target_id": "GT_S20_01",
       "sector_id": 20,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 543.75,
-      "world_y": 3890.62,
+      "world_x": 313.08,
+      "world_y": 3558.79,
       "norm_bbox": [
-        0.679688,
-        0.863281,
-        0.021875,
-        0.023438
+        0.391353,
+        0.448485,
+        0.020695,
+        0.042424
       ],
-      "image_file": "05875.png"
+      "image_file": "flight3_frame23971.png"
     },
     {
       "target_id": "GT_S20_02",
       "sector_id": 20,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 376.88,
-      "world_y": 3562.5,
+      "world_x": 695.2,
+      "world_y": 3507.27,
       "norm_bbox": [
-        0.471094,
-        0.453125,
-        0.010938,
-        0.023438
+        0.868995,
+        0.384091,
+        0.019586,
+        0.028788
       ],
-      "image_file": "05875.png"
-    },
-    {
-      "target_id": "GT_S20_03",
-      "sector_id": 20,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 399.38,
-      "world_y": 3544.53,
-      "norm_bbox": [
-        0.499219,
-        0.430664,
-        0.017188,
-        0.017578
-      ],
-      "image_file": "05875.png"
-    },
-    {
-      "target_id": "GT_S20_04",
-      "sector_id": 20,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 450.62,
-      "world_y": 3463.28,
-      "norm_bbox": [
-        0.563281,
-        0.329102,
-        0.010938,
-        0.021484
-      ],
-      "image_file": "05875.png"
-    },
-    {
-      "target_id": "GT_S20_05",
-      "sector_id": 20,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 438.75,
-      "world_y": 3262.5,
-      "norm_bbox": [
-        0.548438,
-        0.078125,
-        0.0125,
-        0.027344
-      ],
-      "image_file": "05875.png"
-    },
-    {
-      "target_id": "GT_S20_06",
-      "sector_id": 20,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 550.62,
-      "world_y": 3320.31,
-      "norm_bbox": [
-        0.688281,
-        0.150391,
-        0.014063,
-        0.027344
-      ],
-      "image_file": "05875.png"
-    },
-    {
-      "target_id": "GT_S20_07",
-      "sector_id": 20,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 631.88,
-      "world_y": 3275.78,
-      "norm_bbox": [
-        0.789844,
-        0.094727,
-        0.014063,
-        0.025391
-      ],
-      "image_file": "05875.png"
-    },
-    {
-      "target_id": "GT_S20_08",
-      "sector_id": 20,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 660.62,
-      "world_y": 3222.66,
-      "norm_bbox": [
-        0.825781,
-        0.02832,
-        0.017188,
-        0.029297
-      ],
-      "image_file": "05875.png"
-    },
-    {
-      "target_id": "GT_S20_09",
-      "sector_id": 20,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 706.88,
-      "world_y": 3529.69,
-      "norm_bbox": [
-        0.883594,
-        0.412109,
-        0.014063,
-        0.023438
-      ],
-      "image_file": "05875.png"
-    },
-    {
-      "target_id": "GT_S20_10",
-      "sector_id": 20,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 783.75,
-      "world_y": 3372.66,
-      "norm_bbox": [
-        0.979688,
-        0.21582,
-        0.0125,
-        0.021484
-      ],
-      "image_file": "05875.png"
-    },
-    {
-      "target_id": "GT_S20_11",
-      "sector_id": 20,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 782.5,
-      "world_y": 3405.47,
-      "norm_bbox": [
-        0.978125,
-        0.256836,
-        0.015625,
-        0.025391
-      ],
-      "image_file": "05875.png"
-    },
-    {
-      "target_id": "GT_S20_12",
-      "sector_id": 20,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 791.25,
-      "world_y": 3414.84,
-      "norm_bbox": [
-        0.989063,
-        0.268555,
-        0.0125,
-        0.021484
-      ],
-      "image_file": "05875.png"
-    },
-    {
-      "target_id": "GT_S20_13",
-      "sector_id": 20,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 694.38,
-      "world_y": 3688.28,
-      "norm_bbox": [
-        0.867969,
-        0.610352,
-        0.014063,
-        0.033203
-      ],
-      "image_file": "05875.png"
-    },
-    {
-      "target_id": "GT_S20_14",
-      "sector_id": 20,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 416.25,
-      "world_y": 3960.16,
-      "norm_bbox": [
-        0.520313,
-        0.950195,
-        0.01875,
-        0.021484
-      ],
-      "image_file": "05875.png"
-    },
-    {
-      "target_id": "GT_S20_15",
-      "sector_id": 20,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 762.5,
-      "world_y": 3270.31,
-      "norm_bbox": [
-        0.953125,
-        0.087891,
-        0.0125,
-        0.019531
-      ],
-      "image_file": "05875.png"
+      "image_file": "flight3_frame23971.png"
     },
     {
       "target_id": "GT_S21_00",
       "sector_id": 21,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 1476.25,
-      "world_y": 3499.22,
+      "world_x": 1165.11,
+      "world_y": 3458.38,
       "norm_bbox": [
-        0.845313,
-        0.374023,
-        0.025,
-        0.041016
+        0.456393,
+        0.32298,
+        0.012565,
+        0.044949
       ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_01",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1570.0,
-      "world_y": 3446.09,
-      "norm_bbox": [
-        0.9625,
-        0.307617,
-        0.03125,
-        0.033203
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_02",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1585.62,
-      "world_y": 3425.0,
-      "norm_bbox": [
-        0.982031,
-        0.28125,
-        0.026563,
-        0.027344
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_03",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1375.62,
-      "world_y": 3611.72,
-      "norm_bbox": [
-        0.719531,
-        0.514648,
-        0.032813,
-        0.041016
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_04",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1198.75,
-      "world_y": 3566.41,
-      "norm_bbox": [
-        0.498438,
-        0.458008,
-        0.021875,
-        0.052734
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_05",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1227.5,
-      "world_y": 3560.16,
-      "norm_bbox": [
-        0.534375,
-        0.450195,
-        0.03125,
-        0.048828
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_06",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1189.38,
-      "world_y": 3489.06,
-      "norm_bbox": [
-        0.486719,
-        0.361328,
-        0.035938,
-        0.035156
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_07",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1280.62,
-      "world_y": 3531.25,
-      "norm_bbox": [
-        0.600781,
-        0.414062,
-        0.017188,
-        0.035156
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_08",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1167.5,
-      "world_y": 3449.22,
-      "norm_bbox": [
-        0.459375,
-        0.311523,
-        0.025,
-        0.037109
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_09",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1223.75,
-      "world_y": 3332.81,
-      "norm_bbox": [
-        0.529687,
-        0.166016,
-        0.028125,
-        0.046875
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_10",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1241.88,
-      "world_y": 3439.06,
-      "norm_bbox": [
-        0.552344,
-        0.298828,
-        0.014063,
-        0.03125
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_11",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1394.38,
-      "world_y": 3764.84,
-      "norm_bbox": [
-        0.742969,
-        0.706055,
-        0.017188,
-        0.033203
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_12",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1353.12,
-      "world_y": 3818.75,
-      "norm_bbox": [
-        0.691406,
-        0.773438,
-        0.014063,
-        0.050781
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_13",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1497.5,
-      "world_y": 3801.56,
-      "norm_bbox": [
-        0.871875,
-        0.751953,
-        0.021875,
-        0.035156
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S21_14",
-      "sector_id": 21,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1536.88,
-      "world_y": 3910.16,
-      "norm_bbox": [
-        0.921094,
-        0.887695,
-        0.017188,
-        0.029297
-      ],
-      "image_file": "04987.png"
-    },
-    {
-      "target_id": "GT_S22_00",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1956.88,
-      "world_y": 3801.56,
-      "norm_bbox": [
-        0.446094,
-        0.751953,
-        0.014063,
-        0.023438
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_01",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1954.38,
-      "world_y": 3778.91,
-      "norm_bbox": [
-        0.442969,
-        0.723633,
-        0.010938,
-        0.025391
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_02",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1965.0,
-      "world_y": 3698.44,
-      "norm_bbox": [
-        0.45625,
-        0.623047,
-        0.015625,
-        0.027344
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_03",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1983.75,
-      "world_y": 3669.53,
-      "norm_bbox": [
-        0.479688,
-        0.586914,
-        0.015625,
-        0.025391
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_04",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1929.38,
-      "world_y": 3667.97,
-      "norm_bbox": [
-        0.411719,
-        0.584961,
-        0.010938,
-        0.025391
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_05",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1843.12,
-      "world_y": 3616.41,
-      "norm_bbox": [
-        0.303906,
-        0.520508,
-        0.020313,
-        0.029297
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_06",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1826.25,
-      "world_y": 3621.88,
-      "norm_bbox": [
-        0.282813,
-        0.527344,
-        0.0125,
-        0.03125
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_07",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1924.38,
-      "world_y": 3964.06,
-      "norm_bbox": [
-        0.405469,
-        0.955078,
-        0.014063,
-        0.023438
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_08",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1989.38,
-      "world_y": 3946.09,
-      "norm_bbox": [
-        0.486719,
-        0.932617,
-        0.014063,
-        0.041016
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_09",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2021.25,
-      "world_y": 3536.72,
-      "norm_bbox": [
-        0.526563,
-        0.420898,
-        0.0125,
-        0.029297
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_10",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2030.0,
-      "world_y": 3567.97,
-      "norm_bbox": [
-        0.5375,
-        0.459961,
-        0.009375,
-        0.029297
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_11",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2027.5,
-      "world_y": 3417.97,
-      "norm_bbox": [
-        0.534375,
-        0.272461,
-        0.0125,
-        0.025391
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_12",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2045.0,
-      "world_y": 3289.06,
-      "norm_bbox": [
-        0.55625,
-        0.111328,
-        0.01875,
-        0.035156
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_13",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2040.62,
-      "world_y": 3253.12,
-      "norm_bbox": [
-        0.550781,
-        0.066406,
-        0.017188,
-        0.027344
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_14",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2081.88,
-      "world_y": 3440.62,
-      "norm_bbox": [
-        0.602344,
-        0.300781,
-        0.014063,
-        0.023438
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_15",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2070.62,
-      "world_y": 3471.09,
-      "norm_bbox": [
-        0.588281,
-        0.338867,
-        0.010938,
-        0.021484
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_16",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2110.0,
-      "world_y": 3446.09,
-      "norm_bbox": [
-        0.6375,
-        0.307617,
-        0.015625,
-        0.025391
-      ],
-      "image_file": "05204.png"
-    },
-    {
-      "target_id": "GT_S22_17",
-      "sector_id": 22,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 1845.0,
-      "world_y": 3642.97,
-      "norm_bbox": [
-        0.30625,
-        0.553711,
-        0.025,
-        0.021484
-      ],
-      "image_file": "05204.png"
+      "image_file": "flight3_frame20061.png"
     },
     {
       "target_id": "GT_S23_00",
       "sector_id": 23,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2748.75,
-      "world_y": 3273.44,
+      "world_x": 2776.35,
+      "world_y": 3321.01,
       "norm_bbox": [
-        0.435938,
-        0.091797,
-        0.015625,
-        0.027344
+        0.470436,
+        0.151263,
+        0.014043,
+        0.038889
       ],
-      "image_file": "05711.png"
+      "image_file": "flight3_frame20621.png"
     },
     {
       "target_id": "GT_S23_01",
       "sector_id": 23,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 2827.5,
-      "world_y": 3257.81,
+      "world_x": 2687.8,
+      "world_y": 3286.06,
       "norm_bbox": [
-        0.534375,
-        0.072266,
-        0.015625,
-        0.03125
+        0.359756,
+        0.107576,
+        0.012195,
+        0.038384
       ],
-      "image_file": "05711.png"
-    },
-    {
-      "target_id": "GT_S23_02",
-      "sector_id": 23,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2842.5,
-      "world_y": 3359.38,
-      "norm_bbox": [
-        0.553125,
-        0.199219,
-        0.0125,
-        0.03125
-      ],
-      "image_file": "05711.png"
-    },
-    {
-      "target_id": "GT_S23_03",
-      "sector_id": 23,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2849.38,
-      "world_y": 3571.88,
-      "norm_bbox": [
-        0.561719,
-        0.464844,
-        0.017188,
-        0.035156
-      ],
-      "image_file": "05711.png"
-    },
-    {
-      "target_id": "GT_S23_04",
-      "sector_id": 23,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2852.5,
-      "world_y": 3625.0,
-      "norm_bbox": [
-        0.565625,
-        0.53125,
-        0.01875,
-        0.042969
-      ],
-      "image_file": "05711.png"
-    },
-    {
-      "target_id": "GT_S23_05",
-      "sector_id": 23,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2916.25,
-      "world_y": 3632.03,
-      "norm_bbox": [
-        0.645313,
-        0.540039,
-        0.0125,
-        0.025391
-      ],
-      "image_file": "05711.png"
-    },
-    {
-      "target_id": "GT_S23_06",
-      "sector_id": 23,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2939.38,
-      "world_y": 3673.44,
-      "norm_bbox": [
-        0.674219,
-        0.591797,
-        0.010938,
-        0.023438
-      ],
-      "image_file": "05711.png"
-    },
-    {
-      "target_id": "GT_S23_07",
-      "sector_id": 23,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 2942.5,
-      "world_y": 3690.62,
-      "norm_bbox": [
-        0.678125,
-        0.613281,
-        0.015625,
-        0.023438
-      ],
-      "image_file": "05711.png"
+      "image_file": "flight3_frame20621.png"
     },
     {
       "target_id": "GT_S24_00",
       "sector_id": 24,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 3988.12,
-      "world_y": 3282.81,
+      "world_x": 3320.03,
+      "world_y": 3412.32,
       "norm_bbox": [
-        0.985156,
-        0.103516,
-        0.020313,
-        0.023438
+        0.150037,
+        0.265404,
+        0.016999,
+        0.037879
       ],
-      "image_file": "06028.png"
+      "image_file": "flight3_frame13191.png"
     },
     {
       "target_id": "GT_S24_01",
       "sector_id": 24,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 3342.5,
-      "world_y": 3726.56,
+      "world_x": 3338.21,
+      "world_y": 3416.57,
       "norm_bbox": [
-        0.178125,
-        0.658203,
-        0.0125,
-        0.03125
+        0.172764,
+        0.270707,
+        0.017369,
+        0.036364
       ],
-      "image_file": "06028.png"
+      "image_file": "flight3_frame13191.png"
     },
     {
       "target_id": "GT_S24_02",
       "sector_id": 24,
       "class_id": 0,
       "class_name": "human",
-      "world_x": 3366.25,
-      "world_y": 3745.31,
+      "world_x": 3776.79,
+      "world_y": 3743.43,
       "norm_bbox": [
-        0.207813,
-        0.681641,
-        0.0125,
-        0.019531
+        0.72099,
+        0.679293,
+        0.016999,
+        0.027273
       ],
-      "image_file": "06028.png"
-    },
-    {
-      "target_id": "GT_S24_03",
-      "sector_id": 24,
-      "class_id": 0,
-      "class_name": "human",
-      "world_x": 3313.75,
-      "world_y": 3320.31,
-      "norm_bbox": [
-        0.142187,
-        0.150391,
-        0.015625,
-        0.027344
-      ],
-      "image_file": "06028.png"
+      "image_file": "flight3_frame13191.png"
     }
   ]
 }

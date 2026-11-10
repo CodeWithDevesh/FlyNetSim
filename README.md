@@ -117,12 +117,14 @@ flowchart TD
 
 ```
 FlyNetSim/
-├── best.pt                             # Trained 4-channel YOLOv8n-P2 model weights
+├── best.pt                             # Active 4-channel YOLO model weights (YOLO11)
+├── best_yolo11.pt                      # Trained 4-channel YOLO11s model weights (NII-CU dataset)
+├── best_yolov8_p2.pt                   # Trained 4-channel YOLOv8n-P2 model weights (legacy)
 ├── demo.py                             # Interactive Gradio web console with live radar
 ├── simulate_swarm_mission.py           # Core decentralized swarm simulation engine
 ├── validate_swarm_mission.py           # Ground-truth validator & publication figure generator
 ├── sar_world.py                        # In-memory spatial world & ground-truth generator
-├── rgbt_detector.py                    # 4-channel early-fusion YOLOv8 inference wrapper
+├── rgbt_detector.py                    # 4-channel early-fusion YOLO detector (YOLO11 & YOLOv8-P2)
 │
 ├── training/                           # Multispectral YOLOv8 training pipeline
 │   ├── prepare_dataset.py              # Unified dataset converter & label remapper

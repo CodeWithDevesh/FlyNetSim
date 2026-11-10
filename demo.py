@@ -21,7 +21,7 @@ from validate_swarm_mission import run_validation
 MODEL_PATH = "best.pt"
 detector = RGBTDetector(model_path=MODEL_PATH, conf_thresh=0.20)
 
-VAL_IMAGES_DIR = "/home/devesh/Downloads/YOLO_RGBT_4CH_Mini/images/val"
+VAL_IMAGES_DIR = "/home/devesh/Downloads/NII_CU_MAPD_4CH/images/val"
 val_images = glob.glob(os.path.join(VAL_IMAGES_DIR, "*.png")) if os.path.exists(VAL_IMAGES_DIR) else []
 
 

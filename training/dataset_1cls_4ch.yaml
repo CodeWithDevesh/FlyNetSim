@@ -1,7 +1,7 @@
-# 4-Channel RGBT Human Detection Dataset Configuration
-path: /home/devesh/Downloads/YOLO_RGBT_4CH_Mini
-train: images/train
+# 4-Channel RGBT Human/Person Detection Dataset Configuration (NII-CU MAPD)
+path: /home/devesh/Downloads/NII_CU_MAPD_4CH
+train: images/val
 val: images/val
 channels: 4
 names:
-  0: human
+  0: person

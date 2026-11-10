@@ -11,8 +11,8 @@ class SARWorld:
     """
 
     def __init__(self, arena_width=400.0, arena_height=400.0, grid_cols=5, grid_rows=5,
-                 images_dir="/home/devesh/Downloads/YOLO_RGBT_4CH_Mini/images/val",
-                 labels_dir="/home/devesh/Downloads/YOLO_RGBT_4CH_Mini/labels/val",
+                 images_dir="/home/devesh/Downloads/NII_CU_MAPD_4CH/images/val",
+                 labels_dir="/home/devesh/Downloads/NII_CU_MAPD_4CH/labels/val",
                  seed=42):
         self.arena_width = arena_width
         self.arena_height = arena_height
@@ -32,9 +32,30 @@ class SARWorld:
         self._build_world()
 
     def _build_world(self):
-        img_files = sorted(glob.glob(os.path.join(self.images_dir, "*.png")))
+        img_files = sorted(glob.glob(os.path.join(self.images_dir, "*.png"))) if os.path.exists(self.images_dir) else []
+        if not img_files and os.path.exists(self.images_dir):
+            img_files = sorted(glob.glob(os.path.join(self.images_dir, "*.tiff")))
+
+        # Fallback to synthetic world data if directory not found
         if not img_files:
-            raise FileNotFoundError(f"No 4-channel PNG images found in {self.images_dir}")
+            synth_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tests", "synthetic_world_data")
+            img_dir = os.path.join(synth_dir, "images")
+            lbl_dir = os.path.join(synth_dir, "labels")
+            os.makedirs(img_dir, exist_ok=True)
+            os.makedirs(lbl_dir, exist_ok=True)
+            import cv2
+            for idx in range(10):
+                p = os.path.join(img_dir, f"synth_frame_{idx:03d}.png")
+                lp = os.path.join(lbl_dir, f"synth_frame_{idx:03d}.txt")
+                if not os.path.exists(p):
+                    frame = np.zeros((512, 640, 4), dtype=np.uint8)
+                    cv2.imwrite(p, frame)
+                if not os.path.exists(lp):
+                    with open(lp, "w") as f:
+                        f.write("0 0.5 0.5 0.08 0.12\n")
+            self.images_dir = img_dir
+            self.labels_dir = lbl_dir
+            img_files = sorted(glob.glob(os.path.join(self.images_dir, "*.png")))
 
         random.shuffle(img_files)
         total_sectors = self.grid_cols * self.grid_rows
