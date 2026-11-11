@@ -26,27 +26,28 @@ Three contributions sit inside every UAV; the mission layer and the operator sit
 
 ```mermaid
 flowchart TB
-  ARENA["Search arena<br/>N x N sectors, one multispectral frame per sector"]
+  ARENA["Search arena<br/>K sectors, one RGB + thermal frame each"]
   GCS["Ground Control Station<br/>passive alert sink, no planning"]
 
-  subgraph UAV["Every UAV (x N)"]
-    PERC["1. Perception<br/>4-channel RGB + thermal YOLO"]
-    COMM["2. Mesh comms<br/>RF link, beacons, store-and-forward"]
-    CTRL["3. Swarm control<br/>EW-CVT + hysteresis + claims + failover<br/>(from local view only)"]
-    FLT["Flight and battery"]
-    PERC -- "victim alerts" --> COMM
-    COMM -- "peer beacons: position, claims, scanned sectors" --> CTRL
+  subgraph UAV["Every UAV (x N): its own view, its own decisions, no central planner"]
+    direction TB
+    PERC["<b>1. Perception</b><br/>4-channel early fusion, YOLO11s, 1280 px<br/>box to sector position to alert (victim, time)"]
+    COMM["<b>2. Mesh communications</b><br/>log-distance RF link gives PER<br/>status message every 5 s, single hop<br/>per-recipient QoS-1 buffers, flushed when PER < 0.2<br/>store-carry-forward with buffer cap"]
+    CTRL["<b>3. Swarm control</b><br/>view of peers built from received status messages<br/>EW-CVT weight w = (B/Bmax)^alpha<br/>dual-threshold hysteresis<br/>claim and yield on sectors<br/>sortie lease: release work at base"]
+    FLT["<b>Flight and battery</b><br/>route over own sectors, 15 % reserve, return to base"]
+    PERC -- "alerts" --> COMM
+    COMM -- "peer state: position, claims, scanned sectors" --> CTRL
     CTRL -- "sector route" --> FLT
     FLT -- "position, battery" --> CTRL
     FLT -- "position" --> COMM
   end
 
-  PEERS["Peer UAVs"]
+  PEERS["Peer UAVs<br/>lossy, often disconnected"]
 
   ARENA -- "frames" --> PERC
   GCS -- "launch" --> FLT
-  COMM -- "alerts (most arrive on return to base)" --> GCS
-  COMM <-->|"beacons and alerts, buffered until link is good"| PEERS
+  COMM -- "alerts: on contact, or at return to base" --> GCS
+  COMM <-->|"status messages and alerts"| PEERS
 ```
 
 **Say:** each UAV carries a perception stack, a comms stack and a control stack. They interact through
@@ -116,7 +117,7 @@ flowchart TD
 
 **Say:** alpha = 0 gives ordinary Voronoi; larger alpha shrinks low-battery UAVs' territories.
 Because claiming uses only *committed* values, a locked gate means few ownership flips and little re-routing.
-The earlier central ("oracle") planner, which computed every assignment from true global state, remains as `--planner centralized` for comparison only.
+A test-only mode (`--planner centralized`) recomputes the partition from true state at every tick; it is used only for the hysteresis experiment.
 
 ---
 
@@ -214,7 +215,7 @@ sequenceDiagram
   S->>S: hysteresis forced override (topology changed)
   alt failover enabled
     S->>B: released sectors are taken only by UAVs at base
-    B->>B: landed UAVs share the work by power distance and relaunch
+    B->>B: landed UAVs share the work by weighted distance and relaunch
   else failover disabled
     S->>S: released sectors stay unsearched
   end
@@ -292,7 +293,8 @@ flowchart LR
     K1["Input masking<br/>fused / RGB only / thermal only"]
     K2["DTN buffer on or off<br/>forwarding on or off<br/>buffer cap"]
     K3["EW weighting alpha<br/>hysteresis on or off<br/>failover on or off<br/>dynamic replanning on or off"]
-    K4["Planner<br/>decentralized or oracle<br/>lease slack, beacon interval"]
+    K4["Control parameters<br/>lease slack, beacon interval"]
+    K5["Baselines<br/>forwarding: spray, PRoPHET, GeoSaW-style, buffer only<br/>allocation: nearest-bidder auction, no failover, static"]
     SC["Scenario<br/>swarm size, arena, battery spread,<br/>sensor noise, UAV loss"]
   end
 
@@ -300,12 +302,13 @@ flowchart LR
   K2 --> SIMX["Mission simulator<br/>paired seeds"]
   K3 --> SIMX
   K4 --> SIMX
+  K5 --> SIMX
   SC --> SIMX
 
   EVAL --> M1["AP50, precision, recall, F1"]
   SIMX --> M2["Coverage, recall over whole arena,<br/>mission time, distance"]
   SIMX --> M3["Min battery, aborts,<br/>sector flips, route changes, commits"]
-  SIMX --> M4["Operator recall, alert latency,<br/>consensus, messages lost, copies forwarded"]
+  SIMX --> M4["Operator recall, alert latency,<br/>consensus, messages lost,<br/>copies per alert"]
   SIMX --> M5["Failover latency, duplicate scans,<br/>false suspicions, control messages"]
 
   M1 --> REP["Final report"]

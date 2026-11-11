@@ -51,7 +51,7 @@ flowchart LR
 
 ## What has been shown so far
 
-This is a **simulation**, not flights with real aircraft. In simulated missions with six drones over a 25 km² area, the swarm covered the whole area and found about 98 % of the people placed in it. Several design choices were tested by switching each one off and measuring what got worse. The clearest result is that storing and carrying messages is essential: without it, almost no finding reaches the rescue team in a spread-out swarm. Full numbers and the experiments behind them are in [`results/README.md`](../results/README.md).
+This is a **simulation**, not flights with real aircraft. In simulated missions with six drones over a 25 km² area, the swarm covered the whole area and found about 98 % of the people placed in it. Several design choices were tested by switching each one off and measuring what got worse. The clearest result is that storing and carrying messages is essential: without it, almost no finding reaches the rescue team in a spread-out swarm. The same simulator was also used to compare our message-passing and work-sharing methods with published alternatives (Spray-and-Wait, PRoPHET, a GeoSaW-style forwarder and a nearest-drone auction). Our message passing is the fastest but keeps the most copies of each alert, and the battery-aware work sharing is not clearly faster than the simple alternative; the step that helps most after a drone is lost is taking over its unfinished areas. Full numbers and the experiments behind them are in [`results/README.md`](../results/README.md).
 
 ## What this project is not
 

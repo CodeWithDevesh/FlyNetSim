@@ -2,13 +2,15 @@
 |---|---:|---:|---:|
 | **Failover** (UAV lost): area coverage | 98.4 % | 87.4 % | -11.0 ± 2.6 pts |
 | &nbsp;&nbsp;victims found, whole arena (recall) | 0.962 | 0.840 | -0.122 ± 0.032 |
-| **Hysteresis** (oracle planner, σ = 2 %): sector flips / mission | 2.5 | 13.5 | +11.0 ± 3.5 |
+| **Hysteresis** (per-tick re-planning test, σ = 2 %): sector flips / mission | 2.5 | 13.5 | +11.0 ± 3.5 |
 | &nbsp;&nbsp;route changes / mission | 4.8 | 25.4 | +20.6 ± 6.4 |
 | &nbsp;&nbsp;mission time | 362 s | 392 s | +30 ± 25 s |
 | **EW weighting** (α=0): min final battery | 18.8 % | 17.9 % | -0.8 ± 0.7 pts |
 | Static baseline vs full: mission time (cost of re-planning) | 364 s | 353 s | -11 ± 29 s |
-| **Decentralization** (UAV loss): mission time, oracle → per-UAV views | 421 s | 554 s | +133 ± 52 s |
-| &nbsp;&nbsp;area coverage | 100.0 % | 98.4 % | -1.6 ± 2.9 pts |
+| **Epidemic forwarding vs spray-and-wait** (3 km): mean alert latency | 41 s | 49 s | +8 ± 2 s |
+| &nbsp;&nbsp;copies per alert (the price of epidemic) | 4.30 | 2.37 | -1.93 ± 0.20 |
+| **EW-CVT vs nearest-bidder auction** (nominal): min final battery | 18.8 % | 17.4 % | -1.4 ± 1.1 pts |
+| &nbsp;&nbsp;(UAV lost): mission time, EW-CVT is slower | 554 s | 481 s | -73 ± 58 s |
 | **DTN buffer** (5 km): victims known to operator | 98.0 % | 3.4 % | -94.7 ± 1.2 pts |
 | &nbsp;&nbsp;swarm-wide consensus | 100.0 % | 22.1 % | -77.9 ± 1.3 pts |
 | **Forwarding** (5 km): mean alert latency | 103 s | 109 s | +7 ± 2 s |

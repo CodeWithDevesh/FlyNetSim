@@ -33,27 +33,28 @@ Three contributions run on every UAV: perception, mesh communications, and swarm
 
 ```mermaid
 flowchart TB
-  ARENA["Search arena<br/>N x N sectors, one multispectral frame per sector"]
+  ARENA["Search arena<br/>K sectors, one RGB + thermal frame each"]
   GCS["Ground Control Station<br/>passive alert sink, no planning"]
 
-  subgraph UAV["Every UAV (x N), its own view and its own decisions"]
-    PERC["1. Perception<br/>4-channel RGB + thermal YOLO"]
-    COMM["2. Mesh comms<br/>RF link, beacons, store-carry-forward"]
-    CTRL["3. Swarm control<br/>EW-CVT + hysteresis + claims + failover<br/>(from local view only)"]
-    FLT["Flight and battery"]
-    PERC -- "victim alerts" --> COMM
-    COMM -- "peer beacons: position, claims, scanned sectors" --> CTRL
+  subgraph UAV["Every UAV (x N): its own view, its own decisions, no central planner"]
+    direction TB
+    PERC["<b>1. Perception</b><br/>4-channel early fusion, YOLO11s, 1280 px<br/>box to sector position to alert (victim, time)"]
+    COMM["<b>2. Mesh communications</b><br/>log-distance RF link gives PER<br/>status message every 5 s, single hop<br/>per-recipient QoS-1 buffers, flushed when PER < 0.2<br/>store-carry-forward with buffer cap"]
+    CTRL["<b>3. Swarm control</b><br/>view of peers built from received status messages<br/>EW-CVT weight w = (B/Bmax)^alpha<br/>dual-threshold hysteresis<br/>claim and yield on sectors<br/>sortie lease: release work at base"]
+    FLT["<b>Flight and battery</b><br/>route over own sectors, 15 % reserve, return to base"]
+    PERC -- "alerts" --> COMM
+    COMM -- "peer state: position, claims, scanned sectors" --> CTRL
     CTRL -- "sector route" --> FLT
     FLT -- "position, battery" --> CTRL
     FLT -- "position" --> COMM
   end
 
-  PEERS["Peer UAVs"]
+  PEERS["Peer UAVs<br/>lossy, often disconnected"]
 
   ARENA -- "frames" --> PERC
   GCS -- "launch" --> FLT
-  COMM -- "alerts (most arrive on return to base)" --> GCS
-  COMM <-->|"beacons and alerts, buffered until link is good"| PEERS
+  COMM -- "alerts: on contact, or at return to base" --> GCS
+  COMM <-->|"status messages and alerts"| PEERS
 ```
 
 More diagrams (per-UAV pipeline, control loop, hysteresis gate, alert delivery, state machine, failover, module map, evaluation design) are in [`docs/ARCHITECTURE_PROPOSAL.md`](docs/ARCHITECTURE_PROPOSAL.md).
@@ -67,12 +68,12 @@ More diagrams (per-UAV pipeline, control loop, hysteresis gate, alert delivery, 
    - The thermal kernel is initialised from the pretrained red-channel kernel; training uses no colour jitter, since a thermal channel makes it meaningless.
 
 2. **Decentralized Energy-Weighted CVT control.**
-   - Each UAV gets a weight `w = (B / B_max)^α` from its battery. A sector goes to the UAV with the smallest power distance `‖c_s − g_i‖² / w_i`, so low-battery UAVs receive smaller territories. `α = 0` is plain Voronoi. The launch partition is a converged CVT from Lloyd iterations.
-   - Every UAV runs this itself, every 5 s, over the peers *it believes* are active, using their last advertised generators and weights. UAVs claim sectors, yield to better claims when they meet, and idle UAVs pick up unclaimed work. The earlier central ("oracle") planner is kept as a baseline: `--planner centralized`.
+   - Each UAV gets a weight `w = (B / B_max)^α` from its battery. A sector goes to the UAV with the smallest weighted distance `‖c_s − g_i‖² / w_i`, so low-battery UAVs receive smaller territories. `α = 0` is plain Voronoi. The launch partition is a converged CVT from Lloyd iterations.
+   - Every UAV runs this itself, every 5 s, over the peers *it believes* are active, using their last advertised generators and weights. UAVs claim sectors, yield to better claims when they meet, and idle UAVs pick up unclaimed work.
 
 3. **Dual-threshold hysteresis.**
    - A UAV commits a new territory only if its battery has dropped by at least 2 % **and** its ideal centroid has moved at least 5 m. A change in its view of the live UAVs overrides both thresholds.
-   - Where partitions are recomputed from noisy readings every tick (the oracle planner), this removes about 10× the partition commits and about 5× the sector flips. In the decentralized planner claims are sticky, so there is little churn for it to remove.
+   - Where partitions are recomputed from noisy readings every tick (a test configuration, `--planner centralized`), this removes about 10× the partition commits and about 5× the sector flips. In the decentralized planner claims are sticky, so there is little churn for it to remove.
 
 4. **Failure detection and failover without a coordinator.**
    - A UAV cannot hear a failure in flight, because the mesh is mostly disconnected. Instead each UAV advertises when its route should bring it home; a peer missing a lease-slack period past that is presumed lost and its claims are released.
@@ -86,7 +87,11 @@ More diagrams (per-UAV pipeline, control loop, hysteresis gate, alert delivery, 
    - A Gradio console (`demo.py`) streams a live tracking radar. A validator scores detections against ground truth (precision, recall, F1, localization error) and produces publication figures.
 
 7. **Ablation study.**
-   - Every component has an on/off switch. A harness runs 1,320 paired missions and a detector evaluation, and writes a report. See [`results/README.md`](results/README.md).
+   - Every component has an on/off switch. A harness runs 1,820 paired missions and a detector evaluation, and writes a report. See [`results/README.md`](results/README.md).
+
+8. **Literature baselines inside the same simulator.**
+   - *Alert forwarding* (`--gcs-policy`): our epidemic store-carry-forward is compared with Spray-and-Wait (`spray`, L = 3), PRoPHET (`prophet`), a GeoSaW-style single-copy forwarder (`geosaw`, an approximation using return time to base, not the original waypoint-based protocol) and carrying alerts home only (buffer only). A *copies per alert* metric measures the traffic cost.
+   - *Task allocation* (`--allocation`): EW-CVT is compared with a nearest-bidder auction (`auction`, not a full CBBA), the same auction without failover, and a static partition.
 
 ---
 
@@ -98,13 +103,15 @@ Each row removes one component and reports the change over 20 paired seeds, with
 |---|---:|---:|---:|
 | **Failover** (UAV lost): area coverage | 98.4 % | 87.4 % | -11.0 ± 2.6 pts |
 | &nbsp;&nbsp;victims found, whole arena (recall) | 0.962 | 0.840 | -0.122 ± 0.032 |
-| **Hysteresis** (oracle planner, σ = 2 %): sector flips / mission | 2.5 | 13.5 | +11.0 ± 3.5 |
+| **Hysteresis** (per-tick re-planning test, σ = 2 %): sector flips / mission | 2.5 | 13.5 | +11.0 ± 3.5 |
 | &nbsp;&nbsp;route changes / mission | 4.8 | 25.4 | +20.6 ± 6.4 |
 | &nbsp;&nbsp;mission time | 362 s | 392 s | +30 ± 25 s |
 | **EW weighting** (α=0): min final battery | 18.8 % | 17.9 % | -0.8 ± 0.7 pts |
 | Static baseline vs full: mission time (cost of re-planning) | 364 s | 353 s | -11 ± 29 s |
-| **Decentralization** (UAV loss): mission time, oracle → per-UAV views | 421 s | 554 s | +133 ± 52 s |
-| &nbsp;&nbsp;area coverage | 100.0 % | 98.4 % | -1.6 ± 2.9 pts |
+| **Epidemic forwarding vs spray-and-wait** (3 km): mean alert latency | 41 s | 49 s | +8 ± 2 s |
+| &nbsp;&nbsp;copies per alert (the price of epidemic) | 4.30 | 2.37 | -1.93 ± 0.20 |
+| **EW-CVT vs nearest-bidder auction** (nominal): min final battery | 18.8 % | 17.4 % | -1.4 ± 1.1 pts |
+| &nbsp;&nbsp;(UAV lost): mission time, EW-CVT is slower | 554 s | 481 s | -73 ± 58 s |
 | **DTN buffer** (5 km): victims known to operator | 98.0 % | 3.4 % | -94.7 ± 1.2 pts |
 | &nbsp;&nbsp;swarm-wide consensus | 100.0 % | 22.1 % | -77.9 ± 1.3 pts |
 | **Forwarding** (5 km): mean alert latency | 103 s | 109 s | +7 ± 2 s |
@@ -131,10 +138,12 @@ Each row removes one component and reports the change over 20 paired seeds, with
 **Reading the results**
 - **Delay-tolerant networking is the largest effect.** At these ranges the swarm is mostly out of direct radio contact, so without buffering almost no victim reaches the operator.
 - **Failover protects coverage** when a UAV is lost.
-- **Decentralization costs time after a failure.** With no failure it matches the oracle planner; after a loss the swarm cannot know until a UAV is overdue back at base, so failover takes minutes. Detection speed trades against false alarms through the lease slack (see [`results/README.md`](results/README.md#5-decentralized-vs-oracle-planning)).
-- **Hysteresis removes churn, not flight time**, and only where partitions are recomputed from noisy readings (oracle planner).
+- **Decentralization costs time after a failure.** After a loss the swarm cannot know until a UAV is overdue back at base, so failover takes minutes. Detection speed trades against false alarms through the lease slack (see [`results/README.md`](results/README.md#5-decentralized-control-failure-detection)).
+- **Hysteresis removes churn, not flight time**, and only where partitions are recomputed from noisy readings (per-tick re-planning test).
 - **EW-CVT is a trade-off, not a free gain.** Larger `α` raises the worst-case remaining battery but lengthens the mission; at `α = 1` the benefit is modest.
 - **Store-carry-forward relaying shortens alert latency and protects alerts when the finder is lost**, because any UAV that received an alert carries it onward. It needs a large enough buffer: capping copies per UAV too low costs most of the benefit.
+- **Against forwarding baselines, epidemic is fastest but keeps the most copies.** At 3 km it is 7.6 ± 1.7 s faster than Spray-and-Wait and 10.7 ± 3.2 s faster than PRoPHET, at 4.3 copies per alert versus 2.4 and 3.2. The cheaper policies trade latency for traffic.
+- **Against nearest-bidder auction, energy-weighted partitioning is not clearly faster.** It leaves a higher minimum battery (+1.4 ± 1.1 points) and fewer duplicate scans (−1.15 ± 0.53), but after a UAV loss it is slower (+73 ± 58 s). The large coverage gain after a loss comes from the lease-based failover (98.4 % versus 89.2 % without it), not from the weighting.
 
 ---
 
@@ -142,7 +151,7 @@ Each row removes one component and reports the change over 20 paired seeds, with
 
 - **Simulation, not flight.** Dynamics are kinematic: constant speeds and linear battery drain. The control, networking and detection logic is real code; the aircraft and the radio are models.
 - **Decentralized planning has simplifications.** UAVs launch together on the pad, so they start with the same view and launch partition. Beacons are single-hop (no relaying of third-party state), and failure detection rests on a lease design with a tunable slack, which is one reasonable design rather than the only one. Victim alerts are still addressed to every peer whether or not it is alive.
-- **Decentralization has a measured cost.** Failures are noticed only when a UAV is overdue back at base, so failover takes minutes and mission time after a loss is longer than with the oracle planner (see results). In a few seeds sectors stay unsearched because the survivors have no battery for a second sortie.
+- **Decentralization has a measured cost.** Failures are noticed only when a UAV is overdue back at base, so failover takes minutes and mission time after a loss is longer (see results). In a few seeds sectors stay unsearched because the survivors have no battery for a second sortie.
 - **Detection inside missions replays static frames.** Each sector shows one dataset image, so mission-level precision and recall mainly reflect the detector on those frames plus which sectors were visited. Localization error measures the box-to-sector mapping, not geolocation.
 - **The perception ablation is modality-masked inference** of one fused network, not separately trained RGB-only and thermal-only models. Train and validation frames come from the same site, so absolute numbers are optimistic.
 - **Network results depend on the RF model** (see below). The 15 % abort rule and the battery-sensor noise levels are scenario assumptions.
@@ -156,7 +165,7 @@ FlyNetSim/
 ├── best.pt                             # Active 4-channel YOLO11s weights (default for every entry point)
 ├── requirements.txt                    # Python dependencies
 ├── demo.py                             # Interactive Gradio web console with live radar
-├── simulate_swarm_mission.py           # Mission simulator: decentralized (or oracle) planning, hysteresis, failover,
+├── simulate_swarm_mission.py           # Mission simulator: decentralized planning, hysteresis, failover,
 │                                       #   mesh + DTN, per-component ablation switches
 ├── validate_swarm_mission.py           # Ground-truth validator & publication figure generator
 ├── sar_world.py                        # In-memory spatial world & ground-truth generator
@@ -242,7 +251,10 @@ A 5 km mission takes roughly 350-450 simulated seconds, so use `--duration 900`;
 | `--fail-drone`, `--fail-time` | Inject a motor failure on this UAV at this time |
 | `--batt-min` | UAVs start with battery uniform in [min, 100] % (100) |
 | `--batt-noise` | Battery-measurement noise, std-dev in % points (0) |
-| `--planner` | `decentralized` (per-UAV views, default) or `centralized` (oracle baseline) |
+| `--planner` | `decentralized` (per-UAV views, default) or `centralized` (test only: re-plans from true state every tick) |
+| `--gcs-policy` | Alert forwarding baseline: `spray`, `prophet` or `geosaw` (default: epidemic store-carry-forward) |
+| `--spray-copies` | Copies per alert for `spray` (3) |
+| `--allocation` | `ewcvt` (default) or `auction` (nearest-bidder baseline) |
 | `--beacon-interval` | Seconds between state beacons (5) |
 | `--lease-slack` | Seconds a peer may be overdue back at base before it is presumed lost (60) |
 | `--buffer-cap` | Max buffered alert copies per UAV (unlimited) |
@@ -265,7 +277,7 @@ python -m unittest discover -s tests
 ### 5. Reproduce the Ablation Study
 ```bash
 python ablation/perception_eval.py --n 150     # detector evaluation (~20 min on CPU)
-python ablation/run_ablation.py --seeds 20     # 1,320 missions
+python ablation/run_ablation.py --seeds 20     # 1,820 missions
 python ablation/make_report.py                 # HTML report + figures
 python ablation/make_readme.py                 # results/README.md
 ```
@@ -295,7 +307,7 @@ Weights and territory centres are committed only when the gate opens, so battery
 
 3. **Topology override:**
    $$\mathcal{U}_i(t) = \left( (B_i(t_k) - B_i(t) \ge \tau_\epsilon) \land (\|C_i^* - C_i(t_k)\| \ge \tau_\delta) \right) \lor (\mathcal{N}(t) \ne \mathcal{N}(t_k))$$
-   A change in the set of live UAVs $\mathcal{N}(t)$ commits immediately, regardless of the thresholds. Unscanned sectors are then assigned by power distance:
+   A change in the set of live UAVs $\mathcal{N}(t)$ commits immediately, regardless of the thresholds. Unscanned sectors are then assigned by weighted distance:
    $$\text{Cost}(s, i) = \frac{\|\mathbf{c}_s - \mathbf{g}_i\|^2}{(B_i / B_{\text{max}})^\alpha}$$
 
 ### RF channel and delay-tolerant delivery

@@ -16,7 +16,7 @@ stale, partial information:
     the failure detector. Silence alone is not a signal, because the mesh is mostly
     disconnected in flight. A suspicion can be wrong (the peer was only out of range); the cost is
     duplicate scanning, which the simulator measures.
-  * Conflicts (two UAVs holding the same sector) are resolved by power distance
+  * Conflicts (two UAVs holding the same sector) are resolved by weighted distance
     ||c_s - g_i||^2 / w_i on the *advertised* generators and weights, ties broken by id. The UAV that
     sees both claims and loses yields. Every UAV applies the same rule, so views converge on contact.
   * A UAV that has nothing left claims the nearest unclaimed sector (work stealing), so orphaned

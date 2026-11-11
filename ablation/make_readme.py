@@ -33,8 +33,7 @@ def md(header, rows):
 ck = lambda sc, n: ("control", sc, n)
 NOM, LOSS = "nominal", "uav_loss"
 full_n, full_l = ck(NOM, "Full system"), ck(LOSS, "Full system")
-HN, HF = ("noise", "sigma_2", "Hysteresis ON"), ("noise", "sigma_2", "Hysteresis OFF")   # oracle planner, sensor noise sigma = 2 %
-PC, PD = ("planner", "uav_loss", "centralized"), ("planner", "uav_loss", "decentralized")
+HN, HF = ("noise", "sigma_2", "Hysteresis ON"), ("noise", "sigma_2", "Hysteresis OFF")   # per-tick re-planning test, sensor noise sigma = 2 %
 fk, dk, mk = [("network", "arena_5000", n) for n in ("Full (DTN + forwarding)", "- DTN buffer", "- Forwarding")]
 fl, ml = [("network", "loss_arena_5000", n) for n in ("Full (DTN + forwarding)", "- Forwarding")]
 
@@ -42,13 +41,15 @@ fl, ml = [("network", "loss_arena_5000", n) for n in ("Full (DTN + forwarding)",
 headline = md(["Component removed → measured effect", "Full system", "Ablated", "Change (paired mean ± 95% CI)"], [
     ["**Failover** (UAV lost): area coverage", f"{mean(full_l,'coverage_pct'):.1f} %", f"{mean(ck(LOSS,'- Failover'),'coverage_pct'):.1f} %", paired(full_l, ck(LOSS, "- Failover"), "coverage_pct", unit=" pts")],
     ["&nbsp;&nbsp;victims found, whole arena (recall)", f"{mean(full_l,'recall_arena'):.3f}", f"{mean(ck(LOSS,'- Failover'),'recall_arena'):.3f}", paired(full_l, ck(LOSS, "- Failover"), "recall_arena", d=3)],
-    ["**Hysteresis** (oracle planner, σ = 2 %): sector flips / mission", f"{mean(HN,'sector_flips'):.1f}", f"{mean(HF,'sector_flips'):.1f}", paired(HN, HF, "sector_flips")],
+    ["**Hysteresis** (per-tick re-planning test, σ = 2 %): sector flips / mission", f"{mean(HN,'sector_flips'):.1f}", f"{mean(HF,'sector_flips'):.1f}", paired(HN, HF, "sector_flips")],
     ["&nbsp;&nbsp;route changes / mission", f"{mean(HN,'route_changes'):.1f}", f"{mean(HF,'route_changes'):.1f}", paired(HN, HF, "route_changes")],
     ["&nbsp;&nbsp;mission time", f"{mean(HN,'makespan_s'):.0f} s", f"{mean(HF,'makespan_s'):.0f} s", paired(HN, HF, "makespan_s", d=0, unit=" s")],
     ["**EW weighting** (α=0): min final battery", f"{mean(full_n,'batt_min_pct'):.1f} %", f"{mean(ck(NOM,'- EW weighting (alpha=0)'),'batt_min_pct'):.1f} %", paired(full_n, ck(NOM, "- EW weighting (alpha=0)"), "batt_min_pct", unit=" pts")],
     ["Static baseline vs full: mission time (cost of re-planning)", f"{mean(ck(NOM,'Static baseline'),'makespan_s'):.0f} s", f"{mean(full_n,'makespan_s'):.0f} s", paired(ck(NOM, "Static baseline"), full_n, "makespan_s", d=0, unit=" s")],
-    ["**Decentralization** (UAV loss): mission time, oracle → per-UAV views", f"{mean(PC,'makespan_s'):.0f} s", f"{mean(PD,'makespan_s'):.0f} s", paired(PC, PD, "makespan_s", d=0, unit=" s")],
-    ["&nbsp;&nbsp;area coverage", f"{mean(PC,'coverage_pct'):.1f} %", f"{mean(PD,'coverage_pct'):.1f} %", paired(PC, PD, "coverage_pct", unit=" pts")],
+    ["**Epidemic forwarding vs spray-and-wait** (3 km): mean alert latency", f"{mean(('dtn_base','arena_3000','Epidemic (ours)'),'alert_latency_mean_s'):.0f} s", f"{mean(('dtn_base','arena_3000','Spray-and-Wait (L=3)'),'alert_latency_mean_s'):.0f} s", paired(('dtn_base','arena_3000','Epidemic (ours)'), ('dtn_base','arena_3000','Spray-and-Wait (L=3)'), "alert_latency_mean_s", d=0, unit=" s")],
+    ["&nbsp;&nbsp;copies per alert (the price of epidemic)", f"{mean(('dtn_base','arena_3000','Epidemic (ours)'),'carriers_per_alert'):.2f}", f"{mean(('dtn_base','arena_3000','Spray-and-Wait (L=3)'),'carriers_per_alert'):.2f}", paired(('dtn_base','arena_3000','Epidemic (ours)'), ('dtn_base','arena_3000','Spray-and-Wait (L=3)'), "carriers_per_alert", d=2)],
+    ["**EW-CVT vs nearest-bidder auction** (nominal): min final battery", f"{mean(('alloc_base','nominal','EW-CVT (ours)'),'batt_min_pct'):.1f} %", f"{mean(('alloc_base','nominal','Auction (nearest bidder)'),'batt_min_pct'):.1f} %", paired(('alloc_base','nominal','EW-CVT (ours)'), ('alloc_base','nominal','Auction (nearest bidder)'), "batt_min_pct", unit=" pts")],
+    ["&nbsp;&nbsp;(UAV lost): mission time, EW-CVT is slower", f"{mean(('alloc_base','uav_loss','EW-CVT (ours)'),'makespan_s'):.0f} s", f"{mean(('alloc_base','uav_loss','Auction (nearest bidder)'),'makespan_s'):.0f} s", paired(('alloc_base','uav_loss','EW-CVT (ours)'), ('alloc_base','uav_loss','Auction (nearest bidder)'), "makespan_s", d=0, unit=" s")],
     ["**DTN buffer** (5 km): victims known to operator", f"{mean(fk,'operator_recall')*100:.1f} %", f"{mean(dk,'operator_recall')*100:.1f} %", paired(fk, dk, "operator_recall", 100, unit=" pts")],
     ["&nbsp;&nbsp;swarm-wide consensus", f"{mean(fk,'consensus_final')*100:.1f} %", f"{mean(dk,'consensus_final')*100:.1f} %", paired(fk, dk, "consensus_final", 100, unit=" pts")],
     ["**Forwarding** (5 km): mean alert latency", f"{mean(fk,'alert_latency_mean_s'):.0f} s", f"{mean(mk,'alert_latency_mean_s'):.0f} s", paired(fk, mk, "alert_latency_mean_s", d=0, unit=" s")],
@@ -95,11 +96,11 @@ scale_tbl = md(["Swarm size", "Mission time s", "Mean energy used / UAV %", "Rec
 
 pl_rows = []
 for sc, lab in [("nominal", "5 km, no failure"), ("uav_loss", "5 km, UAV 2 lost"), ("loss_arena_3000", "3 km, UAV 2 lost"), ("loss_arena_1500", "1.5 km, UAV 2 lost")]:
-    for n, nl in [("centralized", "Oracle"), ("decentralized", "Per-UAV views")]:
+    for n, nl in [("decentralized", "Per-UAV views")]:
         k = ("planner", sc, n)
         pl_rows.append([lab, nl, ms(k, "coverage_pct"), ms(k, "recall_arena", 3), ms(k, "makespan_s", 0), ms(k, "duplicate_scans"),
                         ms(k, "failover_latency_s", 0) if n == "decentralized" else "n/a (instant)", ms(k, "sector_flips"), ms(k, "batt_min_pct")])
-pl_tbl = md(["Scenario", "Planner", "Coverage %", "Recall (arena)", "Mission time s", "Duplicate scans", "Failover latency s", "Sector flips", "Min final battery %"], pl_rows)
+pl_tbl = md(["Scenario", "Control", "Coverage %", "Recall (arena)", "Mission time s", "Duplicate scans", "Failover latency s", "Sector flips", "Min final battery %"], pl_rows)
 slack_tbl = md(["Lease slack s", "Failover latency s", "Mission time s", "Coverage %", "Duplicate scans", "False suspicions of all"],
                [[f"{s:g}", ms(("planner", f"slack_{s:g}", f"slack={s:g}"), "failover_latency_s", 0), ms(("planner", f"slack_{s:g}", f"slack={s:g}"), "makespan_s", 0),
                  ms(("planner", f"slack_{s:g}", f"slack={s:g}"), "coverage_pct"), ms(("planner", f"slack_{s:g}", f"slack={s:g}"), "duplicate_scans"),
@@ -115,6 +116,33 @@ loss_tbl = md(["Arena", "Variant", "Reports known to operator", "Alert latency s
 cap_tbl = md(["Cap (copies per UAV)", "Reports known to operator", "Alert latency s", "Copies dropped"],
              [[lab, ms(("network", f"cap_{c}", f"buffer cap {c}"), "operator_known_frac", 3), ms(("network", f"cap_{c}", f"buffer cap {c}"), "alert_latency_mean_s", 0),
                ms(("network", f"cap_{c}", f"buffer cap {c}"), "buffer_drops", 0)] for c, lab in [(5, "5"), (15, "15"), (40, "40"), (120, "120"), ("none", "unlimited")]])
+
+DTN_N = ["Epidemic (ours)", "Spray-and-Wait (L=3)", "PRoPHET", "GeoSaW-style", "Buffer only"]
+dtn_rows = []
+for sc, lab in [("arena_1500", "1.5 km"), ("arena_3000", "3 km"), ("arena_5000", "5 km"), ("loss_arena_3000", "3 km, UAV lost")]:
+    for n in DTN_N:
+        k = ("dtn_base", sc, n)
+        dtn_rows.append([lab, n, ms(k, "alert_latency_mean_s", 1), ms(k, "operator_recall", 3), ms(k, "carriers_per_alert", 2)])
+dtn_base_tbl = md(["Scenario", "Forwarding", "Alert latency s", "Operator recall", "Copies per alert"], dtn_rows)
+dtn_pair_rows = []
+for sc, lab in [("arena_3000", "3 km"), ("loss_arena_3000", "3 km, UAV lost")]:
+    for n in DTN_N[1:]:
+        a, b = ("dtn_base", sc, DTN_N[0]), ("dtn_base", sc, n)
+        dtn_pair_rows.append([lab, n, paired(b, a, "alert_latency_mean_s", unit=" s"), paired(b, a, "carriers_per_alert", d=2)])
+dtn_pair_tbl = md(["Scenario", "Epidemic minus", "Alert latency", "Copies per alert"], dtn_pair_rows)
+AL_N = ["EW-CVT (ours)", "Auction (nearest bidder)", "Auction, no failover", "Static partition"]
+al_rows = []
+for sc, lab in [("nominal", "Nominal"), ("uav_loss", "UAV 2 lost")]:
+    for n in AL_N:
+        k = ("alloc_base", sc, n)
+        al_rows.append([lab, n, ms(k, "coverage_pct"), ms(k, "recall_arena", 3), ms(k, "makespan_s", 0), ms(k, "batt_min_pct"), ms(k, "duplicate_scans", 2)])
+al_tbl = md(["Scenario", "Allocation", "Coverage %", "Recall (arena)", "Mission time s", "Min final battery %", "Duplicate scans"], al_rows)
+al_pair_rows = []
+for sc, lab in [("nominal", "Nominal"), ("uav_loss", "UAV 2 lost")]:
+    for n in AL_N[1:]:
+        a, b = ("alloc_base", sc, AL_N[0]), ("alloc_base", sc, n)
+        al_pair_rows.append([lab, n, paired(b, a, "makespan_s", d=0, unit=" s"), paired(b, a, "batt_min_pct", unit=" pts"), paired(b, a, "coverage_pct", unit=" pts"), paired(b, a, "duplicate_scans", d=2)])
+al_pair_tbl = md(["Scenario", "EW-CVT minus", "Mission time", "Min battery", "Coverage", "Duplicate scans"], al_pair_rows)
 
 # ---------------------------------------------------------------- document
 doc = f"""# Ablation Results
@@ -137,7 +165,7 @@ Everything here is **{len(RUNS)} simulated missions** plus a detector evaluation
 {headline}
 
 *Change* is the paired difference over {N} seeds with a 95 % confidence interval; if the interval
-contains zero the effect is not established. Hysteresis rows come from the oracle planner at σ = 2 %: in the decentralized planner
+contains zero the effect is not established. Hysteresis rows come from a test configuration (`--planner centralized`) that recomputes partitions at every tick from noisy readings, at σ = 2 %: in the decentralized planner
 sectors are claimed once and rarely re-assigned, so there is almost no churn for hysteresis to remove (see §2). Removing hysteresis does not change mission time
 beyond noise.
 
@@ -156,11 +184,10 @@ beyond noise.
   *should* have given the peers it believes are active (their last *advertised* generators and weights). The hysteresis
   controller commits the change only if the battery has dropped by at least 2 % **and** the centroid has moved at
   least 5 m, or its view of the live UAVs changed (forced override). The UAV then claims the unscanned sectors it is the
-  preferred owner of by power distance `‖c_s − g_i‖² / w_i`, using committed values. There is no central planner:
-  views are exchanged by beacons over the lossy radio (every 5 s), and conflicts are resolved by the same power-distance
-  rule when two UAVs meet. See [§5](#5-decentralized-vs-oracle-planning). The earlier *oracle* planner, which computes
-  all assignments from the true state of every UAV and assumes a failure is noticed instantly, is kept as a baseline
-  (`--planner centralized`).
+  preferred owner of by weighted distance `‖c_s − g_i‖² / w_i`, using committed values. There is no central planner:
+  views are exchanged by status messages over the lossy radio (every 5 s), and conflicts are resolved by the same weighted-distance
+  rule when two UAVs meet. See [§5](#5-decentralized-control-failure-detection). A test-only mode (`--planner centralized`)
+  recomputes the partition from true state at every tick; it is used only for the hysteresis experiment in §2.
 - **Operator view.** Every victim alert is sent to all peers and to a ground control station (GCS) at the
   base. *Operator recall* is the share of all victims in the arena that the GCS actually learned about.
 
@@ -204,13 +231,13 @@ With no failure every variant reaches full coverage around 350–370 s. After th
 area ({mean(full_l,'coverage_pct'):.1f} % final coverage) but only after the failure has been noticed, which takes minutes (§5); without failover the lost UAV's sectors are never
 searched ({mean(ck(LOSS,'- Failover'),'coverage_pct'):.1f} % coverage).
 
-### Hysteresis suppresses chattering under sensor noise (oracle planner)
+### Hysteresis suppresses chattering under sensor noise (per-tick re-planning test)
 
 ![Hysteresis vs sensor noise](figures/hysteresis_vs_sensor_noise.png)
 
 {noise_tbl}
 
-Hysteresis only matters when partitions are recomputed from noisy readings every tick, so this experiment uses the oracle planner. Without hysteresis every replan commits, so battery-sensor noise keeps moving sector borders. Commits are about
+Hysteresis only matters when partitions are recomputed from noisy readings every tick, so this experiment uses the per-tick test configuration. Without hysteresis every replan commits, so battery-sensor noise keeps moving sector borders. Commits are about
 {mean(HF,"partition_commits")/mean(HN,"partition_commits"):.0f}× fewer with hysteresis, and the gap in sector flips widens as noise grows.
 
 ### EW-CVT exponent α: time versus energy reserve
@@ -257,7 +284,7 @@ Epidemic forwarding stores many copies. Capping the buffer drops the oldest firs
 Time falls and per-UAV energy falls as the swarm grows; the speedup is sublinear because transit from the base is a fixed cost.
 The small non-monotonicity between 4 and 6 UAVs is probably an artefact of how starting territories are laid out (corners for ≤ 4, a ring for more); this has not been verified.
 
-## 5. Decentralized vs oracle planning
+## 5. Decentralized control: failure detection
 
 The default planner has no central overseer. Each UAV keeps its own view (peers' last advertised position, committed generator and weight,
 claimed sectors with planned arrival times, and the sectors it knows to be scanned) and exchanges it with peers by beacon. Because a beacon is
@@ -265,16 +292,15 @@ an ordinary radio packet, most are lost while the swarm is spread out, and views
 
 - **Failure detection by overdue return, not by silence.** Silence is normal in flight. A peer advertises when its route should bring it home; if it is
   still missing *lease slack* seconds after that, it is suspected lost and its claims are released. A UAV cannot tell a lost peer from one that landed
-  and went quiet, so released work is only taken by a UAV that is **at base** (where it hears landed peers and relaunches, sharing the work by power distance).
-- **Claims, not assignments.** A UAV takes sectors it is the preferred owner of by power distance and that nobody validly claims; it yields to a better claim when it hears one,
+  and went quiet, so released work is only taken by a UAV that is **at base** (where it hears landed peers and relaunches, sharing the work by weighted distance).
+- **Claims, not assignments.** A UAV takes sectors it is the preferred owner of by weighted distance and that nobody validly claims; it yields to a better claim when it hears one,
   and an idle UAV picks up nearby unclaimed work.
 - **Launch.** UAVs start co-located on the pad, so they begin with the same view and the same EW-CVT launch partition.
 
 {pl_tbl}
 
-- **No failure:** the decentralized planner matches the oracle (it finishes slightly sooner, as it does not re-plan in flight).
-- **UAV lost:** the price of not knowing is time. The swarm cannot know UAV 2 is gone until it is overdue back at base, so failover latency is minutes and mission time is
-  longer than the oracle's, with a little duplicate scanning. In a few seeds sectors stay unsearched because the survivors have no battery left for a second sortie by the time they learn of the loss (for example when the lost UAV was the one with the most charge; the oracle avoids this by re-planning at once, before the survivors spend their reserves). The gap narrows in small arenas where UAVs meet more often.
+- **No failure:** every sector is covered and no sector is scanned twice.
+- **UAV lost:** the price of not knowing is time. The swarm cannot know UAV 2 is gone until it is overdue back at base, so failover latency is minutes and mission time grows. In a few seeds sectors stay unsearched because the survivors have no battery left for a second sortie by the time they learn of the loss (for example when the lost UAV was the one with the most charge). The latency falls in small arenas where UAVs meet more often.
 - **Wrong suspicions are common** (most suspicions are of UAVs that were fine): a UAV that returned and landed looks the same as one that crashed to anyone still in flight. They cost little because released work is
   taken only at base.
 
@@ -289,6 +315,34 @@ Slack trades detection speed for false alarms: short slack finds the dead UAV so
 {beacon_tbl}
 
 Beacons are only exchanged on the rare contacts, so interval hardly matters until it becomes comparable to the contact duration (60 s), at which point views go stale and duplicate scanning rises.
+
+## 6. Baselines from the literature
+
+Both baselines run inside the same simulator, with the same RF model, seeds and scenarios, so the comparison differs only in the policy under test (20 paired seeds; ± is the 95 % CI).
+
+### Alert forwarding (delay-tolerant routing)
+
+Alerts are created at the finder and must reach the base. **Epidemic** is our store-carry-forward (copy to every UAV met). **Spray-and-Wait** hands out L = 3 copies by binary halving. **PRoPHET** forwards to a peer with a higher delivery predictability for the base (P_init 0.75, β 0.25, γ 0.98 per 30 s). **GeoSaW-style** keeps a single copy and gives it to a peer whose return time to base is more than 10 s shorter; this is an approximation using return ETA, not the original waypoint-crossing GeoSaW. **Buffer only** carries alerts home with the finder.
+
+{dtn_base_tbl}
+
+Paired difference, epidemic minus each baseline:
+
+{dtn_pair_tbl}
+
+Epidemic delivers fastest in every scenario, at the price of more copies per alert. The cheaper policies trade latency for traffic; the gap widens when a UAV is lost.
+
+### Task allocation
+
+**Auction (nearest bidder)** replaces the energy-weighted partition by a plain nearest-generator rule (all weights 1), with the same lease-based failover. **Auction, no failover** also drops the release of a suspected-lost UAV's work. **Static partition** is the initial split with no re-planning.
+
+{al_tbl}
+
+Paired difference, EW-CVT minus each baseline:
+
+{al_pair_tbl}
+
+Energy-weighted partitioning gives a higher minimum final battery and fewer duplicate scans than nearest-bidder allocation, but it is not faster, and it is slower after a loss. The large coverage gain after a loss comes from the failover rule, not from the weighting.
 
 ## What these results do and do not show
 

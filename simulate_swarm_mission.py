@@ -15,7 +15,7 @@ Control loop (per replan tick):
     measured battery -> fresh weights w*_i = (B_i/Bmax)^alpha
                      -> theoretical EW-CVT centroid C*_i of each UAV's cell
                      -> hysteresis controller decides whether (g_i, w_i) are *committed*
-                     -> sectors that are still unscanned are re-assigned by power distance
+                     -> sectors that are still unscanned are re-assigned by weighted distance
                         d(s, i) = ||c_s - g_i||^2 / w_i   using committed g_i, w_i only
 Without hysteresis every tick commits, so battery-sensor noise moves the partition borders
 and sectors flip owners ("churn"); UAVs then re-route and waste energy.
@@ -189,6 +189,8 @@ class SwarmSimulation:
                  dtn_enabled=True,             # QoS-1 store-and-forward buffering
                  forwarding_enabled=True,      # store-carry-forward: UAVs relay alerts they hold when they meet a recipient
                  buffer_cap=None,              # max buffered alert copies per UAV (None = unlimited)
+                 gcs_policy=None,              # baseline relaying toward the GCS: None (epidemic store-carry-forward), 'spray', 'prophet', 'geosaw'
+                 spray_copies=3,               # copy budget L of the spray-and-wait baseline
                  # ---- scenario knobs ----------------------------------------------------
                  initial_battery_range=(100.0, 100.0),   # per-UAV start charge ~ U(lo, hi) [%]
                  battery_noise_std=0.0,        # std-dev of battery *measurement* noise [% points]
@@ -196,6 +198,7 @@ class SwarmSimulation:
                  tau_epsilon_ratio=0.02, tau_delta=5.0,
                  # ---- planner -----------------------------------------------------------
                  planner="decentralized",       # 'decentralized' (per-UAV views) or 'centralized' (oracle baseline)
+                 allocation="ewcvt",            # 'ewcvt' (energy-weighted partition) or 'auction' (nearest-bidder baseline)
                  beacon_interval=5.0,          # seconds between state beacons (decentralized)
                  lease_slack=60.0,             # seconds past a claim's ETA before its owner is suspected lost
                  out_dir=".", write_logs=True, verbose=True, detector=None):
@@ -216,6 +219,11 @@ class SwarmSimulation:
         self.dtn_enabled = dtn_enabled
         self.forwarding_enabled = forwarding_enabled and dtn_enabled
         self.buffer_cap = buffer_cap
+        assert gcs_policy in (None, "spray", "prophet", "geosaw")
+        self.gcs_policy = gcs_policy
+        self.spray_copies = int(spray_copies)
+        if gcs_policy is not None:
+            self.forwarding_enabled = False       # the baselines replace epidemic forwarding
         self.initial_battery_range = initial_battery_range
         self.battery_noise_std = float(battery_noise_std)
         self.replan_interval = float(replan_interval)
@@ -223,6 +231,8 @@ class SwarmSimulation:
         self.tau_delta = tau_delta
         assert planner in ("decentralized", "centralized")
         self.planner = planner
+        assert allocation in ("ewcvt", "auction")
+        self.allocation = allocation
         self.dec = planner == "decentralized"
         self.beacon_interval = float(beacon_interval)
         self.lease_slack = float(lease_slack)
@@ -301,6 +311,9 @@ class SwarmSimulation:
         self.all_reported_targets = []
         self._reported_target_keys = set()
         self.gcs_known = {}         # target_key -> sim time the GCS (operator) first learned of it
+        self.gcs_carriers = defaultdict(set)   # alert key -> ids of UAVs that ever held a GCS-bound copy
+        self.relay_tx = 0
+        self._prophet = {}          # uav id -> {'gcs': P(meet GCS), peer id: P(meet peer)}
         self.sector_scan_time = {}  # sector_id -> first scan time
         self.last_consensus = 0.0
         self.timeseries = []
@@ -564,7 +577,9 @@ class SwarmSimulation:
             peers = ag.active_peers(include_landed=landed)
             alive_ids = tuple(sorted([d.uav_id] + peers))
             d.b_meas = max(0.0, min(100.0, d.battery + self.rng.gauss(0.0, self.battery_noise_std)))
-            if self.dynamic_repartition:
+            if self.dynamic_repartition and self.allocation == "auction":
+                d.gen, d.weight = (d.x, d.y), 1.0        # bid = distance from where the UAV is now
+            elif self.dynamic_repartition:
                 gens = {d.uav_id: d.gen}
                 weights = {d.uav_id: (d.b_meas / d.battery_max) ** self.ewcvt_alpha}
                 for j in peers:
@@ -625,6 +640,8 @@ class SwarmSimulation:
 
     def _queue_copy(self, drone, rid, key, rec, msg_id):
         """Put one alert copy for `rid` into this UAV's store-and-forward buffer (bounded)."""
+        if rid == GCS_ID:
+            self.gcs_carriers[key].add(drone.uav_id)
         drone.broker.qos1_buffers[rid].append({
             "topic": "target_alert", "message_id": msg_id, "timestamp": self.sim_time,
             "payload": f"{key}:{rec['class_name']}:{rec['conf']}:{rec['world_x']}:{rec['world_y']}"})
@@ -661,6 +678,12 @@ class SwarmSimulation:
         self.msg_counter += 1
         record = drone.discovered_targets[target_key]
         drone.fwd_known[target_key].add(drone.uav_id)
+        self.gcs_carriers[target_key].add(drone.uav_id)
+        drone.tokens = getattr(drone, 'tokens', {})
+        drone.tokens[target_key] = self.spray_copies
+        drone.relay_rec = getattr(drone, 'relay_rec', {})
+        drone.seen_relay = getattr(drone, 'seen_relay', set())
+        drone.seen_relay.add(target_key)
         for rid in self._all_recipients(drone):
             is_gcs = rid == GCS_ID
             rloc = self.gcs_loc if is_gcs else next(d for d in self.drones if d.uav_id == rid).get_location_dict()
@@ -693,7 +716,7 @@ class SwarmSimulation:
             for nid, msgs in flushed.items():
                 for m in msgs:
                     key = m["payload"].split(":")[0]
-                    rec = drone.discovered_targets.get(key) or drone.consensus_registry.get(key)
+                    rec = drone.discovered_targets.get(key) or drone.consensus_registry.get(key) or getattr(drone, 'relay_rec', {}).get(key)
                     if rec is None:
                         continue
                     if nid == GCS_ID:
@@ -706,6 +729,76 @@ class SwarmSimulation:
                             continue
                     self.network_stats["delivered_late"] += 1
                     self._receive_alert(drone, nid, key, rec)
+
+    # ------------------------------------------------------------------ baseline relaying (GCS-bound copies)
+    def _link_good(self, loc_a, loc_b):
+        return self.physics_engine.calculate_snr_per(loc_a, loc_b, self.obstacle_mask)[1] < 0.2
+
+    @staticmethod
+    def _carried(d):
+        return {m["payload"].split(":")[0] for m in d.broker.qos1_buffers[GCS_ID]}
+
+    def _eta_home(self, d):
+        e = self._return_eta(d)
+        if e is not None:
+            return e
+        return self.sim_time if d.state in ("LANDED", "RTL") else float("inf")
+
+    def _hand_over(self, a, b, key, move=False):
+        rec = a.discovered_targets.get(key) or a.consensus_registry.get(key) or getattr(a, "relay_rec", {}).get(key)
+        if rec is None:
+            return
+        b.relay_rec = getattr(b, "relay_rec", {})
+        b.seen_relay = getattr(b, "seen_relay", set())
+        b.relay_rec[key] = rec
+        b.seen_relay.add(key)
+        self._queue_copy(b, GCS_ID, key, rec, f"RELAY_{key}_{b.uav_id}")
+        self.relay_tx += 1
+        if move:
+            a.broker.qos1_buffers[GCS_ID] = type(a.broker.qos1_buffers[GCS_ID])(
+                m for m in a.broker.qos1_buffers[GCS_ID] if m["payload"].split(":")[0] != key)
+
+    def _relay_step(self, dt):
+        """Spray-and-wait, PRoPHET and a GeoSaW-style single-copy forwarder for alerts bound for the GCS.
+
+        Contacts are UAV pairs with a good link (PER < 0.2), the same criterion as the buffer flush."""
+        alive = [d for d in self.drones if d.is_alive]
+        if self.gcs_policy == "prophet":
+            for d in alive:
+                P = self._prophet.setdefault(d.uav_id, {"gcs": 0.0})
+                for k in P:
+                    P[k] *= 0.98 ** (dt / 30.0)                          # aging, one unit = 30 s
+                if self._link_good(d.get_location_dict(), self.gcs_loc):
+                    P["gcs"] += (1.0 - P["gcs"]) * 0.75                  # P_init
+        for i in range(len(alive)):
+            for j in range(i + 1, len(alive)):
+                a, b = alive[i], alive[j]
+                if not self._link_good(a.get_location_dict(), b.get_location_dict()):
+                    continue
+                if self.gcs_policy == "prophet":
+                    Pa, Pb = self._prophet.setdefault(a.uav_id, {"gcs": 0.0}), self._prophet.setdefault(b.uav_id, {"gcs": 0.0})
+                    Pa[b.uav_id] = Pa.get(b.uav_id, 0.0) + (1 - Pa.get(b.uav_id, 0.0)) * 0.75
+                    Pb[a.uav_id] = Pb.get(a.uav_id, 0.0) + (1 - Pb.get(a.uav_id, 0.0)) * 0.75
+                    Pa["gcs"] += (1 - Pa["gcs"]) * Pa[b.uav_id] * Pb["gcs"] * 0.25   # transitivity, beta = 0.25
+                    Pb["gcs"] += (1 - Pb["gcs"]) * Pb[a.uav_id] * Pa["gcs"] * 0.25
+                for x, y in ((a, b), (b, a)):
+                    for key in list(self._carried(x)):
+                        if key in self._carried(y) or key in getattr(y, "seen_relay", set()):
+                            continue
+                        if self.gcs_policy == "spray":
+                            tok = getattr(x, "tokens", {}).get(key, 0)
+                            if tok > 1:
+                                give = tok // 2
+                                x.tokens[key] = tok - give
+                                y.tokens = getattr(y, "tokens", {})
+                                y.tokens[key] = give
+                                self._hand_over(x, y, key)
+                        elif self.gcs_policy == "prophet":
+                            if self._prophet[y.uav_id]["gcs"] > self._prophet[x.uav_id]["gcs"]:
+                                self._hand_over(x, y, key)
+                        elif self.gcs_policy == "geosaw":
+                            if self._eta_home(y) + 10.0 < self._eta_home(x):
+                                self._hand_over(x, y, key, move=True)
 
     # ------------------------------------------------------------------ vision
     def _scan_sector(self, drone, sec):
@@ -829,6 +922,8 @@ class SwarmSimulation:
                     self._scan_sector(drone, sec)
 
         self._flush_buffers(swarm_locations)
+        if self.gcs_policy is not None:
+            self._relay_step(dt)
 
         total_sectors = self.grid_dim * self.grid_dim
         all_scanned = set().union(*[d.scanned_sectors for d in self.drones])
@@ -1008,6 +1103,8 @@ class SwarmSimulation:
             "consensus_final": self.last_consensus,
             "msgs_sent": sent_p + gs, "msgs_lost_forever": self.network_stats["lost"],
             "msgs_delivered_late": self.network_stats["delivered_late"],
+            "carriers_per_alert": round(float(np.mean([len(v) for v in self.gcs_carriers.values()])), 2) if self.gcs_carriers else None,
+            "relay_tx": self.relay_tx,
             "alerts_forwarded": self.network_stats["forwarded"], "buffer_drops": self.network_stats["dropped_buffer"],
             # --- energy ---
             "batt_min_pct": en.get("min_remaining_battery_pct"),
@@ -1111,6 +1208,9 @@ if __name__ == "__main__":
     parser.add_argument("--no-failover", action="store_true", help="ablate autonomous sector failover")
     parser.add_argument("--static", action="store_true", help="ablate dynamic EW-CVT replanning")
     parser.add_argument("--no-dtn", action="store_true", help="ablate store-and-forward buffering")
+    parser.add_argument("--allocation", choices=["ewcvt", "auction"], default="ewcvt", help="sector allocation rule (auction = nearest-bidder baseline)")
+    parser.add_argument("--gcs-policy", choices=["spray", "prophet", "geosaw"], default=None, help="baseline relaying toward the GCS instead of epidemic forwarding")
+    parser.add_argument("--spray-copies", type=int, default=3)
     parser.add_argument("--no-forwarding", action="store_true", help="ablate store-carry-forward relaying of received alerts")
     parser.add_argument("--buffer-cap", type=int, default=None, help="max buffered alert copies per UAV")
     parser.add_argument("--batt-min", type=float, default=100.0, help="lowest initial battery %% (UAVs start U(min,100))")
@@ -1128,7 +1228,7 @@ if __name__ == "__main__":
                           base_x=args.base_x, base_y=args.base_y, ewcvt_alpha=args.ewcvt_alpha,
                           hysteresis_enabled=not args.no_hysteresis, failover_enabled=not args.no_failover,
                           dynamic_repartition=not args.static, dtn_enabled=not args.no_dtn,
-                          forwarding_enabled=not args.no_forwarding, buffer_cap=args.buffer_cap,
+                          forwarding_enabled=not args.no_forwarding, gcs_policy=args.gcs_policy, allocation=args.allocation, spray_copies=args.spray_copies, buffer_cap=args.buffer_cap,
                           initial_battery_range=(args.batt_min, 100.0), battery_noise_std=args.batt_noise,
                           planner=args.planner, beacon_interval=args.beacon_interval,
                           lease_slack=args.lease_slack, out_dir=args.out_dir)

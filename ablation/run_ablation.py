@@ -12,7 +12,7 @@ Groups
   noise     : hysteresis on/off vs battery-sensor noise                 (churn; centralized planner)
   alpha     : EW-CVT exponent sweep                                     (time vs energy-reserve trade-off)
   scale     : swarm size sweep
-  planner   : decentralized (per-UAV views) vs centralized oracle; lease-slack and beacon-interval sweeps
+  planner   : decentralized (per-UAV views) vs per-tick re-planning test mode; lease-slack and beacon-interval sweeps
 
 All output goes to results/ablation/ - nothing in the repo root is touched.
 """
@@ -43,6 +43,19 @@ CONTROL_VARIANTS = {
     "Static baseline":          dict(ewcvt_alpha=0.0, dynamic_repartition=False, failover_enabled=False,
                                      hysteresis_enabled=False),
 }
+DTN_BASELINES = {
+    "Epidemic (ours)":      {},
+    "Spray-and-Wait (L=3)": dict(gcs_policy="spray", spray_copies=3),
+    "PRoPHET":              dict(gcs_policy="prophet"),
+    "GeoSaW-style":         dict(gcs_policy="geosaw"),
+    "Buffer only":          dict(forwarding_enabled=False),
+}
+ALLOC_BASELINES = {
+    "EW-CVT (ours)":             {},
+    "Auction (nearest bidder)":  dict(allocation="auction"),
+    "Auction, no failover":      dict(allocation="auction", failover_enabled=False),
+    "Static partition":          dict(ewcvt_alpha=0.0, dynamic_repartition=False, failover_enabled=False, hysteresis_enabled=False),
+}
 NETWORK_VARIANTS = {
     "Full (DTN + forwarding)": {},
     "- Forwarding":            dict(forwarding_enabled=False),
@@ -67,7 +80,7 @@ def build_experiments(quick=False):
         for name, o in NETWORK_VARIANTS.items():
             add("network", f"arena_{int(arena)}", name, arena_size=arena, initial_battery_range=(100.0, 100.0),
                 battery_noise_std=0.0, **o)
-    # --- planner: decentralized vs oracle, and the two decentralization knobs ------------------
+    # --- planner: decentralized vs per-tick test mode, and the two decentralization knobs ------------------
     for pl in ("centralized", "decentralized"):
         add("planner", "nominal", pl, planner=pl)
         add("planner", "uav_loss", pl, planner=pl, **FAIL)
@@ -87,6 +100,19 @@ def build_experiments(quick=False):
             battery_noise_std=0.0, fail_drone_id=2, fail_time=60.0, buffer_cap=cap)
     add("network", "cap_none", "buffer cap none", arena_size=3000.0, initial_battery_range=(100.0, 100.0),
         battery_noise_std=0.0, fail_drone_id=2, fail_time=60.0)
+    # --- DTN routing baselines (same scenarios as the network group) ----------------------------
+    for arena in (1500.0, 3000.0, 5000.0):
+        for name, o in DTN_BASELINES.items():
+            add("dtn_base", f"arena_{int(arena)}", name, arena_size=arena, initial_battery_range=(100.0, 100.0),
+                battery_noise_std=0.0, **o)
+    for arena in (3000.0,):
+        for name, o in DTN_BASELINES.items():
+            add("dtn_base", f"loss_arena_{int(arena)}", name, arena_size=arena, initial_battery_range=(100.0, 100.0),
+                battery_noise_std=0.0, fail_drone_id=2, fail_time=60.0, **o)
+    # --- allocation baselines ---------------------------------------------------------------------
+    for name, o in ALLOC_BASELINES.items():
+        add("alloc_base", "nominal", name, **o)
+        add("alloc_base", "uav_loss", name, **{**o, **FAIL})
     if quick:
         return ex
     # --- hysteresis vs sensor noise -------------------------------------------------------
@@ -152,11 +178,14 @@ def main():
     ap.add_argument("--workers", type=int, default=6)
     ap.add_argument("--quick", action="store_true", help="control+network groups only")
     ap.add_argument("--out", default=os.path.join(OUT, "runs.json"))
+    ap.add_argument("--only", default=None, help="run only this group and merge it into the existing runs file")
     args = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
 
     seeds = list(range(args.seeds))
     exps = build_experiments(args.quick)
+    if args.only:
+        exps = [e for e in exps if e["group"] == args.only]
     jobs = [(e, s) for e in exps for s in seeds]
     print(f"[ablation] {len(exps)} configurations x {len(seeds)} seeds = {len(jobs)} missions", flush=True)
 
@@ -172,6 +201,11 @@ def main():
                 print(f"  {i+1}/{len(jobs)} missions  {el/60:.1f} min  eta {el/(i+1)*(len(jobs)-i-1)/60:.1f} min", flush=True)
     meta = dict(seeds=seeds, base=BASE, fail=FAIL, max_sim_seconds=MAX_SIM_SECONDS,
                 experiments=[dict(group=e["group"], scenario=e["scenario"], name=e["name"]) for e in exps])
+    if args.only and os.path.exists(args.out):
+        old = json.load(open(args.out))
+        results = [r for r in old["runs"] if r["group"] != args.only] + results
+        meta = dict(old["meta"]); meta["experiments"] = [e for e in meta.get("experiments", []) if e["group"] != args.only] + \
+            [dict(group=e["group"], scenario=e["scenario"], name=e["name"]) for e in exps]
     json.dump(dict(meta=meta, runs=results), open(args.out, "w"))
     print(f"[ablation] wrote {args.out} ({len(results)} runs, {(time.time()-t0)/60:.1f} min)")
 

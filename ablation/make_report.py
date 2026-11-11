@@ -218,6 +218,21 @@ for metric, ax, ttl in [("makespan_s", axs[0], "Mission time (s)"), ("energy_use
 scale_img = fig_html(fig, "Scaling")
 sections.append(f"<h2>4 &nbsp; Scaling with swarm size</h2><p class=\"lead\">Equal batteries, no failures, 5 km arena.</p>{scale_img}")
 
+
+# =============================================================== 6. baselines
+DN = ["Epidemic (ours)", "Spray-and-Wait (L=3)", "PRoPHET", "GeoSaW-style", "Buffer only"]
+drows = [[lab, n, ms(("dtn_base", sc, n), "alert_latency_mean_s", 1), ms(("dtn_base", sc, n), "operator_recall", 3), ms(("dtn_base", sc, n), "carriers_per_alert", 2)]
+         for sc, lab in [("arena_1500", "1.5 km"), ("arena_3000", "3 km"), ("arena_5000", "5 km"), ("loss_arena_3000", "3 km, UAV lost")] for n in DN]
+AN = ["EW-CVT (ours)", "Auction (nearest bidder)", "Auction, no failover", "Static partition"]
+arows = [[lab, n, ms(("alloc_base", sc, n), "coverage_pct", 1), ms(("alloc_base", sc, n), "makespan_s", 0), ms(("alloc_base", sc, n), "batt_min_pct", 1), ms(("alloc_base", sc, n), "duplicate_scans", 2)]
+         for sc, lab in [("nominal", "Nominal"), ("uav_loss", "UAV 2 lost")] for n in AN]
+sections.append("<h2>6 &nbsp; Baselines from the literature</h2><p class=\"lead\">Each baseline replaces one policy in the same simulator, with the same radio model, worlds and seeds.</p>"
+    "<h3>Alert forwarding</h3>" + table(["Scenario", "Forwarding", "Alert latency s", "Operator recall", "Copies per alert"], drows) +
+    "<p class=\"note\">Epidemic (ours) copies an alert to every UAV met. Spray-and-Wait gives each alert L&nbsp;=&nbsp;3 copies. PRoPHET forwards to peers with a higher delivery predictability for the base. "
+    "<b>GeoSaW-style</b> is an approximation (one copy, handed to a peer whose return time is more than 10&nbsp;s shorter); it does not use planned waypoints as GeoSaW does. Epidemic has the lowest latency everywhere and costs the most copies.</p>"
+    "<h3>Task allocation</h3>" + table(["Scenario", "Allocation", "Coverage %", "Mission time s", "Min final battery %", "Duplicate scans"], arows) +
+    "<p class=\"note\">The auction is a nearest-bidder rule (all weights equal to 1), not a full CBBA. EW-CVT leaves a higher minimum battery and fewer duplicate scans, but it is not faster, and it is slower after a loss. The coverage gain after a loss comes from the lease-based failover.</p>")
+
 # =============================================================== headline
 def hl(label, kA, kB, metric, unit="", d=1, scale=1.0, better="lower"):
     p = paired(kA, kB, metric)
@@ -229,12 +244,17 @@ full_loss, nofail = ck("uav_loss", "Full system"), ck("uav_loss", "- Failover")
 H.append(["<b>Swarm control</b>", "", "", ""])
 for row in [hl("Remove <b>failover</b> (UAV lost): area coverage", full_loss, nofail, "coverage_pct", " %", 1),
             hl("&nbsp;&nbsp;&nbsp;&nbsp;victims found, whole arena (recall)", full_loss, nofail, "recall_arena", "", 3),
-            hl("Remove <b>hysteresis</b> (oracle planner, noise 2 %): sector flips per mission", ("noise", "sigma_2", "Hysteresis ON"), ("noise", "sigma_2", "Hysteresis OFF"), "sector_flips", "", 1),
+            hl("Remove <b>hysteresis</b> (per-tick re-planning test, noise 2 %): sector flips per mission", ("noise", "sigma_2", "Hysteresis ON"), ("noise", "sigma_2", "Hysteresis OFF"), "sector_flips", "", 1),
             hl("&nbsp;&nbsp;&nbsp;&nbsp;route changes per mission", ("noise", "sigma_2", "Hysteresis ON"), ("noise", "sigma_2", "Hysteresis OFF"), "route_changes", "", 1),
             hl("&nbsp;&nbsp;&nbsp;&nbsp;mission time", ("noise", "sigma_2", "Hysteresis ON"), ("noise", "sigma_2", "Hysteresis OFF"), "makespan_s", " s", 0),
-            hl("<b>Decentralized</b> vs oracle planner (UAV lost): mission time", ("planner", "uav_loss", "centralized"), ("planner", "uav_loss", "decentralized"), "makespan_s", " s", 0),
             hl("Remove <b>EW weighting</b> (α=0): min final battery", ck("nominal", "Full system"), ck("nominal", "- EW weighting (alpha=0)"), "batt_min_pct", " %", 1),
             hl("Static baseline vs full: mission time (cost of re-planning)", ck("nominal", "Static baseline"), ck("nominal", "Full system"), "makespan_s", " s", 0)]:
+    if row: H.append(row)
+dk3 = lambda n: ("dtn_base", "arena_3000", n)
+for row in [hl("<b>Epidemic vs spray-and-wait</b> (3 km): mean alert latency", dk3(DN[0]), dk3(DN[1]), "alert_latency_mean_s", " s", 0),
+            hl("&nbsp;&nbsp;&nbsp;&nbsp;copies per alert", dk3(DN[0]), dk3(DN[1]), "carriers_per_alert", "", 2),
+            hl("<b>EW-CVT vs nearest-bidder auction</b> (nominal): min final battery", ("alloc_base", "nominal", AN[0]), ("alloc_base", "nominal", AN[1]), "batt_min_pct", " %", 1),
+            hl("&nbsp;&nbsp;&nbsp;&nbsp;(UAV lost): mission time", ("alloc_base", "uav_loss", AN[0]), ("alloc_base", "uav_loss", AN[1]), "makespan_s", " s", 0)]:
     if row: H.append(row)
 H.append(["<b>Networking</b> (5 km arena)", "", "", ""])
 fk, dk, mk = ("network", "arena_5000", NV[0]), ("network", "arena_5000", NV[2]), ("network", "arena_5000", NV[1])
@@ -270,7 +290,7 @@ td:first-child,th:first-child,td:nth-child(2),th:nth-child(2){text-align:left}
 code{font-size:12px}ul{margin:6px 0 6px 20px;padding:0}li{margin:3px 0}
 """
 valid = """
-<h2>5 &nbsp; What these results do and do not show</h2>
+<h2>7 &nbsp; What these results do and do not show</h2>
 <ul>
 <li><b>Simulation, not flight.</b> Dynamics are kinematic (constant speed, linear battery drain). The EW-CVT, hysteresis, failover and DTN logic are real code under test; the aircraft and the radio are models.</li>
 <li><b>Perception inside the mission replays static frames.</b> Each sector shows one dataset image, so detection results are per-frame and deterministic; mission-level precision/recall mainly reflect the detector on those frames plus sector coverage.</li>
