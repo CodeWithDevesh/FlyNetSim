@@ -12,7 +12,7 @@ The diagrams are Mermaid so they render on GitHub; once the set is agreed they c
 | D4 | Hysteresis gate | When exactly does the controller change its mind? | Supporting |
 | D5 | Alert dissemination and DTN | How does a victim alert reach the operator when links are down? | **Core** |
 | D5b | Packet delivery algorithm | What exactly happens to one alert packet, step by step? | **Core** |
-| D5c | Forwarding policies compared | How do epidemic, spray-and-wait, PRoPHET and GeoSaW-style differ? | Supporting |
+| D5c | Forwarding policies compared | How do epidemic, spray-and-wait and buffer-only differ? | Supporting |
 | D6 | UAV state machine | What states can a UAV be in and what moves it between them? | Supporting |
 | D7 | Failure and failover | What happens when a UAV is lost or runs low on battery? | Supporting |
 | D8 | Software module map | Where does each idea live in the code? | Appendix |
@@ -228,8 +228,6 @@ flowchart LR
   C["Contact: x carries alert k,<br/>y does not hold k, link good"] --> P{"Policy"}
   P --> E["<b>Epidemic (ours)</b><br/>always give a copy<br/>x keeps its copy<br/>many copies, lowest latency"]
   P --> S["<b>Spray-and-Wait, L=3</b><br/>if x has more than 1 token:<br/>give floor(tokens/2) to y<br/>else wait for direct delivery<br/>at most 3 copies"]
-  P --> R["<b>PRoPHET</b><br/>give a copy if<br/>P(y meets GCS) above P(x meets GCS)<br/>P_init 0.75, beta 0.25, gamma 0.98 / 30 s"]
-  P --> G["<b>GeoSaW-style</b><br/>if y's return ETA is more than 10 s<br/>shorter than x's: MOVE the copy to y<br/>single copy, x gives it up"]
   P --> B["<b>Buffer only</b><br/>never relay<br/>the finder carries it home"]
 ```
 
@@ -237,8 +235,6 @@ flowchart LR
 |---|---|---|---|
 | Epidemic (ours) | x and y both hold | nothing | highest |
 | Spray-and-Wait | tokens split between x and y | copy budget L | at most L |
-| PRoPHET | x and y both hold | per-UAV delivery predictability, updated on contact (with aging and transitivity) | low-to-moderate |
-| GeoSaW-style | only y holds (moved) | return-time estimate of every peer | one copy |
 | Buffer only | only the finder holds | nothing | one copy |
 
 ---
@@ -362,7 +358,7 @@ flowchart LR
     K2["DTN buffer on or off<br/>forwarding on or off<br/>buffer cap"]
     K3["EW weighting alpha<br/>hysteresis on or off<br/>failover on or off<br/>dynamic replanning on or off"]
     K4["Control parameters<br/>lease slack, beacon interval"]
-    K5["Baselines<br/>forwarding: spray, PRoPHET, GeoSaW-style, buffer only<br/>allocation: nearest-bidder auction, no failover, static"]
+    K5["Baselines<br/>forwarding: spray-and-wait, buffer only<br/>allocation: auction without failover, static"]
     SC["Scenario<br/>swarm size, arena, battery spread,<br/>sensor noise, UAV loss"]
   end
 

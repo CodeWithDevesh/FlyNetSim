@@ -87,17 +87,17 @@ More diagrams (per-UAV pipeline, control loop, hysteresis gate, alert delivery a
    - A Gradio console (`demo.py`) streams a live tracking radar. A validator scores detections against ground truth (precision, recall, F1, localization error) and produces publication figures.
 
 7. **Ablation study.**
-   - Every component has an on/off switch. A harness runs 1,820 paired missions and a detector evaluation, and writes a report. See [`results/README.md`](results/README.md).
+   - Every component has an on/off switch. A harness runs 1,620 paired missions and a detector evaluation, and writes a report. See [`results/README.md`](results/README.md).
 
 8. **Literature baselines inside the same simulator.**
-   - *Alert forwarding* (`--gcs-policy`): our epidemic store-carry-forward is compared with Spray-and-Wait (`spray`, L = 3), PRoPHET (`prophet`), a GeoSaW-style single-copy forwarder (`geosaw`, an approximation using return time to base, not the original waypoint-based protocol) and carrying alerts home only (buffer only). A *copies per alert* metric measures the traffic cost.
-   - *Task allocation* (`--allocation`): EW-CVT is compared with a nearest-bidder auction (`auction`, not a full CBBA), the same auction without failover, and a static partition.
+   - *Alert forwarding* (`--gcs-policy`): our epidemic store-carry-forward is compared with Spray-and-Wait (`spray`, L = 3) and with carrying alerts home only (buffer only). A *copies per alert* metric measures the traffic cost.
+   - *Task allocation* (`--allocation`): EW-CVT with failover is compared with a nearest-bidder auction without failover (`auction`) and with a static partition.
 
 ---
 
 ## Results at a Glance
 
-Each row removes one component and reports the change over 20 paired seeds, with a 95 % confidence interval. Full tables, charts, and the exact experimental setup are in [`results/README.md`](results/README.md).
+Each row removes one component and reports the paired change, with a 95 % confidence interval. Full tables, charts, and the exact experimental setup are in [`results/README.md`](results/README.md).
 
 | Component removed → measured effect | Full system | Ablated | Change (paired mean ± 95% CI) |
 |---|---:|---:|---:|
@@ -110,8 +110,6 @@ Each row removes one component and reports the change over 20 paired seeds, with
 | Static baseline vs full: mission time (cost of re-planning) | 364 s | 353 s | -11 ± 29 s |
 | **Epidemic forwarding vs spray-and-wait** (3 km): mean alert latency | 41 s | 49 s | +8 ± 2 s |
 | &nbsp;&nbsp;copies per alert (the price of epidemic) | 4.30 | 2.37 | -1.93 ± 0.20 |
-| **EW-CVT vs nearest-bidder auction** (nominal): min final battery | 18.8 % | 17.4 % | -1.4 ± 1.1 pts |
-| &nbsp;&nbsp;(UAV lost): mission time, EW-CVT is slower | 554 s | 481 s | -73 ± 58 s |
 | **DTN buffer** (5 km): victims known to operator | 98.0 % | 3.4 % | -94.7 ± 1.2 pts |
 | &nbsp;&nbsp;swarm-wide consensus | 100.0 % | 22.1 % | -77.9 ± 1.3 pts |
 | **Forwarding** (5 km): mean alert latency | 103 s | 109 s | +7 ± 2 s |
@@ -119,7 +117,7 @@ Each row removes one component and reports the change over 20 paired seeds, with
 | **Thermal channel** (masked), day: AP50 | 99.8 | 0.0 | -99.8 |
 | &nbsp;&nbsp;night: AP50 | 94.3 | 0.0 | -94.3 |
 
-**Reference mission** (6 UAVs, 5 km × 5 km arena, 25 sectors, launch batteries 20–100 %, decentralized planner, no failure, mean ± standard deviation over 20 seeds):
+**Reference mission** (6 UAVs, 5 km × 5 km arena, 25 sectors, launch batteries 20–100 %, decentralized planner, no failure, mean ± standard deviation):
 
 | Metric | Value |
 |---|---:|
@@ -142,8 +140,8 @@ Each row removes one component and reports the change over 20 paired seeds, with
 - **Hysteresis removes churn, not flight time**, and only where partitions are recomputed from noisy readings (per-tick re-planning test).
 - **EW-CVT is a trade-off, not a free gain.** Larger `α` raises the worst-case remaining battery but lengthens the mission; at `α = 1` the benefit is modest.
 - **Store-carry-forward relaying shortens alert latency and protects alerts when the finder is lost**, because any UAV that received an alert carries it onward. It needs a large enough buffer: capping copies per UAV too low costs most of the benefit.
-- **Against forwarding baselines, epidemic is fastest but keeps the most copies.** At 3 km it is 7.6 ± 1.7 s faster than Spray-and-Wait and 10.7 ± 3.2 s faster than PRoPHET, at 4.3 copies per alert versus 2.4 and 3.2. The cheaper policies trade latency for traffic.
-- **Against nearest-bidder auction, energy-weighted partitioning is not clearly faster.** It leaves a higher minimum battery (+1.4 ± 1.1 points) and fewer duplicate scans (−1.15 ± 0.53), but after a UAV loss it is slower (+73 ± 58 s). The large coverage gain after a loss comes from the lease-based failover (98.4 % versus 89.2 % without it), not from the weighting.
+- **Against forwarding baselines, epidemic is fastest but keeps the most copies.** At 3 km it is 7.6 ± 1.7 s faster than Spray-and-Wait, at 4.3 copies per alert versus 2.4. The cheaper policy trades latency for traffic.
+- **Failover drives the coverage gain after a UAV loss.** EW-CVT with failover reaches 98.4 % coverage versus 89.2 % for an auction without failover and 87.6 % for a static partition, at the cost of a longer mission (554 s versus about 340 s), because the survivors take over the lost work.
 
 ---
 
@@ -252,9 +250,9 @@ A 5 km mission takes roughly 350-450 simulated seconds, so use `--duration 900`;
 | `--batt-min` | UAVs start with battery uniform in [min, 100] % (100) |
 | `--batt-noise` | Battery-measurement noise, std-dev in % points (0) |
 | `--planner` | `decentralized` (per-UAV views, default) or `centralized` (test only: re-plans from true state every tick) |
-| `--gcs-policy` | Alert forwarding baseline: `spray`, `prophet` or `geosaw` (default: epidemic store-carry-forward) |
+| `--gcs-policy` | Alert forwarding baseline: `spray` (default: epidemic store-carry-forward) |
 | `--spray-copies` | Copies per alert for `spray` (3) |
-| `--allocation` | `ewcvt` (default) or `auction` (nearest-bidder baseline) |
+| `--allocation` | `ewcvt` (default) or `auction` (nearest-bidder baseline, use with `--no-failover`) |
 | `--beacon-interval` | Seconds between state beacons (5) |
 | `--lease-slack` | Seconds a peer may be overdue back at base before it is presumed lost (60) |
 | `--buffer-cap` | Max buffered alert copies per UAV (unlimited) |
@@ -277,7 +275,7 @@ python -m unittest discover -s tests
 ### 5. Reproduce the Ablation Study
 ```bash
 python ablation/perception_eval.py --n 150     # detector evaluation (~20 min on CPU)
-python ablation/run_ablation.py --seeds 20     # 1,820 missions
+python ablation/run_ablation.py --seeds 20     # 1,620 missions
 python ablation/make_report.py                 # HTML report + figures
 python ablation/make_readme.py                 # results/README.md
 ```

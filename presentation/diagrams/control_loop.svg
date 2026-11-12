@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1340" height="660" viewBox="0 0 1340 660" font-family="Helvetica, Arial, sans-serif" font-size="19">
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#333"/></marker></defs>
+<rect width="1340" height="660" fill="#ffffff"/>
+<polyline points="295.0,70 365.0,70" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="635.0,70 705.0,70" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="975.0,70 1045.0,70" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="1180,102.0 1180,208.0" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="1045.0,240 975.0,240" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="705.0,240 625.0,240" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="375.0,240 295.0,240" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="500,290.0 500,330 160,330 160,378.0" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="160,272.0 160,378.0" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="295.0,410 365.0,410" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="635.0,410 715.0,410" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="965.0,410 1045.0,410" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="840,463.0 840,536.5" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="1180,453.5 1180,580 975.0,580" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<rect x="25.0" y="26.5" width="270" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="160" y="53.46" text-anchor="middle">Beacons from peers:</text>
+<text x="160" y="76.46000000000001" text-anchor="middle">position, g, w, state,</text>
+<text x="160" y="99.46000000000001" text-anchor="middle">ETA, claims, scanned set</text>
+<rect x="365.0" y="26.5" width="270" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="500" y="53.46" text-anchor="middle">Local view of peers,</text>
+<text x="500" y="76.46000000000001" text-anchor="middle">claims and scanned</text>
+<text x="500" y="99.46000000000001" text-anchor="middle">sectors</text>
+<rect x="705.0" y="26.5" width="270" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="840" y="53.46" text-anchor="middle">Expire leases: overdue</text>
+<text x="840" y="76.46000000000001" text-anchor="middle">peer is suspected, its</text>
+<text x="840" y="99.46000000000001" text-anchor="middle">claims are released</text>
+<rect x="1045.0" y="38.0" width="270" height="64" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="1180" y="64.96000000000001" text-anchor="middle">Read own battery B (with</text>
+<text x="1180" y="87.96000000000001" text-anchor="middle">sensor noise)</text>
+<rect x="1045.0" y="208.0" width="270" height="64" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="1180" y="234.96" text-anchor="middle">Fresh weight w* =</text>
+<text x="1180" y="257.96000000000004" text-anchor="middle">(B/Bmax)^alpha</text>
+<rect x="705.0" y="208.0" width="270" height="64" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="840" y="234.96" text-anchor="middle">EW-CVT centroid C* over</text>
+<text x="840" y="257.96000000000004" text-anchor="middle">peers believed active</text>
+<polygon points="500.0,190.0 625.0,240.0 500.0,290.0 375.0,240.0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.6"/>
+<text x="500" y="246.46" text-anchor="middle">Hysteresis gate</text>
+<rect x="25.0" y="208.0" width="270" height="64" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="160" y="234.96" text-anchor="middle">Locked: keep committed</text>
+<text x="160" y="257.96000000000004" text-anchor="middle">g, w</text>
+<rect x="25.0" y="378.0" width="270" height="64" rx="29.09090909090909" fill="#d5e8d4" stroke="#82b366" stroke-width="1.6"/>
+<text x="160" y="416.46" text-anchor="middle">Commit: g = C*, w = w*</text>
+<rect x="365.0" y="355.0" width="270" height="110" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="500" y="381.96" text-anchor="middle">Claim sectors: keep mine</text>
+<text x="500" y="404.96" text-anchor="middle">unless beaten, take free</text>
+<text x="500" y="427.96" text-anchor="middle">preferred, released work</text>
+<text x="500" y="450.96" text-anchor="middle">only at base</text>
+<polygon points="840.0,357.0 965.0,410.0 840.0,463.0 715.0,410.0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.6"/>
+<text x="840" y="404.96" text-anchor="middle">Claim set</text>
+<text x="840" y="427.96" text-anchor="middle">changed?</text>
+<rect x="1045.0" y="366.5" width="270" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="1180" y="393.46" text-anchor="middle">Rebuild route: nearest-</text>
+<text x="1180" y="416.46" text-anchor="middle">neighbour tour, return</text>
+<text x="1180" y="439.46" text-anchor="middle">to pad</text>
+<rect x="705.0" y="536.5" width="270" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="840" y="563.46" text-anchor="middle">Fly route; advertise ETA</text>
+<text x="840" y="586.46" text-anchor="middle">and claims in next</text>
+<text x="840" y="609.46" text-anchor="middle">beacon</text>
+<text x="335.0" y="233.0" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">locked</text>
+<text x="330" y="322" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">commit</text>
+<text x="1005.0" y="403.0" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">yes</text>
+<text x="865" y="495" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">no</text>
+</svg>

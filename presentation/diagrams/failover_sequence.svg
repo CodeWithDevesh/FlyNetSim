@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1250" height="500" viewBox="0 0 1250 500" font-family="Helvetica, Arial, sans-serif" font-size="19">
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#333"/></marker></defs>
+<rect width="1250" height="500" fill="#ffffff"/>
+<polyline points="245.0,70 330.0,70" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="570.0,70 650.0,70" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="890.0,70 970.0,70" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="1090,113.5 1090,191.5" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="970.0,235 895.0,235" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="645.0,235 570.0,235" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="770,288.0 770,368.0" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="450,278.5 450,345.0" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<rect x="15.0" y="26.5" width="230" height="87" rx="39.54545454545454" fill="#f8cecc" stroke="#b85450" stroke-width="1.6"/>
+<text x="130" y="53.46" text-anchor="middle">Event: motor failure</text>
+<text x="130" y="76.46000000000001" text-anchor="middle">or battery 0% - the</text>
+<text x="130" y="99.46000000000001" text-anchor="middle">UAV falls silent</text>
+<rect x="330.0" y="26.5" width="240" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="450" y="53.46" text-anchor="middle">Survivors in flight</text>
+<text x="450" y="76.46000000000001" text-anchor="middle">get no signal;</text>
+<text x="450" y="99.46000000000001" text-anchor="middle">silence is normal</text>
+<rect x="650.0" y="26.5" width="240" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="770" y="53.46" text-anchor="middle">Advertised return</text>
+<text x="770" y="76.46000000000001" text-anchor="middle">time + lease slack</text>
+<text x="770" y="99.46000000000001" text-anchor="middle">passes</text>
+<rect x="970.0" y="26.5" width="240" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="1090" y="53.46" text-anchor="middle">Peer suspected:</text>
+<text x="1090" y="76.46000000000001" text-anchor="middle">claims released, live</text>
+<text x="1090" y="99.46000000000001" text-anchor="middle">set changes</text>
+<rect x="970.0" y="191.5" width="240" height="87" rx="8" fill="#ffe6cc" stroke="#d79b00" stroke-width="1.6"/>
+<text x="1090" y="218.46" text-anchor="middle">Hysteresis forced</text>
+<text x="1090" y="241.46" text-anchor="middle">override (topology</text>
+<text x="1090" y="264.46000000000004" text-anchor="middle">changed)</text>
+<polygon points="770.0,182.0 895.0,235.0 770.0,288.0 645.0,235.0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.6"/>
+<text x="770" y="229.96" text-anchor="middle">Failover</text>
+<text x="770" y="252.96" text-anchor="middle">enabled?</text>
+<rect x="330.0" y="191.5" width="240" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="450" y="218.46" text-anchor="middle">Released sectors</text>
+<text x="450" y="241.46" text-anchor="middle">taken only by UAVs at</text>
+<text x="450" y="264.46000000000004" text-anchor="middle">base</text>
+<rect x="320.0" y="345.0" width="260" height="110" rx="49.99999999999999" fill="#d5e8d4" stroke="#82b366" stroke-width="1.6"/>
+<text x="450" y="371.96" text-anchor="middle">Landed UAVs listen 10</text>
+<text x="450" y="394.96" text-anchor="middle">s, split work by</text>
+<text x="450" y="417.96" text-anchor="middle">weighted distance,</text>
+<text x="450" y="440.96" text-anchor="middle">relaunch</text>
+<rect x="660.0" y="368.0" width="220" height="64" rx="29.09090909090909" fill="#f8cecc" stroke="#b85450" stroke-width="1.6"/>
+<text x="770" y="394.96" text-anchor="middle">Sectors stay</text>
+<text x="770" y="417.96" text-anchor="middle">unsearched</text>
+<text x="607.5" y="228.0" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">yes</text>
+<text x="795" y="325" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">no</text>
+</svg>

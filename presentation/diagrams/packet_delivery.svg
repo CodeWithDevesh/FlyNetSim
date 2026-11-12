@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1130" height="960" viewBox="0 0 1130 960" font-family="Helvetica, Arial, sans-serif" font-size="19">
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#333"/></marker></defs>
+<rect width="1130" height="960" fill="#ffffff"/>
+<polyline points="245.0,130 275.0,130" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="400,80.0 400,62.0" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="525.0,130 565.0,130" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="680,173.5 680,237.0" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="555.0,290 515.0,290" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="805.0,290 835.0,290" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="400,333.5 400,397.0" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="275.0,450 245.0,450" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="400,503.0 400,545.5" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="275.0,610 245.0,610" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="960,237.0 960,172.0" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="960,343.0 960,406.5" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="960,493.5 960,560.0" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="835.0,610 765.0,610" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="960,660.0 960,705.5" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="835.0,770 795.0,770" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="960,834.5 960,888.0" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="565.0,770 30,770 30,290 285.0,290" fill="none" stroke="#333" stroke-width="1.8" stroke-dasharray="7 5" marker-end="url(#ar)"/>
+<rect x="15.0" y="86.5" width="230" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="130" y="113.46000000000001" text-anchor="middle">UAV detects a</text>
+<text x="130" y="136.46" text-anchor="middle">victim; key =</text>
+<text x="130" y="159.46" text-anchor="middle">sector, x, y</text>
+<polygon points="400.0,80.0 525.0,130.0 400.0,180.0 275.0,130.0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.6"/>
+<text x="400" y="136.46" text-anchor="middle">Already known?</text>
+<rect x="285.0" y="-2.0" width="230" height="64" rx="29.09090909090909" fill="#f8cecc" stroke="#b85450" stroke-width="1.6"/>
+<text x="400" y="24.96" text-anchor="middle">ignore (de-</text>
+<text x="400" y="47.96" text-anchor="middle">duplicated)</text>
+<rect x="565.0" y="86.5" width="230" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="680" y="113.46000000000001" text-anchor="middle">For every recipient:</text>
+<text x="680" y="136.46" text-anchor="middle">ONE direct radio</text>
+<text x="680" y="159.46" text-anchor="middle">attempt</text>
+<polygon points="680.0,237.0 805.0,290.0 680.0,343.0 555.0,290.0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.6"/>
+<text x="680" y="284.96" text-anchor="middle">Delivered?</text>
+<text x="680" y="307.96" text-anchor="middle">(draw vs. PER)</text>
+<rect x="285.0" y="246.5" width="230" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="400" y="273.46" text-anchor="middle">Recipient stores the</text>
+<text x="400" y="296.46" text-anchor="middle">alert and marks it</text>
+<text x="400" y="319.46" text-anchor="middle">known</text>
+<polygon points="960.0,237.0 1085.0,290.0 960.0,343.0 835.0,290.0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.6"/>
+<text x="960" y="284.96" text-anchor="middle">DTN buffer</text>
+<text x="960" y="307.96" text-anchor="middle">enabled?</text>
+<rect x="875.0" y="128.0" width="170" height="44" rx="20.0" fill="#f8cecc" stroke="#b85450" stroke-width="1.6"/>
+<text x="960" y="156.46" text-anchor="middle">copy lost</text>
+<polygon points="400.0,397.0 525.0,450.0 400.0,503.0 275.0,450.0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.6"/>
+<text x="400" y="444.96" text-anchor="middle">Recipient is</text>
+<text x="400" y="467.96" text-anchor="middle">the GCS?</text>
+<rect x="15.0" y="406.5" width="230" height="87" rx="39.54545454545454" fill="#d5e8d4" stroke="#82b366" stroke-width="1.6"/>
+<text x="130" y="433.46" text-anchor="middle">First-known time</text>
+<text x="130" y="456.46" text-anchor="middle">recorded: latency</text>
+<text x="130" y="479.46" text-anchor="middle">stops</text>
+<polygon points="400.0,545.5 525.0,610.0 400.0,674.5 275.0,610.0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.6"/>
+<text x="400" y="593.46" text-anchor="middle">Store-carry-</text>
+<text x="400" y="616.46" text-anchor="middle">forward</text>
+<text x="400" y="639.46" text-anchor="middle">enabled?</text>
+<rect x="15.0" y="566.5" width="230" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="130" y="593.46" text-anchor="middle">Peer queues a copy</text>
+<text x="130" y="616.46" text-anchor="middle">for every recipient</text>
+<text x="130" y="639.46" text-anchor="middle">not known to hold it</text>
+<rect x="845.0" y="406.5" width="230" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="960" y="433.46" text-anchor="middle">QoS-1 buffer per</text>
+<text x="960" y="456.46" text-anchor="middle">recipient (drop</text>
+<text x="960" y="479.46" text-anchor="middle">oldest when full)</text>
+<polygon points="960.0,560.0 1085.0,610.0 960.0,660.0 835.0,610.0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.6"/>
+<text x="960" y="616.46" text-anchor="middle">Link PER &lt; 0.2?</text>
+<rect x="595.0" y="578.0" width="170" height="64" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="680" y="616.46" text-anchor="middle">keep carrying</text>
+<polygon points="960.0,705.5 1085.0,770.0 960.0,834.5 835.0,770.0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.6"/>
+<text x="960" y="753.46" text-anchor="middle">Recipient</text>
+<text x="960" y="776.46" text-anchor="middle">already holds</text>
+<text x="960" y="799.46" text-anchor="middle">it?</text>
+<rect x="565.0" y="738.0" width="230" height="64" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="680" y="764.96" text-anchor="middle">Hand over the copy</text>
+<text x="680" y="787.96" text-anchor="middle">(delivered late)</text>
+<rect x="875.0" y="888.0" width="170" height="44" rx="20.0" fill="#f8cecc" stroke="#b85450" stroke-width="1.6"/>
+<text x="960" y="916.46" text-anchor="middle">discard copy</text>
+<text x="425" y="78" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">yes</text>
+<text x="545.0" y="123.0" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">no</text>
+<text x="535.0" y="283.0" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">yes</text>
+<text x="820.0" y="283.0" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">no</text>
+<text x="260.0" y="443.0" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">yes</text>
+<text x="425" y="535" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">no</text>
+<text x="260.0" y="603.0" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">yes</text>
+<text x="985" y="222" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">no</text>
+<text x="985" y="372" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">yes</text>
+<text x="800.0" y="603.0" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">no</text>
+<text x="985" y="692" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">yes</text>
+<text x="815.0" y="763.0" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">no</text>
+<text x="985" y="842" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">yes</text>
+<text x="120" y="720" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">holder meets recipient later</text>
+</svg>

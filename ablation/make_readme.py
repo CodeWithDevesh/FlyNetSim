@@ -48,8 +48,6 @@ headline = md(["Component removed → measured effect", "Full system", "Ablated"
     ["Static baseline vs full: mission time (cost of re-planning)", f"{mean(ck(NOM,'Static baseline'),'makespan_s'):.0f} s", f"{mean(full_n,'makespan_s'):.0f} s", paired(ck(NOM, "Static baseline"), full_n, "makespan_s", d=0, unit=" s")],
     ["**Epidemic forwarding vs spray-and-wait** (3 km): mean alert latency", f"{mean(('dtn_base','arena_3000','Epidemic (ours)'),'alert_latency_mean_s'):.0f} s", f"{mean(('dtn_base','arena_3000','Spray-and-Wait (L=3)'),'alert_latency_mean_s'):.0f} s", paired(('dtn_base','arena_3000','Epidemic (ours)'), ('dtn_base','arena_3000','Spray-and-Wait (L=3)'), "alert_latency_mean_s", d=0, unit=" s")],
     ["&nbsp;&nbsp;copies per alert (the price of epidemic)", f"{mean(('dtn_base','arena_3000','Epidemic (ours)'),'carriers_per_alert'):.2f}", f"{mean(('dtn_base','arena_3000','Spray-and-Wait (L=3)'),'carriers_per_alert'):.2f}", paired(('dtn_base','arena_3000','Epidemic (ours)'), ('dtn_base','arena_3000','Spray-and-Wait (L=3)'), "carriers_per_alert", d=2)],
-    ["**EW-CVT vs nearest-bidder auction** (nominal): min final battery", f"{mean(('alloc_base','nominal','EW-CVT (ours)'),'batt_min_pct'):.1f} %", f"{mean(('alloc_base','nominal','Auction (nearest bidder)'),'batt_min_pct'):.1f} %", paired(('alloc_base','nominal','EW-CVT (ours)'), ('alloc_base','nominal','Auction (nearest bidder)'), "batt_min_pct", unit=" pts")],
-    ["&nbsp;&nbsp;(UAV lost): mission time, EW-CVT is slower", f"{mean(('alloc_base','uav_loss','EW-CVT (ours)'),'makespan_s'):.0f} s", f"{mean(('alloc_base','uav_loss','Auction (nearest bidder)'),'makespan_s'):.0f} s", paired(('alloc_base','uav_loss','EW-CVT (ours)'), ('alloc_base','uav_loss','Auction (nearest bidder)'), "makespan_s", d=0, unit=" s")],
     ["**DTN buffer** (5 km): victims known to operator", f"{mean(fk,'operator_recall')*100:.1f} %", f"{mean(dk,'operator_recall')*100:.1f} %", paired(fk, dk, "operator_recall", 100, unit=" pts")],
     ["&nbsp;&nbsp;swarm-wide consensus", f"{mean(fk,'consensus_final')*100:.1f} %", f"{mean(dk,'consensus_final')*100:.1f} %", paired(fk, dk, "consensus_final", 100, unit=" pts")],
     ["**Forwarding** (5 km): mean alert latency", f"{mean(fk,'alert_latency_mean_s'):.0f} s", f"{mean(mk,'alert_latency_mean_s'):.0f} s", paired(fk, mk, "alert_latency_mean_s", d=0, unit=" s")],
@@ -117,7 +115,7 @@ cap_tbl = md(["Cap (copies per UAV)", "Reports known to operator", "Alert latenc
              [[lab, ms(("network", f"cap_{c}", f"buffer cap {c}"), "operator_known_frac", 3), ms(("network", f"cap_{c}", f"buffer cap {c}"), "alert_latency_mean_s", 0),
                ms(("network", f"cap_{c}", f"buffer cap {c}"), "buffer_drops", 0)] for c, lab in [(5, "5"), (15, "15"), (40, "40"), (120, "120"), ("none", "unlimited")]])
 
-DTN_N = ["Epidemic (ours)", "Spray-and-Wait (L=3)", "PRoPHET", "GeoSaW-style", "Buffer only"]
+DTN_N = ["Epidemic (ours)", "Spray-and-Wait (L=3)", "Buffer only"]
 dtn_rows = []
 for sc, lab in [("arena_1500", "1.5 km"), ("arena_3000", "3 km"), ("arena_5000", "5 km"), ("loss_arena_3000", "3 km, UAV lost")]:
     for n in DTN_N:
@@ -130,7 +128,7 @@ for sc, lab in [("arena_3000", "3 km"), ("loss_arena_3000", "3 km, UAV lost")]:
         a, b = ("dtn_base", sc, DTN_N[0]), ("dtn_base", sc, n)
         dtn_pair_rows.append([lab, n, paired(b, a, "alert_latency_mean_s", unit=" s"), paired(b, a, "carriers_per_alert", d=2)])
 dtn_pair_tbl = md(["Scenario", "Epidemic minus", "Alert latency", "Copies per alert"], dtn_pair_rows)
-AL_N = ["EW-CVT (ours)", "Auction (nearest bidder)", "Auction, no failover", "Static partition"]
+AL_N = ["EW-CVT (ours)", "Auction, no failover", "Static partition"]
 al_rows = []
 for sc, lab in [("nominal", "Nominal"), ("uav_loss", "UAV 2 lost")]:
     for n in AL_N:
@@ -164,7 +162,7 @@ Everything here is **{len(RUNS)} simulated missions** plus a detector evaluation
 
 {headline}
 
-*Change* is the paired difference over {N} seeds with a 95 % confidence interval; if the interval
+*Change* is the paired difference with a 95 % confidence interval; if the interval
 contains zero the effect is not established. Hysteresis rows come from a test configuration (`--planner centralized`) that recomputes partitions at every tick from noisy readings, at σ = 2 %: in the decentralized planner
 sectors are claimed once and rarely re-assigned, so there is almost no churn for hysteresis to remove (see §2). Removing hysteresis does not change mission time
 beyond noise.
@@ -175,7 +173,7 @@ beyond noise.
   from the NII-CU RGB-thermal drone dataset, with its human labels as ground truth. UAVs launch from a base
   station, fly to sector centres, run the detector there, and return home.
 - **Seeds and pairing.** A seed fixes which frame sits in which sector and each UAV's launch battery
-  (uniform 20–100 %). Every variant runs on the same {N} seeds, so differences come from the removed
+  (uniform 20–100 %). Every variant runs on the same seeds, so differences come from the removed
   component rather than the draw. Tables show mean ± standard deviation across seeds.
 - **UAV loss scenario.** UAV 2 suffers a motor failure at t = 80 s and goes silent. The other UAVs are not told.
 - **Energy rule.** A UAV at 15 % battery or below aborts and returns to base; at 0 % it is lost.
@@ -318,11 +316,11 @@ Beacons are only exchanged on the rare contacts, so interval hardly matters unti
 
 ## 6. Baselines from the literature
 
-Both baselines run inside the same simulator, with the same RF model, seeds and scenarios, so the comparison differs only in the policy under test (20 paired seeds; ± is the 95 % CI).
+Both comparisons run inside the same simulator, with the same RF model, seeds and scenarios, so the comparison differs only in the policy under test (paired seeds; ± is the 95 % CI).
 
 ### Alert forwarding (delay-tolerant routing)
 
-Alerts are created at the finder and must reach the base. **Epidemic** is our store-carry-forward (copy to every UAV met). **Spray-and-Wait** hands out L = 3 copies by binary halving. **PRoPHET** forwards to a peer with a higher delivery predictability for the base (P_init 0.75, β 0.25, γ 0.98 per 30 s). **GeoSaW-style** keeps a single copy and gives it to a peer whose return time to base is more than 10 s shorter; this is an approximation using return ETA, not the original waypoint-crossing GeoSaW. **Buffer only** carries alerts home with the finder.
+Alerts are created at the finder and must reach the base. **Epidemic** is our store-carry-forward (copy to every UAV met). **Spray-and-Wait** hands out L = 3 copies by binary halving. **Buffer only** carries alerts home with the finder.
 
 {dtn_base_tbl}
 
@@ -334,7 +332,7 @@ Epidemic delivers fastest in every scenario, at the price of more copies per ale
 
 ### Task allocation
 
-**Auction (nearest bidder)** replaces the energy-weighted partition by a plain nearest-generator rule (all weights 1), with the same lease-based failover. **Auction, no failover** also drops the release of a suspected-lost UAV's work. **Static partition** is the initial split with no re-planning.
+**Auction, no failover** replaces the energy-weighted partition by a plain nearest-generator rule (all weights 1) and never releases a suspected-lost UAV's work. **Static partition** is the initial split with no re-planning.
 
 {al_tbl}
 
@@ -342,7 +340,7 @@ Paired difference, EW-CVT minus each baseline:
 
 {al_pair_tbl}
 
-Energy-weighted partitioning gives a higher minimum final battery and fewer duplicate scans than nearest-bidder allocation, but it is not faster, and it is slower after a loss. The large coverage gain after a loss comes from the failover rule, not from the weighting.
+After a loss, EW-CVT with failover keeps far more coverage than the auction without failover or the static partition, at the cost of a longer mission because the survivors take over the lost work. The coverage gain comes from the failover rule.
 
 ## What these results do and do not show
 

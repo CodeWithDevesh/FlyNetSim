@@ -3,7 +3,7 @@
 
 Writes  results/figures/{detection_fused_vs_thermal,forwarding_tradeoff,allocation_baselines,lease_slack_tradeoff}.png
 and     paper/generated/{tab_detection,tab_forwarding,tab_allocation,tab_recovery}.tex
-Error bars and +- values are 95 % confidence intervals of the mean over seeds (t = 2.09 for 20 seeds).
+Error bars and +- values are 95 % confidence intervals of the mean over seeds.
 """
 import os, json, collections
 import numpy as np
@@ -84,14 +84,13 @@ def detection():
         r"& \multicolumn{4}{c}{Day} & \multicolumn{4}{c}{Night} & \multicolumn{4}{c}{Thermal washout}\\",
         r"\cmidrule(lr){2-5}\cmidrule(lr){6-9}\cmidrule(lr){10-13}",
         r"Input & AP50 & AP75 & Prec. & Rec. & AP50 & AP75 & Prec. & Rec. & AP50 & AP75 & Prec. & Rec.\\", r"\midrule",
-        row("fusion", "Fused (RGB + thermal)"), row("thermal_only", "Thermal only (RGB zeroed)"),
+        row("fusion", "Fused RGB + thermal (proposed)"), row("thermal_only", "Thermal only (RGB zeroed)"),
         r"\bottomrule", r"\end{tabular}"])
     open(os.path.join(GEN, "tab_detection.tex"), "w").write(tex + "\n")
 
 
 # ------------------------------------------------------------------ forwarding
-POL = [("Epidemic (ours)", "Epidemic", C1), ("Spray-and-Wait (L=3)", "Spray-and-wait", C2), ("PRoPHET", "PRoPHET", C3),
-       ("GeoSaW-style", "GeoSaW-style", C4), ("Buffer only", "Buffer only", GREY)]
+POL = [("Epidemic (ours)", "Epidemic (proposed)", C1), ("Spray-and-Wait (L=3)", "Spray-and-wait", C2), ("Buffer only", "Buffer only", GREY)]
 SCEN = [("arena_1500", "1.5 km"), ("arena_3000", "3 km"), ("arena_5000", "5 km"), ("loss_arena_3000", "3 km, UAV lost")]
 
 
@@ -107,7 +106,7 @@ def forwarding():
         ax.margins(x=0.18, y=0.12)
     axs[0].set_ylabel("mean alert latency (s)")
     h, l = axs[0].get_legend_handles_labels()
-    fig.legend([x[0] if isinstance(x, tuple) else x for x in h], l, loc="lower center", ncol=5, bbox_to_anchor=(0.5, -0.12), fontsize=7.5,
+    fig.legend([x[0] if isinstance(x, tuple) else x for x in h], l, loc="lower center", ncol=3, bbox_to_anchor=(0.5, -0.12), fontsize=7.5,
                handlelength=1.0, columnspacing=1.6)
     fig.text(0.99, 0.97, "lower left is better", ha="right", fontsize=7, color=INK2)
     fig.tight_layout(w_pad=1.2)
@@ -135,27 +134,26 @@ def forwarding():
 
 
 # ------------------------------------------------------------------ allocation
-ALLOC = [("EW-CVT (ours)", "EW-CVT", C1), ("Auction (nearest bidder)", "Auction", C2),
-         ("Auction, no failover", "Auction, no failover", C3), ("Static partition", "Static partition", C4)]
+ALLOC = [("EW-CVT (ours)", "EW-CVT (proposed)", C1), ("Auction, no failover", "Auction, no failover", C3), ("Static partition", "Static partition", C4)]
 METR = [("coverage_pct", "Coverage (%)", "{:.1f}", max), ("makespan_s", "Mission time (s)", "{:.0f}", min),
         ("batt_min_pct", "Min. final battery (%)", "{:.1f}", max), ("duplicate_scans", "Duplicate scans", "{:.2f}", min)]
 
 
 def allocation():
     fig, axs = plt.subplots(1, 4, figsize=(7.2, 2.2))
-    w = 0.2
+    w = 0.26
     for ax, (m, lab, _, _) in zip(axs, METR):
         for i, (key, short, col) in enumerate(ALLOC):
             v = [mean(("alloc_base", sc, key), m) for sc in ("nominal", "uav_loss")]
             e = [ci(("alloc_base", sc, key), m) for sc in ("nominal", "uav_loss")]
             lo = [min(a, b) for a, b in zip(e, v)]
-            ax.bar(np.arange(2) + (i - 1.5) * w, v, w * 0.9, yerr=[lo, e], color=col, label=short, error_kw=dict(lw=0.9, capsize=1.5, ecolor=INK2))
+            ax.bar(np.arange(2) + (i - 1) * w, v, w * 0.9, yerr=[lo, e], color=col, label=short, error_kw=dict(lw=0.9, capsize=1.5, ecolor=INK2))
         ax.set_xticks([0, 1]); ax.set_xticklabels(["Nominal", "UAV lost"]); ax.set_title(lab)
         ax.grid(axis="x", visible=False)
         if m == "coverage_pct":
             ax.set_ylim(0, 108)
     h, l = axs[0].get_legend_handles_labels()
-    fig.legend(h, l, loc="upper center", ncol=4, bbox_to_anchor=(0.5, 1.09), fontsize=7.5, handlelength=1.1, columnspacing=1.6)
+    fig.legend(h, l, loc="upper center", ncol=3, bbox_to_anchor=(0.5, 1.09), fontsize=7.5, handlelength=1.1, columnspacing=1.6)
     fig.tight_layout(w_pad=1.0)
     save(fig, "allocation_baselines")
 

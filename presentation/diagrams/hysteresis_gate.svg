@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1470" height="420" viewBox="0 0 1470 420" font-family="Helvetica, Arial, sans-serif" font-size="19">
+<defs><marker id="ar" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path d="M0,0 L9,4.5 L0,9 Z" fill="#333"/></marker></defs>
+<rect width="1470" height="420" fill="#ffffff"/>
+<polyline points="260.0,200 315.0,200" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="450,135.0 450,82.0" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="585.0,200 655.0,200" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="925.0,200 985.0,200" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="790,265.0 790,370 805.0,370" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="1255.0,200 1285.0,200" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<polyline points="1120,265.0 1120,370 1105.0,370" fill="none" stroke="#333" stroke-width="1.8" marker-end="url(#ar)"/>
+<rect x="20.0" y="156.5" width="240" height="87" rx="8" fill="#dae8fc" stroke="#6c8ebf" stroke-width="1.6"/>
+<text x="140" y="183.46" text-anchor="middle">Inputs: battery B(t),</text>
+<text x="140" y="206.46" text-anchor="middle">centroid C*(t), live</text>
+<text x="140" y="229.46" text-anchor="middle">set N(t)</text>
+<polygon points="450.0,135.0 585.0,200.0 450.0,265.0 315.0,200.0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.6"/>
+<text x="450" y="183.46" text-anchor="middle">Live set N(t)</text>
+<text x="450" y="206.46" text-anchor="middle">differs from</text>
+<text x="450" y="229.46" text-anchor="middle">N(t_k)?</text>
+<rect x="330.0" y="18.0" width="240" height="64" rx="29.09090909090909" fill="#d5e8d4" stroke="#82b366" stroke-width="1.6"/>
+<text x="450" y="44.96" text-anchor="middle">Forced override:</text>
+<text x="450" y="67.96000000000001" text-anchor="middle">commit now</text>
+<polygon points="790.0,135.0 925.0,200.0 790.0,265.0 655.0,200.0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.6"/>
+<text x="790" y="194.96" text-anchor="middle">Battery down &gt;=</text>
+<text x="790" y="217.96" text-anchor="middle">2% of Bmax?</text>
+<polygon points="1120.0,135.0 1255.0,200.0 1120.0,265.0 985.0,200.0" fill="#fff2cc" stroke="#d6b656" stroke-width="1.6"/>
+<text x="1120" y="194.96" text-anchor="middle">Centroid moved</text>
+<text x="1120" y="217.96" text-anchor="middle">&gt;= 5 m?</text>
+<rect x="1285.0" y="160.0" width="170" height="80" rx="36.36363636363636" fill="#d5e8d4" stroke="#82b366" stroke-width="1.6"/>
+<text x="1370" y="194.96" text-anchor="middle">COMMIT: g = C*,</text>
+<text x="1370" y="217.96" text-anchor="middle">w = w*</text>
+<rect x="805.0" y="338.0" width="300" height="64" rx="29.09090909090909" fill="#f8cecc" stroke="#b85450" stroke-width="1.6"/>
+<text x="955" y="364.96" text-anchor="middle">LOCK: keep g, w</text>
+<text x="955" y="387.96" text-anchor="middle">(chattering suppressed)</text>
+<text x="475" y="115" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">yes</text>
+<text x="620.0" y="193.0" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">no</text>
+<text x="955.0" y="193.0" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">yes</text>
+<text x="765" y="340" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">no</text>
+<text x="1270.0" y="193.0" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">yes</text>
+<text x="1145" y="340" text-anchor="middle" font-size="17" font-style="italic" fill="#222" paint-order="stroke" stroke="#fff" stroke-width="4">no</text>
+</svg>

@@ -162,7 +162,7 @@ alpha_img = fig_html(fig, "alpha sweep")
 
 ctl_html = f"""
 <h2>2 &nbsp; Swarm control: EW-CVT partitioning, hysteresis, failover</h2>
-<p class="lead">{len(SEEDS)} seeds per variant (a seed fixes the world and each UAV's launch battery, so variants are paired). Scenario: 6 UAVs, 5&nbsp;km&nbsp;&times;&nbsp;5&nbsp;km, 25 sectors, launch batteries U(20,100)&nbsp;%, battery-sensor noise σ&nbsp;=&nbsp;1.5&nbsp;%. “UAV loss” injects a motor failure on UAV&nbsp;2 at t&nbsp;=&nbsp;80&nbsp;s.</p>
+<p class="lead">Paired seeds per variant (a seed fixes the world and each UAV's launch battery, so variants are paired). Scenario: 6 UAVs, 5&nbsp;km&nbsp;&times;&nbsp;5&nbsp;km, 25 sectors, launch batteries U(20,100)&nbsp;%, battery-sensor noise σ&nbsp;=&nbsp;1.5&nbsp;%. “UAV loss” injects a motor failure on UAV&nbsp;2 at t&nbsp;=&nbsp;80&nbsp;s.</p>
 <h3>Resilience: coverage over time</h3>{cov_img}
 <h3>Ablation table (mean ± std over seeds)</h3>{ctl_tbl}
 <p class="note"><b>Sector flips</b> = unscanned sectors that change owner between re-plans (excluding failover); <b>route changes</b> = times a UAV had to re-plan its route. High values mean the swarm is “chattering”. <b>Recall (whole arena)</b> counts victims over the entire arena, so sectors that were never searched count against the system.</p>
@@ -220,18 +220,17 @@ sections.append(f"<h2>4 &nbsp; Scaling with swarm size</h2><p class=\"lead\">Equ
 
 
 # =============================================================== 6. baselines
-DN = ["Epidemic (ours)", "Spray-and-Wait (L=3)", "PRoPHET", "GeoSaW-style", "Buffer only"]
+DN = ["Epidemic (ours)", "Spray-and-Wait (L=3)", "Buffer only"]
 drows = [[lab, n, ms(("dtn_base", sc, n), "alert_latency_mean_s", 1), ms(("dtn_base", sc, n), "operator_recall", 3), ms(("dtn_base", sc, n), "carriers_per_alert", 2)]
          for sc, lab in [("arena_1500", "1.5 km"), ("arena_3000", "3 km"), ("arena_5000", "5 km"), ("loss_arena_3000", "3 km, UAV lost")] for n in DN]
-AN = ["EW-CVT (ours)", "Auction (nearest bidder)", "Auction, no failover", "Static partition"]
+AN = ["EW-CVT (ours)", "Auction, no failover", "Static partition"]
 arows = [[lab, n, ms(("alloc_base", sc, n), "coverage_pct", 1), ms(("alloc_base", sc, n), "makespan_s", 0), ms(("alloc_base", sc, n), "batt_min_pct", 1), ms(("alloc_base", sc, n), "duplicate_scans", 2)]
          for sc, lab in [("nominal", "Nominal"), ("uav_loss", "UAV 2 lost")] for n in AN]
 sections.append("<h2>6 &nbsp; Baselines from the literature</h2><p class=\"lead\">Each baseline replaces one policy in the same simulator, with the same radio model, worlds and seeds.</p>"
     "<h3>Alert forwarding</h3>" + table(["Scenario", "Forwarding", "Alert latency s", "Operator recall", "Copies per alert"], drows) +
-    "<p class=\"note\">Epidemic (ours) copies an alert to every UAV met. Spray-and-Wait gives each alert L&nbsp;=&nbsp;3 copies. PRoPHET forwards to peers with a higher delivery predictability for the base. "
-    "<b>GeoSaW-style</b> is an approximation (one copy, handed to a peer whose return time is more than 10&nbsp;s shorter); it does not use planned waypoints as GeoSaW does. Epidemic has the lowest latency everywhere and costs the most copies.</p>"
+    "<p class=\"note\">Epidemic (ours) copies an alert to every UAV met. Spray-and-Wait gives each alert L&nbsp;=&nbsp;3 copies. Buffer only carries each alert home with its finder. Epidemic has the lowest latency everywhere and costs the most copies.</p>"
     "<h3>Task allocation</h3>" + table(["Scenario", "Allocation", "Coverage %", "Mission time s", "Min final battery %", "Duplicate scans"], arows) +
-    "<p class=\"note\">The auction is a nearest-bidder rule (all weights equal to 1), not a full CBBA. EW-CVT leaves a higher minimum battery and fewer duplicate scans, but it is not faster, and it is slower after a loss. The coverage gain after a loss comes from the lease-based failover.</p>")
+    "<p class=\"note\">The auction assigns each sector to the nearest UAV (all weights equal to 1) and has no failover. After a loss, EW-CVT with failover keeps far more coverage, at the cost of a longer mission. The coverage gain comes from the lease-based failover.</p>")
 
 # =============================================================== headline
 def hl(label, kA, kB, metric, unit="", d=1, scale=1.0, better="lower"):
@@ -252,9 +251,8 @@ for row in [hl("Remove <b>failover</b> (UAV lost): area coverage", full_loss, no
     if row: H.append(row)
 dk3 = lambda n: ("dtn_base", "arena_3000", n)
 for row in [hl("<b>Epidemic vs spray-and-wait</b> (3 km): mean alert latency", dk3(DN[0]), dk3(DN[1]), "alert_latency_mean_s", " s", 0),
-            hl("&nbsp;&nbsp;&nbsp;&nbsp;copies per alert", dk3(DN[0]), dk3(DN[1]), "carriers_per_alert", "", 2),
-            hl("<b>EW-CVT vs nearest-bidder auction</b> (nominal): min final battery", ("alloc_base", "nominal", AN[0]), ("alloc_base", "nominal", AN[1]), "batt_min_pct", " %", 1),
-            hl("&nbsp;&nbsp;&nbsp;&nbsp;(UAV lost): mission time", ("alloc_base", "uav_loss", AN[0]), ("alloc_base", "uav_loss", AN[1]), "makespan_s", " s", 0)]:
+            hl("&nbsp;&nbsp;&nbsp;&nbsp;copies per alert", dk3(DN[0]), dk3(DN[1]), "carriers_per_alert", "", 2)]:
+            
     if row: H.append(row)
 H.append(["<b>Networking</b> (5 km arena)", "", "", ""])
 fk, dk, mk = ("network", "arena_5000", NV[0]), ("network", "arena_5000", NV[2]), ("network", "arena_5000", NV[1])
@@ -297,7 +295,7 @@ valid = """
 <li><b>Network assumptions.</b> Log-distance path loss (exponent 2.5, σ&nbsp;=&nbsp;4&nbsp;dB shadowing), 33&nbsp;dBm at 2.4&nbsp;GHz for arenas &ge; 2&nbsp;km. Results depend on this model; real links would differ.</li>
 <li><b>Energy rule.</b> A UAV at &le;&nbsp;15&nbsp;% battery aborts and returns to base; at 0&nbsp;% it is lost. The battery-sensor noise levels (0&ndash;4&nbsp;% points) are scenario assumptions and are swept above.</li>
 <li><b>Dynamic re-planning is not free.</b> In the nominal case the static baseline finishes faster; re-planning buys resilience (failover) and energy balance at a time cost, shown in the headline table.</li>
-<li><b>Statistics.</b> """ + f"{len(SEEDS)}" + """ seeds per variant; ± values are standard deviations in tables and paired 95 % confidence intervals in the headline table. Seeds vary the world layout and launch batteries only.</li>
+<li><b>Statistics.</b> Paired seeds per variant; ± values are standard deviations in tables and paired 95 % confidence intervals in the headline table. Seeds vary the world layout and launch batteries only.</li>
 </ul>"""
 
 page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">

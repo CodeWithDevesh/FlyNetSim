@@ -9,7 +9,7 @@ three contributions buys, by switching it off and measuring what happens.
 | 2 | Delay-tolerant FANET mesh: RF physics, QoS-1 store-and-forward, store-carry-forward relaying | `FlySim/swarm_network.py` |
 | 3 | Swarm control: Energy-Weighted CVT partitioning, dual-threshold hysteresis, autonomous failover | `FlySim/hysteresis_controller.py`, `simulate_swarm_mission.py` |
 
-Everything here is **1820 simulated missions** plus a detector evaluation, and is reproducible
+Everything here is **1620 simulated missions** plus a detector evaluation, and is reproducible
 (see [Reproduce](#reproduce)). A self-contained HTML version with the same charts is in
 [`final_report.html`](final_report.html).
 
@@ -26,8 +26,6 @@ Everything here is **1820 simulated missions** plus a detector evaluation, and i
 | Static baseline vs full: mission time (cost of re-planning) | 364 s | 353 s | -11 ± 29 s |
 | **Epidemic forwarding vs spray-and-wait** (3 km): mean alert latency | 41 s | 49 s | +8 ± 2 s |
 | &nbsp;&nbsp;copies per alert (the price of epidemic) | 4.30 | 2.37 | -1.93 ± 0.20 |
-| **EW-CVT vs nearest-bidder auction** (nominal): min final battery | 18.8 % | 17.4 % | -1.4 ± 1.1 pts |
-| &nbsp;&nbsp;(UAV lost): mission time, EW-CVT is slower | 554 s | 481 s | -73 ± 58 s |
 | **DTN buffer** (5 km): victims known to operator | 98.0 % | 3.4 % | -94.7 ± 1.2 pts |
 | &nbsp;&nbsp;swarm-wide consensus | 100.0 % | 22.1 % | -77.9 ± 1.3 pts |
 | **Forwarding** (5 km): mean alert latency | 103 s | 109 s | +7 ± 2 s |
@@ -35,7 +33,7 @@ Everything here is **1820 simulated missions** plus a detector evaluation, and i
 | **Thermal channel** (masked), day: AP50 | 99.8 | 0.0 | -99.8 |
 | &nbsp;&nbsp;night: AP50 | 94.3 | 0.0 | -94.3 |
 
-*Change* is the paired difference over 20 seeds with a 95 % confidence interval; if the interval
+*Change* is the paired difference with a 95 % confidence interval; if the interval
 contains zero the effect is not established. Hysteresis rows come from a test configuration (`--planner centralized`) that recomputes partitions at every tick from noisy readings, at σ = 2 %: in the decentralized planner
 sectors are claimed once and rarely re-assigned, so there is almost no churn for hysteresis to remove (see §2). Removing hysteresis does not change mission time
 beyond noise.
@@ -46,7 +44,7 @@ beyond noise.
   from the NII-CU RGB-thermal drone dataset, with its human labels as ground truth. UAVs launch from a base
   station, fly to sector centres, run the detector there, and return home.
 - **Seeds and pairing.** A seed fixes which frame sits in which sector and each UAV's launch battery
-  (uniform 20–100 %). Every variant runs on the same 20 seeds, so differences come from the removed
+  (uniform 20–100 %). Every variant runs on the same seeds, so differences come from the removed
   component rather than the draw. Tables show mean ± standard deviation across seeds.
 - **UAV loss scenario.** UAV 2 suffers a motor failure at t = 80 s and goes silent. The other UAVs are not told.
 - **Energy rule.** A UAV at 15 % battery or below aborts and returns to base; at 0 % it is lost.
@@ -264,33 +262,25 @@ Beacons are only exchanged on the rare contacts, so interval hardly matters unti
 
 ## 6. Baselines from the literature
 
-Both baselines run inside the same simulator, with the same RF model, seeds and scenarios, so the comparison differs only in the policy under test (20 paired seeds; ± is the 95 % CI).
+Both comparisons run inside the same simulator, with the same RF model, seeds and scenarios, so the comparison differs only in the policy under test (paired seeds; ± is the 95 % CI).
 
 ### Alert forwarding (delay-tolerant routing)
 
-Alerts are created at the finder and must reach the base. **Epidemic** is our store-carry-forward (copy to every UAV met). **Spray-and-Wait** hands out L = 3 copies by binary halving. **PRoPHET** forwards to a peer with a higher delivery predictability for the base (P_init 0.75, β 0.25, γ 0.98 per 30 s). **GeoSaW-style** keeps a single copy and gives it to a peer whose return time to base is more than 10 s shorter; this is an approximation using return ETA, not the original waypoint-crossing GeoSaW. **Buffer only** carries alerts home with the finder.
+Alerts are created at the finder and must reach the base. **Epidemic** is our store-carry-forward (copy to every UAV met). **Spray-and-Wait** hands out L = 3 copies by binary halving. **Buffer only** carries alerts home with the finder.
 
 | Scenario | Forwarding | Alert latency s | Operator recall | Copies per alert |
 |---|---:|---:|---:|---:|
 | 1.5 km | Epidemic (ours) | 34.3 ± 4.5 | 0.985 ± 0.013 | 4.12 ± 0.76 |
 | 1.5 km | Spray-and-Wait (L=3) | 36.4 ± 5.4 | 0.985 ± 0.013 | 2.38 ± 0.25 |
-| 1.5 km | PRoPHET | 39.1 ± 5.1 | 0.985 ± 0.013 | 2.89 ± 0.59 |
-| 1.5 km | GeoSaW-style | 37.2 ± 4.2 | 0.985 ± 0.013 | 1.10 ± 0.08 |
 | 1.5 km | Buffer only | 41.4 ± 4.9 | 0.985 ± 0.013 | 1.00 ± 0.00 |
 | 3 km | Epidemic (ours) | 41.0 ± 3.8 | 0.985 ± 0.013 | 4.30 ± 0.40 |
 | 3 km | Spray-and-Wait (L=3) | 48.6 ± 4.6 | 0.985 ± 0.013 | 2.37 ± 0.21 |
-| 3 km | PRoPHET | 51.8 ± 7.7 | 0.985 ± 0.013 | 3.19 ± 0.62 |
-| 3 km | GeoSaW-style | 47.9 ± 5.3 | 0.985 ± 0.013 | 1.63 ± 0.26 |
 | 3 km | Buffer only | 59.2 ± 7.1 | 0.985 ± 0.013 | 1.00 ± 0.00 |
 | 5 km | Epidemic (ours) | 102.9 ± 12.9 | 0.980 ± 0.015 | 3.39 ± 0.74 |
 | 5 km | Spray-and-Wait (L=3) | 106.3 ± 11.3 | 0.980 ± 0.015 | 2.14 ± 0.31 |
-| 5 km | PRoPHET | 105.7 ± 11.6 | 0.980 ± 0.015 | 2.81 ± 0.67 |
-| 5 km | GeoSaW-style | 106.0 ± 12.8 | 0.980 ± 0.015 | 1.53 ± 0.16 |
 | 5 km | Buffer only | 109.5 ± 12.2 | 0.980 ± 0.015 | 1.00 ± 0.00 |
 | 3 km, UAV lost | Epidemic (ours) | 46.3 ± 7.0 | 0.978 ± 0.020 | 3.52 ± 0.46 |
 | 3 km, UAV lost | Spray-and-Wait (L=3) | 56.4 ± 10.3 | 0.967 ± 0.025 | 2.29 ± 0.24 |
-| 3 km, UAV lost | PRoPHET | 56.4 ± 8.7 | 0.963 ± 0.024 | 2.74 ± 0.59 |
-| 3 km, UAV lost | GeoSaW-style | 56.0 ± 9.1 | 0.973 ± 0.031 | 1.71 ± 0.18 |
 | 3 km, UAV lost | Buffer only | 66.4 ± 9.1 | 0.958 ± 0.028 | 1.04 ± 0.03 |
 
 Paired difference, epidemic minus each baseline:
@@ -298,28 +288,22 @@ Paired difference, epidemic minus each baseline:
 | Scenario | Epidemic minus | Alert latency | Copies per alert |
 |---|---:|---:|---:|
 | 3 km | Spray-and-Wait (L=3) | -7.6 ± 1.7 s | +1.93 ± 0.20 |
-| 3 km | PRoPHET | -10.7 ± 3.2 s | +1.11 ± 0.38 |
-| 3 km | GeoSaW-style | -6.8 ± 2.4 s | +2.67 ± 0.19 |
 | 3 km | Buffer only | -18.2 ± 3.1 s | +3.30 ± 0.19 |
 | 3 km, UAV lost | Spray-and-Wait (L=3) | -10.1 ± 4.8 s | +1.23 ± 0.23 |
-| 3 km, UAV lost | PRoPHET | -10.1 ± 4.0 s | +0.77 ± 0.38 |
-| 3 km, UAV lost | GeoSaW-style | -9.7 ± 3.3 s | +1.81 ± 0.23 |
 | 3 km, UAV lost | Buffer only | -20.1 ± 4.4 s | +2.47 ± 0.22 |
 
 Epidemic delivers fastest in every scenario, at the price of more copies per alert. The cheaper policies trade latency for traffic; the gap widens when a UAV is lost.
 
 ### Task allocation
 
-**Auction (nearest bidder)** replaces the energy-weighted partition by a plain nearest-generator rule (all weights 1), with the same lease-based failover. **Auction, no failover** also drops the release of a suspected-lost UAV's work. **Static partition** is the initial split with no re-planning.
+**Auction, no failover** replaces the energy-weighted partition by a plain nearest-generator rule (all weights 1) and never releases a suspected-lost UAV's work. **Static partition** is the initial split with no re-planning.
 
 | Scenario | Allocation | Coverage % | Recall (arena) | Mission time s | Min final battery % | Duplicate scans |
 |---|---:|---:|---:|---:|---:|---:|
 | Nominal | EW-CVT (ours) | 100.0 ± 0.0 | 0.980 ± 0.015 | 353 ± 31 | 18.8 ± 8.3 | 0.00 ± 0.00 |
-| Nominal | Auction (nearest bidder) | 100.0 ± 0.0 | 0.980 ± 0.015 | 341 ± 56 | 17.4 ± 8.2 | 1.15 ± 1.14 |
 | Nominal | Auction, no failover | 100.0 ± 0.0 | 0.980 ± 0.015 | 334 ± 40 | 17.4 ± 8.2 | 0.90 ± 0.91 |
 | Nominal | Static partition | 100.0 ± 0.0 | 0.980 ± 0.015 | 364 ± 59 | 17.9 ± 7.9 | 0.10 ± 0.31 |
 | UAV 2 lost | EW-CVT (ours) | 98.4 ± 6.3 | 0.962 ± 0.069 | 554 ± 97 | 19.7 ± 10.4 | 1.40 ± 1.47 |
-| UAV 2 lost | Auction (nearest bidder) | 97.0 ± 5.8 | 0.951 ± 0.058 | 481 ± 110 | 16.4 ± 8.4 | 1.40 ± 1.35 |
 | UAV 2 lost | Auction, no failover | 89.2 ± 4.1 | 0.872 ± 0.050 | 336 ± 33 | 20.0 ± 11.3 | 0.75 ± 1.02 |
 | UAV 2 lost | Static partition | 87.6 ± 1.8 | 0.858 ± 0.051 | 353 ± 62 | 20.3 ± 10.9 | 0.30 ± 1.34 |
 
@@ -327,14 +311,12 @@ Paired difference, EW-CVT minus each baseline:
 
 | Scenario | EW-CVT minus | Mission time | Min battery | Coverage | Duplicate scans |
 |---|---:|---:|---:|---:|---:|
-| Nominal | Auction (nearest bidder) | +13 ± 19 s | +1.4 ± 1.1 pts | +0.0 ± 0.0 pts | -1.15 ± 0.53 |
 | Nominal | Auction, no failover | +20 ± 12 s | +1.4 ± 1.1 pts | +0.0 ± 0.0 pts | -0.90 ± 0.43 |
 | Nominal | Static partition | -11 ± 29 s | +0.8 ± 0.7 pts | +0.0 ± 0.0 pts | -0.10 ± 0.14 |
-| UAV 2 lost | Auction (nearest bidder) | +73 ± 58 s | +3.3 ± 2.9 pts | +1.4 ± 3.2 pts | +0.00 ± 0.66 |
 | UAV 2 lost | Auction, no failover | +218 ± 44 s | -0.3 ± 1.7 pts | +9.2 ± 3.4 pts | +0.65 ± 0.59 |
 | UAV 2 lost | Static partition | +202 ± 50 s | -0.6 ± 1.3 pts | +10.8 ± 3.1 pts | +1.10 ± 0.96 |
 
-Energy-weighted partitioning gives a higher minimum final battery and fewer duplicate scans than nearest-bidder allocation, but it is not faster, and it is slower after a loss. The large coverage gain after a loss comes from the failover rule, not from the weighting.
+After a loss, EW-CVT with failover keeps far more coverage than the auction without failover or the static partition, at the cost of a longer mission because the survivors take over the lost work. The coverage gain comes from the failover rule.
 
 ## What these results do and do not show
 

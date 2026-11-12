@@ -56,11 +56,9 @@ All replace *only* the relaying policy in the same simulator (same missions, rad
 |---|---|---|
 | **Epidemic** (ours) | give a copy to every UAV met that lacks one | many |
 | **Spray-and-Wait** (Spyropoulos 2005), L = 3 | each alert gets 3 copies; the holder halves its copies at each hand-over, then waits to deliver directly | ≤ 3 |
-| **PRoPHET** (Lindgren 2003/2012) | hand a copy to a peer with a higher *delivery predictability* to the base (P_init = 0.75, β = 0.25, γ = 0.98 per 30 s) | few |
-| **GeoSaW-style** (approximation of Bujari 2018) | keep one copy; give it to a peer whose **return time to base is more than 10 s shorter** | 1 |
 | **Buffer only** | the finder carries each alert home itself; no relaying | 1 |
 
-Note: "GeoSaW-style" only approximates GeoSaW (which uses planned waypoints). Metric *copies per alert* = number of UAVs holding a copy at the end (traffic cost).
+Metric *copies per alert* = number of UAVs holding a copy at the end (traffic cost).
 
 **Finding:** epidemic has the lowest alert latency but the most copies; the others trade a few seconds of latency for fewer copies.
 
@@ -102,11 +100,10 @@ Control tick (every 5 s): merge received status → mark overdue peers suspected
 | Policy | What it does |
 |---|---|
 | **EW-CVT** (ours) | full scheme above (energy-weighted partition + hysteresis + claims + lease failover) |
-| **Auction (nearest bidder)** | assign each sector to the nearest UAV (all weights = 1); **keeps** our lease-based failover. A nearest-bidder rule, *not* a full CBBA (Choi et al. 2009) |
-| **Auction, no failover** | same, but lost UAVs' sectors are never reassigned |
+| **Auction, no failover** | assign each sector to the nearest UAV (all weights = 1); lost UAVs' sectors are never reassigned |
 | **Static partition** | fixed launch partition; no reassignment at all |
 
-**Findings:** failover is what drives the coverage gain after a loss (98.4 % vs 89.2 % without; static 87.6 %). EW-CVT leaves a higher minimum battery than the nearest-bidder auction but is **not faster** than it.
+**Findings:** failover is what drives the coverage gain after a loss (98.4 % vs 89.2 % without; static 87.6 %). The price is a longer mission after a loss (554 s vs about 340 s), because the survivors take over the lost work.
 
 ---
 
@@ -116,13 +113,10 @@ Control tick (every 5 s): merge received status → mark overdue peers suspected
 - **Failover latency**: injected failure → first claim of its sectors by a survivor.
 - **Duplicate scans**, **sector flips** (claims given up for a better one), **route changes**, **commits** (hysteresis-approved updates).
 - **Copies per alert**: UAVs holding a copy at the end (traffic cost).
-- Protocol: 20 paired seeds (each seed fixes the sector frames and launch batteries so every variant sees the same worlds); results as paired differences with 95 % CIs; no effect claimed when the CI contains zero.
+- Protocol: paired seeds (each seed fixes the sector frames and launch batteries so every variant sees the same worlds); results as paired differences with 95 % CIs; no effect claimed when the CI contains zero.
 
 ## 5. References for the compared methods
 - Speth et al., *Deep learning with RGB and thermal images onboard a drone for monitoring operations*, J. Field Robotics 39(6), 2022 (base paper, dataset).
 - Vahdat & Becker, *Epidemic routing for partially connected ad hoc networks*, 2000.
 - Spyropoulos et al., *Spray and wait*, 2005.
-- Lindgren et al., *PRoPHET* (probabilistic routing in intermittently connected networks), 2003/2012.
-- Bujari et al., *GeoSaW*, 2018.
-- Choi, Brunet & How, *Consensus-based decentralized auctions (CBBA)*, 2009.
 - Gray & Cheriton, *Leases*, 1989.

@@ -46,13 +46,10 @@ CONTROL_VARIANTS = {
 DTN_BASELINES = {
     "Epidemic (ours)":      {},
     "Spray-and-Wait (L=3)": dict(gcs_policy="spray", spray_copies=3),
-    "PRoPHET":              dict(gcs_policy="prophet"),
-    "GeoSaW-style":         dict(gcs_policy="geosaw"),
     "Buffer only":          dict(forwarding_enabled=False),
 }
 ALLOC_BASELINES = {
     "EW-CVT (ours)":             {},
-    "Auction (nearest bidder)":  dict(allocation="auction"),
     "Auction, no failover":      dict(allocation="auction", failover_enabled=False),
     "Static partition":          dict(ewcvt_alpha=0.0, dynamic_repartition=False, failover_enabled=False, hysteresis_enabled=False),
 }

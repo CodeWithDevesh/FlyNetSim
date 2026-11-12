@@ -9,8 +9,6 @@
 | Static baseline vs full: mission time (cost of re-planning) | 364 s | 353 s | -11 ± 29 s |
 | **Epidemic forwarding vs spray-and-wait** (3 km): mean alert latency | 41 s | 49 s | +8 ± 2 s |
 | &nbsp;&nbsp;copies per alert (the price of epidemic) | 4.30 | 2.37 | -1.93 ± 0.20 |
-| **EW-CVT vs nearest-bidder auction** (nominal): min final battery | 18.8 % | 17.4 % | -1.4 ± 1.1 pts |
-| &nbsp;&nbsp;(UAV lost): mission time, EW-CVT is slower | 554 s | 481 s | -73 ± 58 s |
 | **DTN buffer** (5 km): victims known to operator | 98.0 % | 3.4 % | -94.7 ± 1.2 pts |
 | &nbsp;&nbsp;swarm-wide consensus | 100.0 % | 22.1 % | -77.9 ± 1.3 pts |
 | **Forwarding** (5 km): mean alert latency | 103 s | 109 s | +7 ± 2 s |

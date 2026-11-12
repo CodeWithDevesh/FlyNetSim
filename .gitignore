@@ -54,3 +54,10 @@ FlySim/plot.csv
 FlySim/sim_log.txt
 *.swp
 tests/synthetic_world_data/
+
+# Local preview/lock artefacts
+presentation/_render/
+presentation/.~lock*
+report/*.aux
+report/*.log
+__pycache__/

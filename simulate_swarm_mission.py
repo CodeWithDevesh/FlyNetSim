@@ -189,7 +189,7 @@ class SwarmSimulation:
                  dtn_enabled=True,             # QoS-1 store-and-forward buffering
                  forwarding_enabled=True,      # store-carry-forward: UAVs relay alerts they hold when they meet a recipient
                  buffer_cap=None,              # max buffered alert copies per UAV (None = unlimited)
-                 gcs_policy=None,              # baseline relaying toward the GCS: None (epidemic store-carry-forward), 'spray', 'prophet', 'geosaw'
+                 gcs_policy=None,              # baseline relaying toward the GCS: None (epidemic store-carry-forward) or 'spray' (spray-and-wait)
                  spray_copies=3,               # copy budget L of the spray-and-wait baseline
                  # ---- scenario knobs ----------------------------------------------------
                  initial_battery_range=(100.0, 100.0),   # per-UAV start charge ~ U(lo, hi) [%]
@@ -219,7 +219,7 @@ class SwarmSimulation:
         self.dtn_enabled = dtn_enabled
         self.forwarding_enabled = forwarding_enabled and dtn_enabled
         self.buffer_cap = buffer_cap
-        assert gcs_policy in (None, "spray", "prophet", "geosaw")
+        assert gcs_policy in (None, "spray")
         self.gcs_policy = gcs_policy
         self.spray_copies = int(spray_copies)
         if gcs_policy is not None:
@@ -313,7 +313,6 @@ class SwarmSimulation:
         self.gcs_known = {}         # target_key -> sim time the GCS (operator) first learned of it
         self.gcs_carriers = defaultdict(set)   # alert key -> ids of UAVs that ever held a GCS-bound copy
         self.relay_tx = 0
-        self._prophet = {}          # uav id -> {'gcs': P(meet GCS), peer id: P(meet peer)}
         self.sector_scan_time = {}  # sector_id -> first scan time
         self.last_consensus = 0.0
         self.timeseries = []
@@ -738,13 +737,7 @@ class SwarmSimulation:
     def _carried(d):
         return {m["payload"].split(":")[0] for m in d.broker.qos1_buffers[GCS_ID]}
 
-    def _eta_home(self, d):
-        e = self._return_eta(d)
-        if e is not None:
-            return e
-        return self.sim_time if d.state in ("LANDED", "RTL") else float("inf")
-
-    def _hand_over(self, a, b, key, move=False):
+    def _hand_over(self, a, b, key):
         rec = a.discovered_targets.get(key) or a.consensus_registry.get(key) or getattr(a, "relay_rec", {}).get(key)
         if rec is None:
             return
@@ -754,51 +747,29 @@ class SwarmSimulation:
         b.seen_relay.add(key)
         self._queue_copy(b, GCS_ID, key, rec, f"RELAY_{key}_{b.uav_id}")
         self.relay_tx += 1
-        if move:
-            a.broker.qos1_buffers[GCS_ID] = type(a.broker.qos1_buffers[GCS_ID])(
-                m for m in a.broker.qos1_buffers[GCS_ID] if m["payload"].split(":")[0] != key)
 
     def _relay_step(self, dt):
-        """Spray-and-wait, PRoPHET and a GeoSaW-style single-copy forwarder for alerts bound for the GCS.
+        """Spray-and-wait baseline for alerts bound for the GCS.
 
-        Contacts are UAV pairs with a good link (PER < 0.2), the same criterion as the buffer flush."""
+        Contacts are UAV pairs with a good link (PER < 0.2), the same criterion as the buffer flush.
+        Each alert starts with `spray_copies` tokens; the carrier gives half of them to a peer that lacks it."""
         alive = [d for d in self.drones if d.is_alive]
-        if self.gcs_policy == "prophet":
-            for d in alive:
-                P = self._prophet.setdefault(d.uav_id, {"gcs": 0.0})
-                for k in P:
-                    P[k] *= 0.98 ** (dt / 30.0)                          # aging, one unit = 30 s
-                if self._link_good(d.get_location_dict(), self.gcs_loc):
-                    P["gcs"] += (1.0 - P["gcs"]) * 0.75                  # P_init
         for i in range(len(alive)):
             for j in range(i + 1, len(alive)):
                 a, b = alive[i], alive[j]
                 if not self._link_good(a.get_location_dict(), b.get_location_dict()):
                     continue
-                if self.gcs_policy == "prophet":
-                    Pa, Pb = self._prophet.setdefault(a.uav_id, {"gcs": 0.0}), self._prophet.setdefault(b.uav_id, {"gcs": 0.0})
-                    Pa[b.uav_id] = Pa.get(b.uav_id, 0.0) + (1 - Pa.get(b.uav_id, 0.0)) * 0.75
-                    Pb[a.uav_id] = Pb.get(a.uav_id, 0.0) + (1 - Pb.get(a.uav_id, 0.0)) * 0.75
-                    Pa["gcs"] += (1 - Pa["gcs"]) * Pa[b.uav_id] * Pb["gcs"] * 0.25   # transitivity, beta = 0.25
-                    Pb["gcs"] += (1 - Pb["gcs"]) * Pb[a.uav_id] * Pa["gcs"] * 0.25
                 for x, y in ((a, b), (b, a)):
                     for key in list(self._carried(x)):
                         if key in self._carried(y) or key in getattr(y, "seen_relay", set()):
                             continue
-                        if self.gcs_policy == "spray":
-                            tok = getattr(x, "tokens", {}).get(key, 0)
-                            if tok > 1:
-                                give = tok // 2
-                                x.tokens[key] = tok - give
-                                y.tokens = getattr(y, "tokens", {})
-                                y.tokens[key] = give
-                                self._hand_over(x, y, key)
-                        elif self.gcs_policy == "prophet":
-                            if self._prophet[y.uav_id]["gcs"] > self._prophet[x.uav_id]["gcs"]:
-                                self._hand_over(x, y, key)
-                        elif self.gcs_policy == "geosaw":
-                            if self._eta_home(y) + 10.0 < self._eta_home(x):
-                                self._hand_over(x, y, key, move=True)
+                        tok = getattr(x, "tokens", {}).get(key, 0)
+                        if tok > 1:
+                            give = tok // 2
+                            x.tokens[key] = tok - give
+                            y.tokens = getattr(y, "tokens", {})
+                            y.tokens[key] = give
+                            self._hand_over(x, y, key)
 
     # ------------------------------------------------------------------ vision
     def _scan_sector(self, drone, sec):
@@ -1208,8 +1179,7 @@ if __name__ == "__main__":
     parser.add_argument("--no-failover", action="store_true", help="ablate autonomous sector failover")
     parser.add_argument("--static", action="store_true", help="ablate dynamic EW-CVT replanning")
     parser.add_argument("--no-dtn", action="store_true", help="ablate store-and-forward buffering")
-    parser.add_argument("--allocation", choices=["ewcvt", "auction"], default="ewcvt", help="sector allocation rule (auction = nearest-bidder baseline)")
-    parser.add_argument("--gcs-policy", choices=["spray", "prophet", "geosaw"], default=None, help="baseline relaying toward the GCS instead of epidemic forwarding")
+    parser.add_argument("--gcs-policy", choices=["spray"], default=None, help="spray-and-wait relaying toward the GCS instead of epidemic forwarding")
     parser.add_argument("--spray-copies", type=int, default=3)
     parser.add_argument("--no-forwarding", action="store_true", help="ablate store-carry-forward relaying of received alerts")
     parser.add_argument("--buffer-cap", type=int, default=None, help="max buffered alert copies per UAV")
@@ -1217,6 +1187,7 @@ if __name__ == "__main__":
     parser.add_argument("--batt-noise", type=float, default=0.0, help="battery measurement noise std-dev (%% points)")
     parser.add_argument("--planner", choices=["decentralized", "centralized"], default="decentralized",
                         help="decentralized: per-UAV views and claims; centralized: oracle baseline")
+    parser.add_argument("--allocation", choices=["ewcvt", "auction"], default="ewcvt", help="sector allocation rule (auction = nearest-bidder baseline)")
     parser.add_argument("--beacon-interval", type=float, default=5.0, help="seconds between state beacons")
     parser.add_argument("--lease-slack", type=float, default=60.0, help="seconds past a claim ETA before suspecting its owner")
     parser.add_argument("--out-dir", type=str, default=".")
