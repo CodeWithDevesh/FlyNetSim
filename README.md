@@ -57,7 +57,7 @@ flowchart TB
   COMM <-->|"status messages and alerts"| PEERS
 ```
 
-More diagrams (per-UAV pipeline, control loop, hysteresis gate, alert delivery, state machine, failover, module map, evaluation design) are in [`docs/ARCHITECTURE_PROPOSAL.md`](docs/ARCHITECTURE_PROPOSAL.md).
+More diagrams (per-UAV pipeline, control loop, hysteresis gate, alert delivery and the packet delivery algorithm, forwarding policies, state machine, failover, module map, evaluation design) are in [`docs/ARCHITECTURE_PROPOSAL.md`](docs/ARCHITECTURE_PROPOSAL.md).
 
 ---
 

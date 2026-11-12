@@ -11,6 +11,8 @@ The diagrams are Mermaid so they render on GitHub; once the set is agreed they c
 | D3 | Swarm control loop | How does EW-CVT + hysteresis decide who searches where? | **Core** |
 | D4 | Hysteresis gate | When exactly does the controller change its mind? | Supporting |
 | D5 | Alert dissemination and DTN | How does a victim alert reach the operator when links are down? | **Core** |
+| D5b | Packet delivery algorithm | What exactly happens to one alert packet, step by step? | **Core** |
+| D5c | Forwarding policies compared | How do epidemic, spray-and-wait, PRoPHET and GeoSaW-style differ? | Supporting |
 | D6 | UAV state machine | What states can a UAV be in and what moves it between them? | Supporting |
 | D7 | Failure and failover | What happens when a UAV is lost or runs low on battery? | Supporting |
 | D8 | Software module map | Where does each idea live in the code? | Appendix |
@@ -172,6 +174,72 @@ Because any UAV that received the alert carries it onward, the alert survives th
 
 **RF model behind PER:** log-distance path loss (exponent 2.5), 4 dB shadow fading, 15 dB obstruction penalty,
 SNR mapped to PER over 5 to 25 dB; 33 dBm at 2.4 GHz for arenas of 2 km or more, otherwise 30 dBm at 5 GHz.
+
+---
+
+## D5b. Packet delivery algorithm (what happens to one alert)
+
+Decision flow for a single victim alert, as implemented in `simulate_swarm_mission.py`
+(`_broadcast_alert`, `_try_deliver`, `_queue_copy`, `_receive_alert`, `_flush_buffers`).
+
+```mermaid
+flowchart TD
+  DET["UAV detects a victim<br/>georeference box to sector position<br/>key = TGT_sector_x_y"] --> DUP{"Already known<br/>to this UAV?"}
+  DUP -- "yes" --> STOP1["ignore (de-duplicated)"]
+  DUP -- "no" --> SEND["For every recipient r<br/>(each other UAV and the GCS):<br/>ONE direct radio attempt"]
+  SEND --> PER{"Delivered?<br/>random draw vs PER from SNR<br/>(dead UAV never receives)"}
+  PER -- "yes" --> RX["r receives the alert<br/>r records it, marks it known"]
+  PER -- "no" --> DTN{"DTN buffering<br/>enabled?"}
+  DTN -- "no" --> LOST["copy lost"]
+  DTN -- "yes" --> BUF["QoS-1 buffer for r<br/>one queue per recipient<br/>buffer cap: drop OLDEST copy"]
+  RX --> ISGCS{"r is the GCS?"}
+  ISGCS -- "yes" --> DONE["first-known time recorded<br/>= alert latency stops"]
+  ISGCS -- "no (peer UAV)" --> FWD{"store-carry-forward<br/>enabled?"}
+  FWD -- "no" --> END1["peer holds the alert only"]
+  FWD -- "yes" --> CARRY["peer queues a copy for every<br/>recipient NOT known to hold it<br/>(its own fwd_known set)"]
+  BUF --> TICK
+  CARRY --> TICK
+  subgraph LATER["Every simulation tick, for every alive UAV with buffered copies"]
+    TICK{"Link to recipient<br/>good? PER below 0.2"} -- "no" --> WAIT["keep carrying"]
+    TICK -- "yes (contact, often at base)" --> CHK{"Recipient already<br/>holds it, or GCS<br/>already told?"}
+    CHK -- "yes" --> DROP["discard copy,<br/>mark recipient as holder"]
+    CHK -- "no" --> HAND["hand over the copy<br/>(delivered late)"]
+  end
+  HAND --> RX
+```
+
+Key properties:
+- **Direct first, then carry.** There is no routing table. The only network operation is a point-to-point attempt; everything indirect is *store-carry-forward*.
+- **Per-recipient buffers** mean a copy for the GCS and a copy for each peer are tracked and flushed independently.
+- **Contact-triggered:** a hand-over happens only when the link to the recipient is good (PER below 0.2), which for the GCS in a large arena usually means when a holder returns to base.
+- **Only the missing copies are sent** (`fwd_known` and the recipient's own holdings are checked), so a pair of UAVs that meet exchange only what the other lacks.
+- **Survives the finder's loss:** any UAV that received the alert is itself a carrier.
+
+---
+
+## D5c. Forwarding policies compared
+
+The baselines replace *only* the GCS-bound relaying step; detection, direct attempts and buffers are identical.
+Contacts are UAV pairs with PER below 0.2. Each policy answers one question when carrier **x** meets peer **y**
+that does not hold alert `k`: *should x give y a copy?*
+
+```mermaid
+flowchart LR
+  C["Contact: x carries alert k,<br/>y does not hold k, link good"] --> P{"Policy"}
+  P --> E["<b>Epidemic (ours)</b><br/>always give a copy<br/>x keeps its copy<br/>many copies, lowest latency"]
+  P --> S["<b>Spray-and-Wait, L=3</b><br/>if x has more than 1 token:<br/>give floor(tokens/2) to y<br/>else wait for direct delivery<br/>at most 3 copies"]
+  P --> R["<b>PRoPHET</b><br/>give a copy if<br/>P(y meets GCS) above P(x meets GCS)<br/>P_init 0.75, beta 0.25, gamma 0.98 / 30 s"]
+  P --> G["<b>GeoSaW-style</b><br/>if y's return ETA is more than 10 s<br/>shorter than x's: MOVE the copy to y<br/>single copy, x gives it up"]
+  P --> B["<b>Buffer only</b><br/>never relay<br/>the finder carries it home"]
+```
+
+| Policy | Copies after a hand-over | Needs | Traffic cost |
+|---|---|---|---|
+| Epidemic (ours) | x and y both hold | nothing | highest |
+| Spray-and-Wait | tokens split between x and y | copy budget L | at most L |
+| PRoPHET | x and y both hold | per-UAV delivery predictability, updated on contact (with aging and transitivity) | low-to-moderate |
+| GeoSaW-style | only y holds (moved) | return-time estimate of every peer | one copy |
+| Buffer only | only the finder holds | nothing | one copy |
 
 ---
 

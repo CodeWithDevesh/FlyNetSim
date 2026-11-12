@@ -6,7 +6,12 @@
 
 \usepackage[nocompress]{cite}
 \usepackage{amsmath,amssymb}
+\usepackage{fontspec}
+\renewcommand{\dbltopfraction}{0.95}\renewcommand{\dblfloatpagefraction}{0.7}\setcounter{dbltopnumber}{4}\renewcommand{\topfraction}{0.9}\setcounter{topnumber}{3}
+% Times-compatible text font with real bold and italic shapes (XeTeX cannot embolden the default Type 1 Times)
+\IfFontExistsTF{TeX Gyre Termes}{\setmainfont{TeX Gyre Termes}}{\IfFontExistsTF{Nimbus Roman}{\setmainfont{Nimbus Roman}}{}}
 \usepackage{graphicx}
+\usepackage{dblfloatfix}
 \usepackage{booktabs}
 \usepackage{xcolor}
 \usepackage{url}
@@ -15,7 +20,7 @@
 \usepackage{tikz}
 \usetikzlibrary{positioning,arrows.meta,fit,backgrounds,calc}
 \usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black,breaklinks=true]{hyperref}
-\graphicspath{{../results/figures/}}
+\graphicspath{{../results/figures/}{./}}
 
 \newcommand{\cli}[1]{\texttt{-{}-#1}}
 \newcommand{\pmsd}[2]{#1{\scriptsize$\pm$#2}}
@@ -26,14 +31,16 @@
 \title{Decentralized Multispectral UAV Swarms for Search and Rescue: Early-Fusion Perception, Delay-Tolerant Networking, and Energy-Aware Self-Organization}
 
 \author{\IEEEauthorblockN{Devesh Agarwal, Naman Chaudhary, Sankalp Mittal}
-\IEEEauthorblockA{\textit{Department of Information Technology} \\
-\textit{National Institute of Technology}}
+\IEEEauthorblockA{\textit{Under the Guidance of Dr. Rayanoothala Praneetha Sree} \\
+\textit{Department of Information Technology} \\
+\textit{National Institute of Technology Raipur} \\
+Chhattisgarh - 492010, India}
 }
 
 \maketitle
 
 \begin{abstract}
-A large disaster area can be searched quickly only by many aircraft, and these must see people in poor light and keep working when one of them is lost. They must also share what they find over radio links that often fail. In this paper, we present a simulated multi-UAV search-and-rescue system that addresses these needs together. The system consists of a 4-channel RGB and thermal early-fusion YOLO11 person detector, a delay-tolerant ad-hoc mesh with store-carry-forward relaying of victim alerts, and a fully decentralized control layer in which every UAV plans from its own, possibly outdated, view of the swarm. The control layer combines energy-weighted centroidal Voronoi tessellation (EW-CVT) with dual-threshold hysteresis, sector claiming and lease-based failure suspicion, and it has no central planner. Each component can be switched off, and we measure the effect of doing so over 1{,}820 paired missions. Buffering alerts raises the share of victims known to the operator from 3.4\% to 98\% in a 5\,km arena. Forwarding shortens the alert latency and helps when the finder is lost, and failover recovers 11 points of coverage after a UAV is lost. After a UAV is lost, the survivors need about 230\,s on average to detect the loss and take over its sectors, because no UAV can know of the loss before the missing one is overdue at base. All results come from a kinematic simulation, and we discuss what this means for the conclusions.
+Searching a large disaster area with a UAV swarm requires reliable person detection in poor light, continued operation after the loss of an aircraft, and delivery of findings over radio links that are mostly unavailable. Existing coordination and routing methods usually assume a connected network or a central planner. This paper presents a decentralized search-and-rescue system for such conditions that integrates three components: a 4-channel RGB and thermal early-fusion YOLO11 detector, a delay-tolerant mesh with store-carry-forward alert relaying, and a coordination layer that combines energy-weighted centroidal Voronoi tessellation (EW-CVT), dual-threshold hysteresis, sector claiming and lease-based failure detection. Every UAV plans from its own, possibly outdated, view of the swarm. We evaluate the system in a kinematic simulator that uses real multispectral frames, over 1{,}820 paired missions with confidence intervals. Buffering raises the share of victims known to the operator from 3.4\% to 98\% in a 5\,km arena, and failover recovers 11 points of coverage after a UAV is lost. Epidemic relaying delivers alerts 7 to 11\,s sooner than spray-and-wait, PRoPHET and a GeoSaW-style forwarder at 3\,km, but it keeps more copies of each alert. The energy-weighted partition leaves a higher minimum battery than a nearest-bidder auction, but it is not faster. After a loss, the survivors need about 230\,s to detect it, because no UAV can know of the loss before the missing one is overdue at base. All results come from simulation, and we discuss the limits of this evidence.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -42,37 +49,44 @@ UAV swarm, search and rescue, multispectral fusion, delay-tolerant networking, d
 
 %=====================================================================
 \section{Introduction}
-The first hours after an earthquake or a flood largely determine who is found alive. Speth et al.\ \cite{speth2022} note that the survival rate drops sharply with time, so a response that comes late helps few people. Small unmanned aerial vehicles (UAVs) can cover a wide area much faster than ground teams, and a swarm can cover it faster still. However, several practical problems stand in the way of using a swarm in a real disaster. Visible-light cameras perform poorly in shadow or smoke, where a thermal camera can still show a person. Over areas several kilometres wide the swarm is mostly out of radio contact, so a design that assumes a connected network would deliver almost nothing. A single ground planner would be a single point of failure and would need links that disaster areas rarely offer. If each UAV acts on its own, however, work may be duplicated or abandoned. This happens easily when the batteries differ and a UAV can be lost without anyone knowing.
+The first hours after an earthquake or a flood largely determine who is found alive, and the survival rate drops sharply with time \cite{speth2022}. Small unmanned aerial vehicles (UAVs) can cover a wide area much faster than ground teams, and a swarm can cover it faster still. However, several practical problems stand in the way of using a swarm in a real disaster. Visible-light cameras perform poorly in shadow or smoke, where a thermal camera can still show a person. Over areas several kilometres wide the swarm is mostly out of radio contact, so a design that assumes a connected network would deliver almost nothing. A single ground planner would be a single point of failure and would need links that disaster areas rarely offer, whereas UAVs that act on their own may duplicate or abandon work when batteries differ and a UAV is lost unnoticed.
 
-We study perception, communication and control together, because each depends on the others. What a UAV can decide depends on what it has actually heard, and what it hears depends on the radio link and on where the other UAVs are. The contributions of this paper are as follows:
+We study perception, communication and control together, because each depends on the others. What a UAV can decide depends on what it has actually heard, and what it hears depends on the radio link and on where the other UAVs are. The main contributions of this paper are as follows:
 \begin{enumerate}
-\item We build a 4-channel RGB and thermal early-fusion detector (YOLO11) and evaluate it under day, night and degraded-thermal conditions.
-\item We design a delay-tolerant mesh in which victim alerts are buffered for each recipient and carried onward by any UAV that receives them (store-carry-forward), and we evaluate it with a physical radio model.
-\item We design a decentralized control layer without a central planner. It applies an energy-weighted partition (EW-CVT) to the stale views of each UAV, and adds dual-threshold hysteresis, claim-and-yield sector assignment, and lease-based failure suspicion that tolerates long periods of silence.
-\item We run a component-wise ablation over 1{,}820 paired simulated missions. We report the effects with confidence intervals, including the unfavourable ones, and we state what the simulation cannot show.
+\item An integrated decentralized architecture for search and rescue with intermittently connected swarms, which combines a 4-channel RGB and thermal early-fusion detector (YOLO11) with delay-tolerant alert dissemination and energy-aware coordination.
+\item A coordination layer that works on stale local views. It uses an energy-weighted partition (EW-CVT) with dual-threshold hysteresis, claim-and-yield sector assignment, and lease-based failure detection that treats silence as normal and releases work only at base.
+\item A delay-tolerant alert mechanism with per-recipient buffers and store-carry-forward relaying, evaluated under a physical radio model.
+\item A controlled evaluation over 1{,}820 paired simulated missions, with a component-wise ablation and a comparison with spray-and-wait, PRoPHET, a GeoSaW-style forwarder and a nearest-bidder auction. We report the effects with confidence intervals, including the unfavourable ones.
 \end{enumerate}
 
-The rest of the paper is organized as follows. Section~\ref{sec:related} reviews related work, and Section~\ref{sec:overview} gives an overview of the system. Section~\ref{sec:method} describes the methods and Section~\ref{sec:setup} the experimental setup. Section~\ref{sec:results} presents the results. Section~\ref{sec:disc} discusses the limitations of the study, and Section~\ref{sec:future} lists ongoing and future work. Section~\ref{sec:concl} concludes the paper.
+The remainder of this paper is organized as follows. Section~\ref{sec:related} reviews related work and Section~\ref{sec:problem} formulates the problem. Section~\ref{sec:method} presents the methodology, Section~\ref{sec:setup} the setup, and Section~\ref{sec:results} the results. Section~\ref{sec:disc} discusses limitations, and Section~\ref{sec:concl} concludes.
 
 %=====================================================================
 \section{Related Work}\label{sec:related}
-\textbf{UAVs for search and rescue.} Small UAVs have been used to support wilderness and disaster search since the field trials of Goodrich et al.\ \cite{goodrich2008}. Recent surveys cover sensing and task assignment as well as path planning \cite{lyu2023}, and Cabreira et al.\ \cite{cabreira2019} review coverage path planning for a single UAV. For several robots, exploration and task allocation have been studied by Burgard et al.\ \cite{burgard2005} and by Gerkey and Matari\'c \cite{gerkey2004}, and auction-based methods such as CBBA \cite{choi2009} decide which robot searches which part of the area. Grøntved et al.\ \cite{grontved2023} adapt CBBA to search and rescue and assume a fully connected network, and Giacomossi et al.\ \cite{giacomossi2026} re-auction the sectors of a failed UAV, but the failure is reported by the UAV itself and the simulation has no radio losses. These methods usually assume reliable communication, or they reach agreement by consensus \cite{olfatisaber2007}. Our setting is closer to flying ad hoc networks, in which the links are sparse and intermittent \cite{bekmezci2013,zeng2016}.
+\textbf{UAVs for search and rescue.} Small UAVs have been used to support wilderness and disaster search since the field trials of Goodrich et al.\ \cite{goodrich2008}. Surveys cover sensing, task assignment and path planning \cite{lyu2023,cabreira2019}. For several robots, exploration and task allocation have been studied by Burgard et al.\ \cite{burgard2005} and by Gerkey and Matari\'c \cite{gerkey2004}, and auction-based methods such as CBBA \cite{choi2009} decide which robot searches which part of the area. Grøntved et al.\ \cite{grontved2023} adapt CBBA to search and rescue and assume a fully connected network, and Giacomossi et al.\ \cite{giacomossi2026} re-auction the sectors of a failed UAV, but the failure is reported by the UAV itself and the simulation has no radio losses. These methods assume reliable communication or reach agreement by consensus \cite{olfatisaber2007}, whereas our setting resembles flying ad hoc networks with sparse, intermittent links \cite{bekmezci2013,zeng2016}.
 
 \textbf{Multispectral person detection.} Combining visible and thermal images is known to improve pedestrian detection in poor light \cite{hwang2015kaist,liu2016multispectral,zhang2019weakly,jia2021llvip}. Early fusion, in which the two modalities are stacked as input channels, needs little extra computation and is therefore suitable for onboard hardware \cite{speth2022}. We use it on top of the YOLO family \cite{redmon2016yolo,wang2023yolov7,jocher2024yolo11}. Speth et al.\ \cite{speth2022} applied RGB and thermal early fusion to person detection from a drone and released the multispectral dataset that we use, and our detector follows their early-fusion design.
 
 \textbf{Coverage control.} Dividing an area among agents with Voronoi cells and moving each agent to the centroid of its cell (Lloyd iteration) is a standard coverage method \cite{lloyd1982,du1999cvt,cortes2004coverage}. Versions that need only limited-range interaction between agents have also been proposed \cite{cortes2005limited}, as have adaptive and fully decentralized control laws \cite{schwager2009}. In contrast to these works, our agents act on outdated views received over a lossy link and resolve conflicts by claiming sectors. Weighting the distance by a quantity that belongs to each agent gives a weighted Voronoi diagram. A power diagram \cite{aurenhammer1987power} subtracts the weight from the squared distance, and we divide by it instead. Energy-aware versions of Lloyd's method use such weights to give smaller regions to robots with less energy \cite{kwok2007,munir2024}. Our weight represents the battery level in the same way, so we do not claim the weighting itself as new. The weight rule of Munir et al.\ \cite{munir2024} reduces to our case $\alpha=1$ when all UAVs drain at similar rates, so we do not run it separately. We add hysteresis to the updates to avoid chattering when the inputs are noisy.
 
-\textbf{Failure detection.} Deciding that a peer has failed when the channel is unreliable is the problem addressed by unreliable failure detectors \cite{chandra1996}. Accrual detectors output a suspicion level that is computed from the arrival times of heartbeats \cite{hayashibara2004}. This is not suitable here, because silence is the normal state of a disconnected mesh. Instead, our sortie lease follows the lease idea of Gray and Cheriton \cite{gray1989}. A claim is valid until a stated time, and after that time it can be released.
+\textbf{Failure detection.} Deciding that a peer has failed when the channel is unreliable is the problem addressed by unreliable failure detectors \cite{chandra1996}. Accrual detectors \cite{hayashibara2004} rely on heartbeat arrival times, which does not suit a mesh in which silence is normal. Instead, our sortie lease follows the lease idea of Gray and Cheriton \cite{gray1989}. A claim is valid until a stated time, and after that time it can be released.
 
-\textbf{Delay-tolerant networking.} When end-to-end paths rarely exist, nodes can store messages and forward them when they meet other nodes \cite{fall2003dtn}. Epidemic and spray-and-wait routing \cite{vahdat2000epidemic,spyropoulos2005spray} trade the delivery rate against the number of copies and the buffer use, probabilistic variants use the contact history \cite{lindgren2012prophet}, and gossip-style dissemination follows a similar idea \cite{demers1987}. GeoSaW \cite{bujari2018geosaw} forwards alerts of search-and-rescue UAVs to carriers whose planned waypoints pass the destination. We use epidemic forwarding with a buffer cap and do not use planned routes, and Section~\ref{sec:base} compares it with spray-and-wait, PRoPHET and a GeoSaW-style forwarder in the same simulator. Simulators of UAV networks couple flight and network models \cite{baidya2018flynetsim}, and our radio model is a simple log-distance channel \cite{rappaport2002wireless}. Air-to-ground links can be better than this model when a line of sight is likely \cite{alhourani2014}, so our model is probably conservative. Our per-node broker follows the topic-subscription idea of distributed MQTT brokers with data-link look-up (DMLT) \cite{kosaka2023dmlt}. In the mission simulator all alerts share one topic, so only the per-recipient buffering of the broker is exercised and topic filtering is not.
+\textbf{Delay-tolerant networking.} When end-to-end paths rarely exist, nodes can store messages and forward them when they meet other nodes \cite{fall2003dtn}. Epidemic and spray-and-wait routing \cite{vahdat2000epidemic,spyropoulos2005spray} trade the delivery rate against the number of copies and the buffer use, probabilistic variants use the contact history \cite{lindgren2012prophet}, and gossip-style dissemination follows a similar idea \cite{demers1987}. GeoSaW \cite{bujari2018geosaw} forwards alerts of search-and-rescue UAVs to carriers whose planned waypoints pass the destination. We use epidemic forwarding with a buffer cap and do not use planned routes, and Section~\ref{sec:base} compares it with spray-and-wait, PRoPHET and a GeoSaW-style forwarder in the same simulator. UAV network simulators couple flight and network models \cite{baidya2018flynetsim}, and our radio model is a simple log-distance channel \cite{rappaport2002wireless} that is probably conservative where a line of sight is likely \cite{alhourani2014}. Our per-node broker follows the DMLT distributed MQTT brokers \cite{kosaka2023dmlt}, of which only the per-recipient buffering is exercised.
 
 %=====================================================================
-\section{System Overview}\label{sec:overview}
-Fig.~\ref{fig:arch} shows the system. A team of $N$ UAVs launches from a common base and searches an $L\times L$ arena divided into sectors. Every UAV runs the same three components. \emph{Perception} turns a multispectral frame of the sector below into victim detections. \emph{Mesh communication} sends alerts and periodic status messages over a lossy radio link, buffers what could not be sent, and carries received alerts onward. \emph{Control} chooses which sectors to search, from the UAV's own battery and its current view of its peers, and builds a route. The ground control station (GCS) is a passive sink: it receives alerts and plans nothing.
+\section{Problem Formulation}\label{sec:problem}
+A team of $N$ UAVs launches from a common base and searches an $L\times L$ arena divided into $K$ sectors with centres $c_s$. UAV $i$ has a position, a battery level $B_i\in[0,B_{\max}]$ and a set of claimed sectors. An unknown set of victims lies in the sectors, and a UAV that scans a sector raises an alert for each victim that it detects. The radio links are lossy and time-varying: the packet error rate between two UAVs depends on their distance (Eq.~\ref{eq:pl}), so the communication graph is mostly disconnected in flight. The ground control station (GCS) is a passive sink at the base.
 
-The interfaces are narrow. Detections go to the mesh as alerts, status messages from the mesh update the view that the control layer has of its peers, and control hands a route to flight. The detection, networking and control logic are the actual code under test, whereas the aircraft and the radio are simulated.
+The objective is to maximize the coverage of the arena and the share of victims whose alert reaches the GCS (the operator recall), while keeping the mission time and the alert latency short. Three constraints apply. A UAV must return to base before its battery falls below a 15\% reserve. There is no central planner, so every decision may use only the information that the UAV has itself received. A UAV may also be lost without notice.
 
-\begin{figure*}[t]
+%=====================================================================
+\section{Proposed Methodology}\label{sec:method}
+\subsection{System Architecture}
+Fig.~\ref{fig:arch} gives an overview of the proposed system. Every UAV runs the same three components. \emph{Perception} turns a multispectral frame of the sector below into victim detections. \emph{Mesh communication} sends alerts and periodic status messages over a lossy radio link, buffers what could not be sent, and carries received alerts onward. \emph{Control} chooses which sectors to search, from the UAV's own battery and its current view of its peers, and builds a route. The ground control station (GCS) is a passive sink: it receives alerts and plans nothing.
+
+The interfaces in Fig.~\ref{fig:arch} are narrow: detections go to the mesh as alerts, status messages update the view that control has of its peers, and control hands a route to flight. The aircraft and the radio are simulated, whereas the detection, networking and control logic is the code under test.
+
+\begin{figure*}[!t]
 \centering
 \resizebox{\textwidth}{!}{%
 \begin{tikzpicture}[
@@ -104,17 +118,16 @@ The interfaces are narrow. Detections go to the mesh as alerts, status messages 
   \draw[arr] (peers.east) -- node[lab, above]{alerts, on contact or at return} (gcs.west);
   \draw[arr, dashed] (gcs.north) -- node[lab, right]{launch} (fly.south);
 \end{tikzpicture}}
-\caption{System architecture of one UAV and the ground station.}
+\caption{Overall architecture of the proposed system. Each UAV runs the three components on its own view of the swarm. Solid arrows show the data flow, and dashed arrows show feedback, radio exchange with peers, and launch.}
 \label{fig:arch}
 \end{figure*}
 
 %=====================================================================
-\section{Method}\label{sec:method}
-\subsection{Early-fusion perception}
+\subsection{Multispectral Victim Detection}
 The visible (RGB) and thermal long-wave infrared frames are stacked into a four-plane tensor, and the first convolution of the detector takes four input channels. The shipped model is YOLO11s with an input size of 1280\,px, and the frames are $1280{\times}937$. It is trained on the NII-CU Multispectral Aerial Person Detection dataset \cite{speth2022}, with a single person class. We initialise the thermal kernel with the pretrained red-channel kernel, and we train without colour jitter because it has no meaning for a thermal plane. The box centre of a detection is mapped linearly into the bounds of the sector in which the frame was taken, which gives a world coordinate. This is sector-based georeferencing. It is not a camera model.
 
-\subsection{Radio channel and delay-tolerant mesh}
-\emph{Channel.} The path loss between two UAVs at distance $d$ is modelled by Eq.~\ref{eq:pl}.
+\subsection{Wireless Channel Model}
+The path loss between two UAVs at distance $d$ is modelled by Eq.~\ref{eq:pl}.
 \begin{equation}
 PL(d)=PL(d_0)+10\,n\log_{10}\tfrac{d}{d_0}+X_\sigma+\Delta_{\text{obs}},
 \label{eq:pl}
@@ -122,97 +135,112 @@ PL(d)=PL(d_0)+10\,n\log_{10}\tfrac{d}{d_0}+X_\sigma+\Delta_{\text{obs}},
 where $\Delta_{\text{obs}}=15$\,dB when the link is obstructed (a random 10\% chance beyond 50\,m) and 0 otherwise,
 with $PL(d_0)=20\log_{10}f_{\text{MHz}}-27.55$, $n=2.5$, $d_0=1$\,m, log-normal shadowing $X_\sigma$ with $\sigma=4$\,dB, and a noise floor of $-90$\,dBm. SNR $=P_{tx}-PL-N_0$ maps to a packet error rate: PER $=0$ above 25\,dB, $1$ below 5\,dB, and $1-(1+e^{-0.5(\text{SNR}-15)})^{-1}$ between. Arenas of 2\,km or more use 33\,dBm at 2.4\,GHz, giving PER $\approx0.5$ at about 520\,m; smaller arenas use 30\,dBm at 5\,GHz (about 220\,m). Against arenas of several kilometres, the swarm is mostly disconnected in flight.
 
-\emph{Alerts.} When a UAV detects a victim, it makes one direct attempt to reach every other UAV and the GCS. Each failed copy is stored in a per-recipient QoS-1 buffer. The buffer is flushed when the link to that recipient has a PER below 0.2, which in practice happens when the UAV returns to base.
+\subsection{Delay-Tolerant Alert Dissemination}
+\emph{a) Alert generation and buffering.} When a UAV detects a victim, it makes one direct attempt to reach every other UAV and the GCS. Each failed copy is stored in a per-recipient QoS-1 buffer. The buffer is flushed when the link to that recipient has a PER below 0.2, which in practice happens when the UAV returns to base.
 
-\emph{Store-carry-forward.} A UAV that \emph{receives} an alert also keeps a copy for each recipient that is not known to hold it, and it hands the copy over when it later meets that recipient with a good link. Therefore, no UAV needs to be at the right place at the right moment, and an alert survives the loss of the UAV that found the victim. On contact, only the copies that the other side lacks are sent. When the buffer of a UAV is full, the oldest copy is dropped.
+\emph{b) Store-carry-forward relaying.} This is epidemic forwarding \cite{vahdat2000epidemic}: a UAV that \emph{receives} an alert also keeps a copy for each recipient that is not known to hold it, and it hands the copy over when it later meets that recipient with a good link. No UAV needs to be in the right place at the right moment, and an alert survives the loss of its finder. On contact, only the copies that the other side lacks are sent, and a full buffer drops its oldest copy.
 
-\emph{Status messages.} Every 5\,s, each UAV broadcasts its position, its committed EW-CVT generator and weight, its state, the time at which its route should bring it home, its sector claims, and the set of sectors that it knows to be scanned. These messages are single-hop and are not buffered, since stale state is not worth delivering late. A receiver merges the scanned sets as grow-only sets, and thus the knowledge about coverage spreads transitively when UAVs meet.
+\emph{c) Status messages.} Every 5\,s, each UAV broadcasts its position, its committed EW-CVT generator and weight, its state, the time at which its route should bring it home, its sector claims, and the set of sectors that it knows to be scanned. These messages are single-hop and are not buffered, since stale state is not worth delivering late. A receiver merges the scanned sets as grow-only sets, and thus the knowledge about coverage spreads transitively when UAVs meet.
 
-\subsection{Decentralized energy-aware control}
-\emph{EW-CVT partitioning.} Let $B_i$ be the battery level of UAV $i$ and $B_{\max}$ the capacity. The UAV has the weight $w_i=(B_i/B_{\max})^{\alpha}$. A sector with centre $c_s$ is preferred by the UAV with the smallest weighted distance
+\subsection{Energy-Weighted Territory Partitioning}
+Let $B_i$ be the battery level of UAV $i$ and $B_{\max}$ the capacity. The UAV has the weight $w_i=(B_i/B_{\max})^{\alpha}$. A sector with centre $c_s$ is preferred by the UAV with the smallest weighted distance
 \begin{equation}
 d(s,i)=\frac{\lVert c_s-g_i\rVert^2}{\max(0.01,\,w_i)},
 \label{eq:pd}
 \end{equation}
-where $g_i$ is the committed generator of the UAV. For $\alpha=0$ the partition is a plain Voronoi diagram, and a larger $\alpha$ shrinks the territory of low-battery UAVs. The launch partition is the converged CVT (15 Lloyd iterations) for the launch batteries.
+where $g_i$ is the committed generator of the UAV. For $\alpha=0$ the partition is a plain Voronoi diagram, and a larger $\alpha$ shrinks the territory of low-battery UAVs. The launch partition is the converged CVT (15 Lloyd iterations).
 
-\emph{Dual-threshold hysteresis.} Every 5\,s, each UAV computes the centroid $C_i^*$ that its cell should have. It does so over the peers that it \emph{believes} to be active, using their last advertised generators and weights. The UAV commits the new generator and weight only if
+\subsection{Decentralized Coordination and Failure Detection}
+Algorithm~\ref{alg:tick} summarizes one control tick of a UAV, and its steps are described below.
+\emph{a) Dual-threshold hysteresis.} Every 5\,s, each UAV computes the centroid $C_i^*$ that its cell should have. It does so over the peers that it \emph{believes} to be active, using their last advertised generators and weights. The UAV commits the new generator and weight only if
 \begin{equation}
 U_i=\big(\Delta B_i\ge\tau_\epsilon\ \wedge\ \lVert C_i^*-C_i\rVert\ge\tau_\delta\big)\ \vee\ \big(\mathcal N_i(t)\ne\mathcal N_i(t_k)\big),
 \label{eq:commit}
 \end{equation}
-with $\tau_\epsilon=2\%$ of $B_{\max}$, $\tau_\delta=5$\,m, and $\mathcal N_i$ the view of the live set held by the UAV. Battery readings contain sensor noise, so without this gate every tick would commit a new partition and the borders would jitter.
+with $\tau_\epsilon=2\%$ of $B_{\max}$, $\tau_\delta=5$\,m, and $\mathcal N_i$ the view of the live set held by the UAV. Without this gate, noisy battery readings would commit a new partition at every tick.
 
-\emph{Claims.} A UAV claims a sector if it is the preferred owner by $d(s,i)$ (Eq.~\ref{eq:pd}) using committed values and no other UAV holds a valid claim on the sector. It keeps its existing claims unless a better claim (a smaller $d$, with ties broken by id) reaches it. It may take over the claim of a peer only if it would arrive well before the advertised arrival time of that peer. A UAV that has no claims left takes the nearest unclaimed sector. Routes are greedy nearest-neighbour tours that end at the launch pad.
+\emph{b) Claim-and-yield sector assignment.} A UAV claims a sector if it is the preferred owner by $d(s,i)$ (Eq.~\ref{eq:pd}) using committed values and no other UAV holds a valid claim on the sector. It keeps its existing claims unless a better claim (a smaller $d$, with ties broken by id) reaches it. It may take over the claim of a peer only if it would arrive well before the advertised arrival time of that peer. A UAV that has no claims left takes the nearest unclaimed sector. Routes are greedy nearest-neighbour tours that end at the launch pad.
 
-\emph{Failure suspicion by lease.} In flight, silence tells a UAV nothing about a peer, because the peer may be out of range or it may have landed. Instead, each peer advertises the time at which its route should bring it home. A peer that is still missing \textit{slack} seconds after this time (60\,s by default) is suspected to be lost, and its claims are released. A UAV in flight cannot distinguish a lost peer from one that has landed quietly. Therefore, released work is taken only by UAVs \emph{at base}, which have heard the landed peers. Landed UAVs listen for 10\,s, split the work among themselves by $d(s,i)$, and relaunch if the battery allows. A suspicion is withdrawn when the peer is heard again. A UAV aborts and returns at 15\% battery, and it is lost at 0\%.
+\emph{c) Lease-based failure detection.} In flight, silence tells a UAV nothing about a peer, because the peer may be out of range or it may have landed. Instead, each peer advertises the time at which its route should bring it home. A peer that is still missing \textit{slack} seconds after this time (60\,s by default) is suspected to be lost, and its claims are released. Since a lost peer looks like one that landed quietly, released work is taken only by UAVs \emph{at base}, which have heard the landed peers. Landed UAVs listen for 10\,s, split the work among themselves by $d(s,i)$, and relaunch if the battery allows. A suspicion is withdrawn when the peer is heard again. A UAV aborts and returns at 15\% battery, and it is lost at 0\%.
 
 \begin{algorithm}[t]
-\caption{Control tick of one UAV (every 5\,s)}\label{alg:tick}
+\caption{Control tick of one UAV, executed every 5\,s from its local view of the swarm.}\label{alg:tick}
 \footnotesize
 \begin{algorithmic}[1]
 \STATE merge any status messages received since the last tick into the view (peers, claims, scanned set)
 \STATE \textbf{for} each peer $j$ overdue at base by more than \textit{slack}: mark $j$ suspected; release its claims
 \STATE $\mathcal N_i\leftarrow$ self $\cup$ peers believed active (landed peers included only if self is at base)
-\STATE read own battery $B_i$ (noisy); $w_i^*\leftarrow(B_i/B_{\max})^{\alpha}$
-\STATE $C_i^*\leftarrow$ EW-CVT centroid of my cell over $\mathcal N_i$ using peers' advertised $(g_j,w_j)$
+\STATE read own battery $B_i$; $w_i^*\leftarrow(B_i/B_{\max})^{\alpha}$; $C_i^*\leftarrow$ EW-CVT centroid of my cell over $\mathcal N_i$
 \STATE \textbf{if} $U_i$ (Eq.~\ref{eq:commit}) \textbf{then} commit $g_i\leftarrow C_i^*$, $w_i\leftarrow w_i^*$
 \STATE keep claims not beaten by a better claim; add free sectors I prefer by $d(s,i)$
 \STATE \textbf{if} no claims left: claim nearest unclaimed sector; \textbf{if} at base: also share released work
-\STATE \textbf{if} claims changed: rebuild nearest-neighbour route ending at the pad
-\STATE advertise route ETA, claims and scanned set in the next status message
+\STATE \textbf{if} claims changed: rebuild route; advertise route ETA, claims and scanned set
 \end{algorithmic}
 \end{algorithm}
 
 %=====================================================================
-\section{Experimental Setup}\label{sec:setup}
-\textbf{Missions.} Six UAVs search a $5\times5$\,km arena that is divided into 25 sectors. Each sector shows one frame of the NII-CU multispectral aerial person detection dataset \cite{speth2022}, and the labels of the frame serve as ground truth (36 to 56 victims per world). The UAVs launch from a pad, fly at up to 50\,m/s in transit and 32\,m/s while searching, and use 0.07\%/s of battery above 40\,m/s and 0.04\%/s otherwise. The launch batteries are uniform between 20\% and 100\%, and the battery readings have a noise of $\sigma=1.5$ points. In the loss scenario, UAV~2 fails silently at $t=80$\,s and the other UAVs are not told.
-
-\textbf{Seeds and statistics.} A seed fixes the frame in each sector and every launch battery, so each variant sees the same 20 worlds. We report paired differences with 95\% confidence intervals, and we do not claim an effect when an interval contains zero. Missions run until completion or 1{,}500\,s. Since each sector shows one static image, the detections inside missions are cached per frame.
-
-\textbf{Metrics.} \emph{Coverage} is the share of sectors that were scanned at least once. \emph{Precision} and \emph{recall} are computed by matching reported victims to the ground truth within 15\,m (one-to-one), and recall is taken over all victims in the arena. \emph{Operator recall} counts only the victims whose alert reached the GCS, and \emph{alert latency} is the delay between detection and arrival at the GCS. \emph{Failover latency} is the time from the injected failure to the first claim of one of its sectors by a survivor. \emph{Duplicate scans} count the sectors that were scanned more than once. \emph{Sector flips} count the claims that a UAV gave up to a better claim, \emph{route changes} count the route rebuilds, and \emph{commits} count the updates approved by the hysteresis.
-
-\textbf{Baselines.} Each baseline replaces one policy in the same simulator, so the missions, radio model and seeds are identical. For forwarding, \emph{spray-and-wait} \cite{spyropoulos2005spray} gives each alert $L=3$ copies and halves them at each hand-over. \emph{PRoPHET} \cite{lindgren2012prophet} hands a copy to a peer with a higher delivery predictability for the base ($P_\mathrm{init}=0.75$, $\beta=0.25$, $\gamma=0.98$ per 30\,s). The \emph{GeoSaW-style} forwarder keeps one copy and gives it to a peer whose return time to base is more than 10\,s shorter. This only approximates GeoSaW \cite{bujari2018geosaw}, which uses planned waypoints, and it is not the original protocol. \emph{Buffer only} carries each alert home with its finder. For allocation, the \emph{auction} baseline assigns each sector to the nearest UAV (all weights equal to 1) and keeps our lease-based failover. It is a nearest-bidder rule and not a full CBBA \cite{choi2009}. We also test it without failover and a \emph{static} partition. \emph{Copies per alert} counts the UAVs that hold a copy at the end.
-
-\textbf{Detector evaluation.} We run the shipped model on 150 held-out validation frames (IoU 0.5, confidence 0.25). In the \emph{night} condition, the RGB plane is darkened to 12\% brightness and noise is added. In the \emph{thermal washout} condition, the thermal contrast is scaled to 25\%. In the \emph{RGB-only} and \emph{thermal-only} conditions, the other plane is set to zero. Note that this is modality-masked inference of one fused network and not a comparison of separately trained models.
-
-\textbf{Reproducibility.} All numbers are produced by scripts in the project repository. A detector evaluation and an ablation harness produce the data, and the harness runs all 1{,}820 paired missions in a few minutes once the detections are cached. A separate report generator writes the tables and figures. Every component is a command-line switch of the mission simulator.
-
-%=====================================================================
-\section{Results}\label{sec:results}
-\subsection{Perception}
-Table~\ref{tab:perc} shows that the fused model reaches an AP50 of 99.8 in daylight. Fusion is about 11 points better than thermal only, which suggests that the visible plane adds information. Removing the visible light costs only 5.5 points, because thermal carries most of the detection. Degraded thermal contrast is the hardest case, where the recall falls to 0.39 while the precision stays at 0.99. The RGB-only row is zero because the network was never trained without the thermal plane. It therefore says nothing about the value of RGB, and trained single-modality baselines are still needed (Section~\ref{sec:future}).
-
-\begin{table}[t]
-\caption{Detection results on 150 held-out frames.}
+\begin{table*}[!t]
+\caption{Detection results on 150 held-out frames under day, night and thermal-washout conditions. AP50 and AP75: average precision at IoU 0.5 and 0.75; precision and recall at confidence 0.25. Best value per column in bold.}
 \label{tab:perc}
 \centering\footnotesize
-\begin{tabular}{llrrrr}
+\setlength{\tabcolsep}{4pt}
+\input{generated/tab_detection.tex}
+\end{table*}
+
+\begin{table}[!t]
+\centering
+\caption{Comparison with the base paper (Speth et al.\ \cite{speth2022}, Table~9) on the aligned NII-CU test images. Ours: fused YOLO11s, 150 of the 485 frames. AP in \%.}
+\label{tab:speth}
+\footnotesize
+\begin{tabular}{llrr}
 \toprule
-Condition & Input & AP50 & AP75 & Prec. & Rec.\\
+Model & Input & AP50 & AP75\\
 \midrule
-Day & Fused & 99.8 & 85.8 & 0.993 & 0.989\\
-Day & Thermal only & 89.0 & 50.5 & 0.944 & 0.731\\
-Night & Fused & 94.3 & 58.3 & 0.916 & 0.869\\
-Night & Thermal only & 89.0 & 50.5 & 0.944 & 0.731\\
-Washout & Fused & 61.8 & 25.1 & 0.991 & 0.386\\
-Washout & Thermal only & 0.0 & 0.0 & 0.000 & 0.000\\
+YOLOv3 \cite{speth2022} & RGB & 92.4 & 44.5\\
+YOLOv3 \cite{speth2022} & Thermal (FIR) & 97.5 & 72.7\\
+YOLOv3 \cite{speth2022} & RGB + FIR ensemble & 97.3 & 54.7\\
+YOLOv3 \cite{speth2022} & RGB + FIR, 4-channel & 97.9 & 76.9\\
+YOLO11s & RGB + FIR, 4-channel & \textbf{99.8} & \textbf{85.8}\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Reference mission}
-Without a failure, the decentralized swarm covers 100\% of the arena in \pmsd{353}{31}\,s (mean $\pm$ s.d.\ over 20 seeds). Precision, recall and F1 are all \pmsd{0.980}{0.015}, where the whole-arena recall counts the victims in unsearched sectors. The mean localization error is \pmsd{1.45}{0.15}\,m (RMSE \pmsd{1.86}{0.32}\,m), the first victim is detected after \pmsd{8.6}{7.2}\,s, the UAVs use \pmsd{13.7}{1.4}\% of their battery on average, and the operator learns of 100\% of the reports. Because each sector is one static frame, the localization error measures the mapping from box to sector and not geolocation.
+\section{Experimental Setup}\label{sec:setup}
+\subsection{Simulation Environment}
+Six UAVs search a $5\times5$\,km arena that is divided into 25 sectors. Each sector shows one frame of the NII-CU multispectral aerial person detection dataset \cite{speth2022}, whose labels serve as ground truth (36 to 56 victims per world). The UAVs launch from a pad, fly at up to 50\,m/s in transit and 32\,m/s while searching, and drain 0.07 or 0.04\%/s of battery above or below 40\,m/s. The launch batteries are uniform between 20\% and 100\%, and the battery readings have a noise of $\sigma=1.5$ points. In the loss scenario, UAV~2 fails silently at $t=80$\,s.
 
-\subsection{What each component buys}
-Table~\ref{tab:abl} gives the paired effect of removing each component.
+\subsection{Evaluation Metrics}
+\emph{Coverage} is the share of sectors that were scanned at least once. \emph{Precision} and \emph{recall} are computed by matching reported victims to the ground truth within 15\,m (one-to-one), and recall is taken over all victims in the arena. \emph{Operator recall} counts only the victims whose alert reached the GCS, and \emph{alert latency} is the delay between detection and arrival at the GCS. \emph{Failover latency} is the time from the injected failure to the first claim of one of its sectors by a survivor. \emph{Duplicate scans} count the sectors that were scanned more than once. \emph{Sector flips} count the claims that a UAV gave up to a better claim, \emph{route changes} count the route rebuilds, and \emph{commits} count the updates approved by the hysteresis.
 
-\begin{table}[t]
-\caption{Ablation results (paired mean $\pm$ 95\% CI, 20 seeds).}
+\subsection{Baseline Methods}
+Each baseline replaces one policy in the same simulator, so the missions, radio model and seeds are identical. For forwarding, \emph{epidemic} is our scheme from Section~\ref{sec:method}, in which every UAV copies an alert to each UAV that it meets and that lacks one. \emph{Spray-and-wait} \cite{spyropoulos2005spray} gives each alert $L=3$ copies and halves them at each hand-over. \emph{PRoPHET} \cite{lindgren2012prophet} hands a copy to a peer with a higher delivery predictability for the base ($P_\mathrm{init}=0.75$, $\beta=0.25$, $\gamma=0.98$ per 30\,s). The \emph{GeoSaW-style} forwarder keeps one copy and gives it to a peer whose return time to base is more than 10\,s shorter. It only approximates GeoSaW \cite{bujari2018geosaw}, which uses planned waypoints. \emph{Buffer only} carries each alert home with its finder. For allocation, the \emph{auction} baseline assigns each sector to the nearest UAV (all weights equal to 1) and keeps our lease-based failover. It is a nearest-bidder rule, not a full CBBA \cite{choi2009}. We also test it without failover, and a \emph{static} partition. \emph{Copies per alert} counts the UAVs that hold a copy at the end.
+
+For the detector, we run the shipped model on 150 held-out validation frames (IoU 0.5, confidence 0.25). The \emph{day} condition uses the frames unchanged. The \emph{night} condition emulates a dark scene: the RGB plane is multiplied by 0.12 and Gaussian noise ($\sigma=4$ grey levels) is added, while the thermal plane is untouched, because a thermal camera does not depend on light. The \emph{thermal washout} condition emulates a scene in which people and background have almost the same temperature, for example on a hot afternoon: the thermal plane is compressed towards its mean to 25\% of its contrast and noise ($\sigma=5$) is added, while the RGB plane is untouched. Night therefore removes the visible cue, and washout removes the thermal cue. Both are synthetic degradations of daytime frames and not recorded night or hot-day data. In the \emph{RGB-only} and \emph{thermal-only} conditions, the other plane is set to zero. This is modality-masked inference of one fused network, not a comparison of separately trained models.
+
+\subsection{Statistical Protocol and Reproducibility}
+A seed fixes the frame in each sector and every launch battery, so each variant sees the same 20 worlds. We report paired differences with 95\% confidence intervals and claim no effect when an interval contains zero. Missions run until completion or 1{,}500\,s,. All numbers come from scripts in the project repository. A detector evaluation and an ablation harness produce the data, running all 1{,}820 missions in a few minutes once the detections are cached. Every component is a command-line switch of the mission simulator.
+
+%=====================================================================
+\section{Results and Analysis}\label{sec:results}
+\subsection{Detection Performance}
+Table~\ref{tab:perc} shows that the fused model reaches an AP50 of 99.8 in daylight. Fusion is about 11 points better than thermal only, so the visible plane adds information, while removing it at night costs only 5.5 points because thermal carries most of the detection. Washout is the hardest case, because the network relies mainly on thermal: the recall falls to 0.39 while the precision stays at 0.99. The RGB-only case scores zero because the network was never trained without the thermal plane, so it says nothing about the value of RGB, and trained single-modality baselines are still needed (Section~\ref{sec:concl}).
+
+Table~\ref{tab:speth} compares the daytime result with the base paper \cite{speth2022}, which reports YOLOv3 trained on the same dataset (Table~9 there, 485 aligned images with 891 people). Our fused YOLO11s model is ahead of their 4-channel model at AP50 (99.8 against 97.9) and at AP75 (85.8 against 76.9), and, like theirs, it is clearly ahead of the RGB-only and ensemble variants. The comparison is indicative only. We evaluate 150 of the 485 frames (275 people) and not all of them. The architecture (YOLO11s at 1280\,px against YOLOv3 at 960$\times$704) and the training schedule differ, so part of the gap comes from the newer detector and not from the fusion. We did not compute AP50:95, and the checkpoint was selected on the same split that we evaluate. The latencies are not comparable (CPU here, a drone-class GPU in \cite{speth2022}).
+
+
+
+\subsection{Reference Mission Performance}
+Without a failure, the decentralized swarm covers 100\% of the arena in \pmsd{353}{31}\,s (mean $\pm$ s.d.\ over 20 seeds). Precision, recall and F1 are all \pmsd{0.980}{0.015}, where the whole-arena recall counts the victims in unsearched sectors. The mean localization error is \pmsd{1.45}{0.15}\,m, the first victim is detected after \pmsd{8.6}{7.2}\,s, and the operator learns of 100\% of the reports.
+
+\subsection{Ablation Study}
+Table~\ref{tab:abl} gives the effect of removing each component.
+
+\begin{table*}[!t]
+\caption{Ablation results. Change is the paired difference between the ablated and the full system (mean $\pm$ 95\% CI over 20 seeds). Failover: UAV~2 lost; buffer and forwarding: 5\,km arena.}
 \label{tab:abl}
 \centering\footnotesize
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{p{3.9cm}rrr}
+\begin{tabular}{p{7.2cm}rrr}
 \toprule
 Component removed: measure & Full & Ablated & Change\\
 \midrule
@@ -228,105 +256,90 @@ Forwarding (5\,km): alert latency & 103\,s & 109\,s & $+7\pm2$\,s\\
 \bottomrule
 \multicolumn{4}{l}{\scriptsize $^\dagger$ test configuration with global recomputation, $\sigma=2\%$ (see text).}
 \end{tabular}
-\end{table}
+\end{table*}
 
-\emph{Failover} matters when a UAV is lost. The coverage after the loss is 98.4\% with failover and 87.4\% without it (Fig.~\ref{fig:cov}), since without failover the sectors of the lost UAV are never searched.
+\emph{Failover} matters when a UAV is lost. The coverage after the loss is 98.4\% with failover and 87.4\% without it (Fig.~\ref{fig:covnet}, left), since without failover the sectors of the lost UAV are never searched.
 
-\emph{Hysteresis} reduces churn but not flight time. In the full decentralized system, it has almost no measurable effect, because the claims are already sticky (0.2 versus 0.4 sector flips). It matters when the partitions are recomputed from fresh battery readings at every tick without this stickiness. We tested this in a configuration in which one planner with global knowledge recomputes all partitions at every tick. There, hysteresis cuts the number of partition commits about tenfold (296 to 31 per mission at $\sigma=2\%$) and the number of sector flips from 13.5 to 2.5, while the change in mission time is within noise. We therefore see hysteresis as a protection against noisy inputs and not as a gain in speed.
+\emph{Hysteresis} reduces churn but not flight time. In the full decentralized system it has almost no measurable effect, because the claims are already sticky (0.2 versus 0.4 sector flips). It matters when partitions are recomputed from fresh battery readings at every tick, which we tested with a global planner that recomputes all partitions at each tick. There, hysteresis cuts the partition commits about tenfold (296 to 31 per mission at $\sigma=2\%$) and the sector flips from 13.5 to 2.5, while the mission time stays within noise. It protects against noisy inputs but does not speed up the mission.
 
-\emph{EW weighting} is a trade-off. When $\alpha$ is swept from 0 to 3, the minimum final battery rises from 15.6\% to 20.3\% and the low-battery aborts fall from 0.95 to 0.30 per mission. However, the mission becomes longer, from 377\,s to 488\,s, because the healthy UAVs carry more of the work. At $\alpha=1$ the benefit is modest ($+0.8\pm0.7$ points of minimum battery).
+\emph{EW weighting} is a trade-off. When $\alpha$ is swept from 0 to 3, the minimum final battery rises from 15.6\% to 20.3\% and the low-battery aborts fall from 0.95 to 0.30 per mission, but the mission becomes longer (377 to 488\,s) because the healthy UAVs carry more of the work. At $\alpha=1$ the benefit is modest ($+0.8\pm0.7$ points of minimum battery).
 
-\begin{figure*}[t]
+
+\begin{figure*}[!t]
 \centering
-\includegraphics[width=0.45\textwidth]{hysteresis_vs_sensor_noise.png}\hfill
-\includegraphics[width=0.45\textwidth]{alpha_sweep.png}
-\caption{Left: hysteresis versus sensor noise (global-recomputation test configuration). Right: effect of $\alpha$.}
-\label{fig:hyst}
+\includegraphics[width=0.47\textwidth]{coverage_over_time.png}\hfill
+\includegraphics[width=0.47\textwidth]{network_ablation.png}
+\caption{Left: area coverage over time for the full system, without failover, and the static baseline, in a nominal mission (left panel) and with UAV~2 lost at 80\,s (right panel, dotted line). Right: victims known to the operator and swarm-wide consensus at mission end in three arenas, for the full system, without forwarding, and without the buffer.}
+\label{fig:covnet}
 \end{figure*}
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.68\columnwidth]{coverage_over_time.png}
-\caption{Coverage over time without a failure (left) and with UAV~2 lost at 80\,s (right).}
-\label{fig:cov}
-\end{figure}
+\subsection{Comparison with Baseline Methods}\label{sec:base}
+Table~\ref{tab:dtn} and Fig.~\ref{fig:fwd} compare the forwarding policies. Epidemic forwarding has the lowest alert latency in every scenario, but it also holds the most copies. At 3\,km, its latency is 7.6$\pm$1.7\,s below spray-and-wait, 10.7$\pm$3.2\,s below PRoPHET and 6.8$\pm$2.4\,s below the GeoSaW-style forwarder (paired differences with 95\% confidence intervals), and it keeps 1.1 to 2.7 more copies per alert. When UAV~2 is lost, the operator recall is 0.978 with epidemic forwarding and 0.958 to 0.973 with the others, and the latency gap grows to about 10\,s. Otherwise the operator recall is the same for all policies.
 
-\subsection{Networking}
-At these ranges, the first-attempt delivery rate to the GCS is only 3 to 6\%, which means that the swarm is mostly disconnected in flight (Fig.~\ref{fig:net}). Without a delay-tolerant buffer, the operator learns of 3.4\% of the victims at 5\,km and the swarm-wide consensus is 22\%. With the buffer, these values are 98\% and 100\%. Buffering dominates every other effect that we measured.
-
-Store-carry-forward lowers the alert latency (mean 41 versus 59\,s at 3\,km, 34 versus 41\,s at 1.5\,km, and 103 versus 109\,s at 5\,km). It also protects alerts when the finder is lost. With a UAV lost at 60\,s, the operator learns of 99.3\% of the reports at 3\,km with forwarding and 97.3\% without it (98.9\% versus 97.6\% at 1.5\,km). Forwarding needs buffer space, however. When the buffer is capped at 5, 15, 40 and 120 copies per UAV, the operator learns of 22.5\%, 41.5\%, 83.4\% and 99.3\% of the reports (3\,km, UAV lost). The benefit is real. It also has a price in memory.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.68\columnwidth]{network_ablation.png}
-\caption{Victims known to the operator (left) and swarm-wide consensus (right).}
-\label{fig:net}
-\end{figure}
-
-\subsection{Comparison with baselines}\label{sec:base}
-Table~\ref{tab:dtn} compares the forwarding policies. Epidemic forwarding has the lowest alert latency in every scenario, but it also holds the most copies. At 3\,km, its latency is 7.6$\pm$1.7\,s below spray-and-wait, 10.7$\pm$3.2\,s below PRoPHET and 6.8$\pm$2.4\,s below the GeoSaW-style forwarder (paired differences with 95\% confidence intervals), and it keeps 1.1 to 2.7 more copies per alert. When UAV~2 is lost, the operator recall is 0.978 with epidemic forwarding and 0.958 to 0.973 with the others, and the latency gap grows to about 10\,s. Otherwise the operator recall is the same for all policies.
-
-\begin{table}[t]
-\caption{Forwarding baselines at 3\,km (mean of 20 seeds).}
+\begin{table*}[!t]
+\caption{Forwarding policies in three arena sizes and after the loss of UAV~2 (mean $\pm$ 95\% CI over 20 seeds). Lat.: mean alert latency; Copies: UAVs holding a copy of an alert. Lowest latency in bold.}
 \label{tab:dtn}
 \centering\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{tabular}{lrrrr}
-\toprule
-Policy & Lat.\,(s) & Lat., loss (s) & Recall, loss & Copies\\
-\midrule
-Epidemic (ours) & 41.0 & 46.3 & 0.978 & 4.30\\
-Spray-and-wait & 48.6 & 56.4 & 0.967 & 2.37\\
-PRoPHET & 51.8 & 56.4 & 0.963 & 3.19\\
-GeoSaW-style & 47.9 & 56.0 & 0.973 & 1.63\\
-Buffer only & 59.2 & 66.4 & 0.958 & 1.00\\
-\bottomrule
-\end{tabular}
-\end{table}
+\setlength{\tabcolsep}{4pt}
+\input{generated/tab_forwarding.tex}
+\end{table*}
 
-Against nearest-bidder allocation, the picture is mixed. Without a loss, energy weighting leaves a higher minimum battery than nearest-bidder allocation (+1.4$\pm$1.1 points) and fewer duplicate scans ($-$1.15$\pm$0.53 per mission), but it is not faster (+13$\pm$19\,s, which includes zero). After a loss it is slower (554 versus 481\,s, +73$\pm$58\,s), and the coverage does not differ significantly (+1.4$\pm$3.2 points). The large gain after a loss comes from the failover rule. Without it, the coverage falls from 98.4\% to 89.2\% and the arena recall from 0.96 to 0.87, and a static partition ends at 87.6\% (mean of 20 seeds). We therefore credit the failover with the coverage gain, and the weighting only with the energy reserve and the duplicate scans.
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.74\textwidth]{forwarding_tradeoff.png}
+\caption{Alert latency versus traffic cost (copies per alert) for the forwarding policies. Bars show the 95\% CI over 20 seeds.}
+\label{fig:fwd}
+\end{figure*}
+
+\begin{table*}[!t]
+\caption{Allocation policies without and with the loss of UAV~2 (mean of 20 seeds). Dup.: duplicate scans. Best value per column in bold.}
+\label{tab:alloc}
+\centering\footnotesize
+\setlength{\tabcolsep}{4pt}
+\input{generated/tab_allocation.tex}
+\end{table*}
+
+\begin{figure*}[!t]
+\centering
+\includegraphics[width=0.74\textwidth]{allocation_baselines.png}
+\caption{Coverage, mission time, minimum final battery and duplicate scans of the allocation policies, without and with the loss of UAV~2. Bars show the 95\% CI over 20 seeds.}
+\label{fig:alloc}
+\end{figure*}
+
+Table~\ref{tab:alloc} and Fig.~\ref{fig:alloc} compare the allocation policies. Against nearest-bidder allocation, the picture is mixed. Without a loss, energy weighting leaves a higher minimum battery than nearest-bidder allocation (+1.4$\pm$1.1 points) and fewer duplicate scans ($-$1.15$\pm$0.53 per mission), but it is not faster (+13$\pm$19\,s, which includes zero). After a loss it is slower (554 versus 481\,s, +73$\pm$58\,s), and the coverage does not differ significantly (+1.4$\pm$3.2 points). The large gain after a loss comes from the failover rule. Without it, the coverage falls from 98.4\% to 89.2\% and the arena recall from 0.96 to 0.87, and a static partition ends at 87.6\% (mean of 20 seeds). We credit the failover with the coverage gain, and the weighting only with the energy reserve and the duplicate scans.
 
 
-\subsection{After a UAV loss}
-Table~\ref{tab:dec} shows the behaviour of the swarm when UAV~2 is lost. The survivors cannot know that the UAV is gone until it is overdue at base, so failover takes minutes. It takes 231\,s on average at 5\,km, 143\,s at 3\,km and 102\,s at 1.5\,km, and the shorter times in smaller arenas follow from the UAVs meeting more often. The coverage stays at 98.4\% or above, but the mission at 5\,km grows from 353\,s to 554\,s. In a few seeds, some sectors stay unsearched because the survivors no longer have the battery for a second sortie when they learn of the loss (for instance, when the lost UAV carried the most charge).
+\subsection{Failure Recovery Analysis}
+Table~\ref{tab:dec} shows the behaviour of the swarm when UAV~2 is lost. The survivors cannot know that the UAV is gone until it is overdue at base, so failover takes minutes. It takes 231\,s on average at 5\,km, 143\,s at 3\,km and 102\,s at 1.5\,km, and the shorter times in smaller arenas follow from the UAVs meeting more often. The coverage stays at 98.4\% or above, but the mission at 5\,km grows from 353\,s to 554\,s. In a few seeds, sectors stay unsearched because the survivors lack the battery for a second sortie.
 
-\begin{table}[t]
-\caption{Results after a UAV loss.}
+\begin{table}[!t]
+\caption{Recovery after the loss of UAV~2 at three arena sizes. Failover: time to the first claim of its sectors by a survivor.}
 \label{tab:dec}
 \centering\footnotesize
 \setlength{\tabcolsep}{3pt}
-\begin{tabular}{lrrr}
-\toprule
-Scenario & Cover.\,\% & Time (s) & Failover (s)\\
-\midrule
-5\,km, no loss & 100.0 & 353 & n/a\\
-5\,km, loss & 98.4 & 554 & 231\\
-3\,km, loss & 99.0 & 326 & 143\\
-1.5\,km, loss & 99.2 & 171 & 102\\
-\bottomrule
-\end{tabular}
+\input{generated/tab_recovery.tex}
 \end{table}
 
-\emph{Lease slack.} The slack trades the speed of detection against false alarms. For slack values of 20, 60, 120 and 240\,s, the mean failover latency is 192, 231, 293 and 411\,s, and the number of wrong suspicions falls from 11.2 out of 15.6 to 0.4 out of 4.7 per mission. Most suspicions concern UAVs that were fine, since a UAV that has landed looks like one that has crashed to any peer that is still in flight. These false suspicions cost little because released work is taken only at base, and the duplicate scans stay at about one per mission. The interval between status messages has little effect on the mission time (532, 554, 587 and 629\,s at 2, 5, 15 and 60\,s) until it becomes comparable to the duration of a contact.
+\begin{figure}[!t]
+\centering
+\includegraphics[width=0.7\columnwidth]{lease_slack_tradeoff.png}
+\caption{Failover latency and wrong suspicions versus the lease slack (5\,km, UAV~2 lost). Bars show the 95\% CI.}
+\label{fig:lease}
+\end{figure}
+
+\emph{Lease slack.} The slack trades detection speed against false alarms (Fig.~\ref{fig:lease}). For slack values of 20, 60, 120 and 240\,s, the mean failover latency is 192, 231, 293 and 411\,s, and the wrong suspicions fall from 11.2 of 15.6 to 0.4 of 4.7 per mission. Most suspicions concern UAVs that were fine (a landed UAV looks crashed to a peer in flight), but they cost little because released work is taken only at base. The status interval hardly affects the mission time (532 to 629\,s for 2 to 60\,s) until it approaches the duration of a contact.
 
 %=====================================================================
 \section{Discussion and Limitations}\label{sec:disc}
-Our evidence supports a few conclusions clearly. A sparsely connected swarm needs buffering. Losing a UAV costs coverage unless the others take over its work, and the time that this takes is set by how long the survivors need to learn of the loss. Other results are weaker than the design might lead a reader to expect. Hysteresis has an effect only where the partitions are recomputed from noisy readings at every tick, and energy weighting buys reserve at the price of speed.
+Our evidence clearly supports two conclusions. A sparsely connected swarm needs buffering, and losing a UAV costs coverage unless the others take over its work, with a delay set by how long the survivors need to learn of the loss. Other results are weaker than the design suggests. Hysteresis has an effect only where the partitions are recomputed from noisy readings at every tick, and energy weighting buys reserve at the price of speed.
 
-We observed several limitations in our study. First, the simulator is kinematic. It uses constant speeds and a linear battery drain, and it has no wind and no obstacles other than a probabilistic radio penalty. Second, each sector shows one static dataset frame. The mission-level precision and recall therefore mostly reflect the detector on these frames and the sectors that were visited, and the localization error measures a mapping from box to sector. Third, the perception ablation masks one plane of a single fused network, and the training and validation frames come from the same site, so the absolute numbers are probably optimistic. Fourth, the network results depend on the radio model. Fifth, the decentralized design makes several simplifications. The UAVs launch together and share the initial partition, the status messages are single-hop, alerts are still addressed to every UAV whether it is alive or not, and forwarding reads the holdings of the receiver as the summary that would be exchanged on contact. The lease detector is only one of several possible designs, and we have not compared it with the others. Our auction baseline is not a full CBBA, and our GeoSaW-style forwarder uses no planned waypoints. Finally, the 15\% reserve rule and the noise levels are assumptions of our scenarios.
-
-%=====================================================================
-\section{Ongoing and Future Work}\label{sec:future}
-\begin{itemize}\setlength{\itemsep}{0pt}\setlength{\topsep}{1pt}
-\item \textbf{Trained single-modality baselines.} RGB-only and thermal-only models could be trained next to the fused one, which would replace the masked inference with a proper modality ablation.
-\item \textbf{Failure detection.} Status messages could carry third-party state, and rendezvous points and estimates of the contact intervals could be used, so that detection does not need to wait for an overdue return.
-\item \textbf{Realistic imaging.} The static frame of each sector could be replaced by imagery that depends on the position of the UAV and on a camera model, so that localization becomes geolocation.
-\item \textbf{Environment and energy.} Richer models of wind, payload and return-trip margin are needed, and a small non-monotonicity of the scaling between 4 and 6 UAVs remains unexplained.
-\end{itemize}
+Several limitations apply. First, the simulator is kinematic, with constant speeds, linear battery drain, no wind and no obstacles beyond a probabilistic radio penalty. Second, each sector shows one static dataset frame, so the mission-level precision and recall mostly reflect the detector on these frames and the sectors that were visited, and the localization error measures a mapping from box to sector. Third, the perception ablation masks one plane of a single fused network, and the training and validation frames come from the same site, so the absolute numbers are probably optimistic. Fourth, the network results depend on the radio model. Fifth, the decentralized design is simplified: the UAVs launch together and share the initial partition, status messages are single-hop, alerts are addressed to every UAV whether alive or not, and forwarding reads the holdings of the receiver instead of simulating the exchange on contact. The lease detector is one of several possible designs and has not been compared with the others. Our auction baseline is not a full CBBA, and our GeoSaW-style forwarder uses no planned waypoints. Finally, the 15\% reserve and the noise levels are scenario assumptions.
 
 %=====================================================================
-\section{Conclusion}\label{sec:concl}
-In this paper, we presented a simulated search-and-rescue swarm with early-fusion RGB and thermal perception, a delay-tolerant mesh with store-carry-forward relaying of alerts, and a decentralized controller without a central planner. Buffering was the largest effect that we measured, since without it almost no alert reaches the operator in a spread-out swarm. Failover recovers coverage after a UAV is lost, and forwarding makes alerts faster and safer. The swarm has no central planner, and the price of this is a failover latency of minutes. We also reported the unfavourable results and the limits of a simulation-only study, and the next steps toward real flights are listed in Section~\ref{sec:future}.
+\section{Conclusion and Future Work}\label{sec:concl}
+This paper presented a decentralized search-and-rescue system for swarms that are mostly out of radio contact. It integrates early-fusion RGB and thermal perception, a delay-tolerant mesh with store-carry-forward relaying, and an energy-aware coordination layer without a central planner. Buffering was the largest effect that we measured. Failover recovers coverage after a UAV is lost, and epidemic relaying delivers alerts faster than the baselines that we tried, at the price of more copies. The energy-weighted partition leaves more battery reserve but is not faster than a nearest-bidder auction, and the price of decentralization is a failover latency of minutes. We have reported the unfavourable results and the limits of a simulation-only study.
+
+Future work has three directions. First, separate RGB-only and thermal-only detectors should be trained for a proper modality ablation, and a full CBBA and complete prior-work stacks should be compared across a sweep of network connectivity, which would test the integration claim directly. Second, status messages could carry third-party state, so that failure detection does not wait for an overdue return. Third, position-dependent imagery, a camera model and richer wind, payload and energy models would bring the simulation closer to real flight.
 
 %=====================================================================
 \begingroup\footnotesize\setlength{\itemsep}{0pt}\begin{thebibliography}{99}
